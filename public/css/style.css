@@ -201,6 +201,26 @@ img {
     height: var(--header-height);
     display: flex;
     align-items: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-header.scrolled {
+    top: 15px;
+    width: 95%;
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    border-radius: 40px;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .site-header.scrolled {
+    background-color: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .header-container {
@@ -1583,7 +1603,7 @@ img {
     to { transform: scale(1.2); }
 }
 
-.banner-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 1; }
+.banner-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.75) 100%); z-index: 1; }
 .banner-content { position: relative; z-index: 10; }
 .banner-content h1 { 
     color: #FFFFFF; 
@@ -1828,22 +1848,72 @@ img {
 }
 
 /* Numbered steps ("How to become a member") */
-.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); }
-.step-card { background: var(--bg-main); padding: var(--spacing-lg) var(--spacing-md); border-radius: 12px; border: 1px solid var(--border-color); text-align: center; }
+.steps-grid { 
+    display: grid; 
+    grid-template-columns: repeat(5, 1fr); 
+    gap: var(--spacing-md); 
+    position: relative;
+    padding-top: 1rem;
+}
+@media (max-width: 1024px) {
+    .steps-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); padding-top: 0; }
+}
+
+/* Connecting dashed line for desktop */
+@media (min-width: 1025px) {
+    .steps-grid::before {
+        content: '';
+        position: absolute;
+        top: 50px; /* Aligns with middle of the circle */
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: repeating-linear-gradient(90deg, var(--border-color) 0, var(--border-color) 8px, transparent 8px, transparent 16px);
+        z-index: 0;
+    }
+}
+
+.step-card { 
+    background: var(--bg-main); 
+    padding: var(--spacing-md); 
+    border-radius: 16px; 
+    border: 1px solid var(--border-color); 
+    text-align: center; 
+    overflow: visible; 
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.step-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(37, 99, 235, 0.12);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
 .step-number {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.5rem auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #60a5fa 100%);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.2rem;
-    margin: 0 auto 1rem auto;
+    transition: transform 0.3s ease;
 }
-.step-card p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+.step-card:hover .step-number {
+    transform: scale(1.1) rotate(5deg);
+}
+.step-number span {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: #ffffff;
+}
+.step-card p { color: var(--text-muted); margin: 0; font-size: 0.95rem; line-height: 1.5; }
 
 /* Benefits list (Virtual Office) reuses feature-list tick styling */
 .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-lg); margin-top: var(--spacing-md); }
@@ -1907,14 +1977,6 @@ img {
 .sfc-cta { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; color: var(--primary-color); }
 .sfc-cta:hover { color: var(--primary-hover); }
 
-.service-feature-card.is-featured { background: var(--primary-color); border-color: var(--primary-color); }
-.service-feature-card.is-featured h3,
-.service-feature-card.is-featured > .sfc-body > p,
-.service-feature-card.is-featured .feature-list li { color: #fff; }
-.service-feature-card.is-featured .feature-list i { color: #fff; }
-.service-feature-card.is-featured .plan-badge { background: rgba(255,255,255,0.2); color: #fff; }
-.service-feature-card.is-featured .sfc-cta { color: #fff; text-decoration: underline; }
-
 /* What's Included: grouped category cards instead of one flat icon grid */
 .included-groups-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-md); }
 .included-group-card { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: var(--spacing-md); text-align: left; }
@@ -1932,11 +1994,6 @@ img {
 }
 .included-group-card h3 { font-size: 1.15rem; margin-bottom: 1rem; }
 .included-group-card .feature-list li { font-size: 0.95rem; margin-bottom: 0.6rem; }
-
-/* Highlight the final membership step */
-.step-card.is-final { background: var(--primary-color); border-color: var(--primary-color); }
-.step-card.is-final .step-number { background: #fff; color: var(--primary-color); }
-.step-card.is-final p { color: #fff; }
 
 /* FAQ: intro/CTA sidebar + accordion */
 .faq-layout { display: grid; grid-template-columns: 1fr 2fr; gap: var(--spacing-lg); align-items: start; }
@@ -1991,7 +2048,26 @@ img {
 .extra-services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--spacing-md); text-align: left; }
 
 /* FAQ Accordion */
-.faq-accordion { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.faq-accordion { max-width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-sm) var(--spacing-md); align-items: start; }
+@media (max-width: 768px) {
+    .faq-accordion { grid-template-columns: 1fr; }
+}
+.faq-cat-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.faq-cat-btn:hover, .faq-cat-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
 .faq-item { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
 .faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-sm); background: none; border: none; padding: var(--spacing-sm) var(--spacing-md); font-family: var(--font-family); font-size: 1.05rem; font-weight: 600; color: var(--text-main); text-align: left; cursor: pointer; }
 .faq-question i { color: var(--primary-color); transition: transform 0.3s ease; flex-shrink: 0; }
