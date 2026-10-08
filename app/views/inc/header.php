@@ -69,9 +69,6 @@
                 </ul>
                 
                 <div class="header-actions">
-                    <button class="theme-toggle" aria-label="Toggle Dark Mode">
-                        <i class="fas fa-moon"></i>
-                    </button>
                     <a href="<?php echo URLROOT; ?>/contact-us#enquiry" class="btn btn-primary">Enquire Now</a>
                 </div>
             </nav>

@@ -21,38 +21,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Light/Dark Theme Toggle (FR-GEN-08) ---
     const themeToggleBtn = document.querySelector('.theme-toggle');
     const htmlElement = document.documentElement;
-    const themeIcon = themeToggleBtn.querySelector('i');
 
-    // Check local storage for saved theme
-    const savedTheme = localStorage.getItem('workiify_theme');
-    if (savedTheme) {
-        htmlElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else {
-        // Optionally check OS preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (themeToggleBtn) {
+        const themeIcon = themeToggleBtn.querySelector('i');
+
+        function updateThemeIcon(theme) {
+            if (!themeIcon) return;
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Check local storage for saved theme
+        const savedTheme = localStorage.getItem('workiify_theme');
+        if (savedTheme) {
+            htmlElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // Optionally check OS preference
             htmlElement.setAttribute('data-theme', 'dark');
             updateThemeIcon('dark');
         }
-    }
 
-    themeToggleBtn.addEventListener('click', () => {
-        const currentTheme = htmlElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        htmlElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('workiify_theme', newTheme);
-        updateThemeIcon(newTheme);
-    });
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-    function updateThemeIcon(theme) {
-        if (theme === 'dark') {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        } else {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        }
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('workiify_theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
     }
 
     // --- FAQ Accordion ---

@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
-<section class="page-banner" style="background-image: url('<?php echo URLROOT; ?>/images/services_bg.jpg'); background-size: cover; background-position: center; color: #fff;">
+<section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/services_bg.jpg'); color: #fff;">
     <div class="banner-overlay" style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.7) 100%); z-index: 1;"></div>
     <div class="container banner-content text-center" style="position: relative; z-index: 10;">
         <h1 style="margin-bottom: 0.5rem;">Our Services</h1>
@@ -250,7 +250,7 @@
                 <span class="category-eyebrow">FAQ</span>
                 <h2 class="section-title">Frequently Asked Questions</h2>
                 <p>Can't find what you need? Message us on WhatsApp and we'll reply shortly.</p>
-                <a href="https://wa.me/919655500001?text=Hi%20Workiify,%20I%20have%20a%20question" class="btn btn-primary" target="_blank">Ask a Question</a>
+                <a href="https://api.whatsapp.com/send/?phone=919655500001&text=Hi%20Workiify,%20I%20have%20a%20question&type=phone_number&app_absent=0" class="btn btn-primary" target="_blank">Ask a Question</a>
             </div>
 
             <div class="faq-accordion" data-aos="fade-left">

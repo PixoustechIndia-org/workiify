@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
-<section class="page-banner" style="background-image: url('<?php echo URLROOT; ?>/images/coworking_main_1791350864870.jpg'); background-size: cover; background-position: center; color: #fff;">
+<section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/coworking_main_1791350864870.jpg'); color: #fff;">
     <div class="banner-overlay" style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.7) 100%);"></div>
     <div class="container banner-content text-center" style="position: relative; z-index: 10;">
         <h1 style="margin-bottom: 0.5rem;">About Workiify</h1>
@@ -128,7 +128,9 @@
             <h2 class="section-title">Our Location</h2>
             <p>AV Info Tech Park, near KGISL campus, Saravanampatti – 5 floors, 24/7 member access, parking (limited)</p>
         </div>
-        <div class="split-img placeholder-img" data-aos="fade-left" data-aos-duration="900">Building Photo</div>
+        <div class="split-img" data-aos="fade-left" data-aos-duration="900">
+            <img src="<?php echo URLROOT; ?>/images/gallery-building-exterior.png" alt="Workiify building exterior" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
+        </div>
     </div>
 </section>
 
@@ -141,10 +143,18 @@
         <blockquote class="community-quote max-w-700" style="margin: 0 auto;" data-aos="zoom-in">"We believe that a vibrant community is a powerful determinant of people's ability to achieve and grow at work – and the joy they experience as a result of them."</blockquote>
 
         <div class="photo-strip mt-4">
-            <div class="strip-item placeholder-img" data-aos="fade-up" data-aos-delay="0">Pongal Celebration 2026</div>
-            <div class="strip-item placeholder-img" data-aos="fade-up" data-aos-delay="100">Event Photo</div>
-            <div class="strip-item placeholder-img" data-aos="fade-up" data-aos-delay="200">Event Photo</div>
-            <div class="strip-item placeholder-img" data-aos="fade-up" data-aos-delay="300">Event Photo</div>
+            <div class="strip-item" data-aos="fade-up" data-aos-delay="0">
+                <img src="<?php echo URLROOT; ?>/images/gallery-pongal-celebration-2026.png" alt="Pongal Celebration 2026" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            </div>
+            <div class="strip-item" data-aos="fade-up" data-aos-delay="100">
+                <img src="<?php echo URLROOT; ?>/images/gallery-office-inauguration.png" alt="Office Inauguration" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            </div>
+            <div class="strip-item" data-aos="fade-up" data-aos-delay="200">
+                <img src="<?php echo URLROOT; ?>/images/gallery-dining-hall-1.png" alt="Community dining & networking" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            </div>
+            <div class="strip-item" data-aos="fade-up" data-aos-delay="300">
+                <img src="<?php echo URLROOT; ?>/images/gallery-reception-workstations.png" alt="Team collaboration space" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            </div>
         </div>
 
         <p class="community-note">All packages include community and networking events.</p>
@@ -184,11 +194,11 @@
     <div class="container text-center max-w-1150">
         <h2 class="section-title">Trusted By</h2>
         <div class="logo-strip mt-4" data-aos="fade-up">
-            <div class="logo-item placeholder-img">Logo</div>
-            <div class="logo-item placeholder-img">Logo</div>
-            <div class="logo-item placeholder-img">Logo</div>
-            <div class="logo-item placeholder-img">Logo</div>
-            <div class="logo-item placeholder-img">Logo</div>
+            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
+            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
+            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
+            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
+            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
         </div>
     </div>
 </section>

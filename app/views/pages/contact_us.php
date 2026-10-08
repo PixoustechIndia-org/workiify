@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
-<section class="page-banner" style="background-image: url('<?php echo URLROOT; ?>/images/contact_bg.jpg'); background-size: cover; background-position: center; color: #fff;">
+<section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/contact_bg.jpg'); color: #fff;">
     <div class="banner-overlay" style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.7) 100%); z-index: 1;"></div>
     <div class="container banner-content text-center" style="position: relative; z-index: 10;">
         <h1 style="margin-bottom: 0.5rem;">Get In Touch</h1>
@@ -51,13 +51,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="contact-item" style="display: flex; gap: 1rem; align-items: center;">
-                        <span class="contact-icon" style="background: #e0f2fe; color: var(--primary-color); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; flex-shrink: 0;"><i class="fas fa-globe"></i></span>
-                        <div>
-                            <h4 style="font-size:0.85rem; margin:0 0 5px 0; color: var(--text-main); font-weight: 700;">Website</h4>
-                            <p style="margin:0; font-size:0.9rem; color: var(--text-muted);"><a href="https://www.workiify.com" style="color: inherit;" target="_blank">www.workiify.com</a></p>
-                        </div>
-                    </div>
+
                     <div class="contact-item" style="display: flex; gap: 1rem; align-items: center;">
                         <span class="contact-icon" style="background: #e0f2fe; color: var(--primary-color); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; flex-shrink: 0;"><i class="fas fa-clock"></i></span>
                         <div>
@@ -67,19 +61,19 @@
                     </div>
                 </div>
 
-                <div class="contact-map">
+                <div class="contact-map" style="position: relative;">
                     <iframe src="https://www.google.com/maps?q=AV+Info+Tech+Park,+Saravanampatti,+Coimbatore&z=16&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <a href="https://maps.google.com/?q=AV+Info+Tech+Park,+Saravanampatti,+Coimbatore" class="btn btn-primary" target="_blank" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); padding: 8px 20px; font-size: 0.9rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); z-index: 10;">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </a>
                 </div>
-                <a href="https://maps.google.com/?q=AV+Info+Tech+Park,+Saravanampatti,+Coimbatore" class="btn btn-primary w-100 mt-3" target="_blank">
-                    <i class="fas fa-directions"></i> Get Directions
-                </a>
 
                 <div class="contact-social" style="display: flex; align-items: center; gap: 1.5rem; border-top: none; padding-top: 1.5rem; margin-top: auto;">
                     <span style="font-weight:600; margin:0; font-size: 0.95rem; color: var(--text-main);">Follow us</span>
                     <div class="social-icons" style="display: flex; gap: 10px;">
-                        <a href="#" aria-label="Instagram" style="background: #f1f5f9; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--text-main); transition: 0.3s;"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="Facebook" style="background: #f1f5f9; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--text-main); transition: 0.3s;"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://wa.me/919655500001" aria-label="WhatsApp" style="background: #f1f5f9; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--text-main); transition: 0.3s;" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/workiifyspaces/" target="_blank" aria-label="Instagram" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61569320400768" target="_blank" aria-label="Facebook" style="background: #1877F2; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://api.whatsapp.com/send/?phone=919655500001&text&type=phone_number&app_absent=0" aria-label="WhatsApp" style="background: #25D366; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" target="_blank"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
             </div>
