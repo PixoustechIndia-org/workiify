@@ -1,4 +1,8 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<!-- Preload the first hero slide image for LCP / UX -->
+<?php if (!empty($data['hero'][0])): ?>
+<link rel="preload" as="image" href="<?php echo URLROOT . htmlspecialchars($data['hero'][0]['data']['bg_image']); ?>">
+<?php endif; ?>
 
 <!-- 1. Hero Section -->
 <section class="hero-section" id="hero-slider">
@@ -158,7 +162,7 @@
 </section>
 
 <!-- 8. Testimonials -->
-<section class="testimonials-section section-padding bg-alt">
+<section class="testimonials-section section-padding bg-alt home-testimonials">
     <div class="container text-center max-w-1150">
         <h2 class="section-title"><?php echo htmlspecialchars($data['f']['testimonials_heading']); ?></h2>
         <div class="google-rating">
@@ -168,13 +172,17 @@
             </div>
         </div>
 
-        <div class="testimonials-grid mt-4">
-            <?php foreach ($data['testimonials'] as $i => $t): $td = $t['data']; ?>
-            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 150; ?>">
-                <p>"<?php echo htmlspecialchars($td['quote']); ?>"</p>
-                <h4><?php echo htmlspecialchars($td['author']); ?></h4>
+        <div class="testimonials-slider-wrapper mt-4">
+            <button type="button" class="testimonial-nav-btn prev" id="testimonial-prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
+            <div class="testimonials-grid" id="testimonials-track">
+                <?php foreach ($data['testimonials'] as $i => $t): $td = $t['data']; ?>
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 150; ?>">
+                    <p>"<?php echo htmlspecialchars($td['quote']); ?>"</p>
+                    <h4><?php echo htmlspecialchars($td['author']); ?></h4>
+                </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
+            <button type="button" class="testimonial-nav-btn next" id="testimonial-next" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 </section>
@@ -191,11 +199,15 @@
         </div>
 
         <div class="gallery-grid mt-4">
-            <?php foreach ($data['gallery'] as $g): $gd = $g['data']; ?>
-            <div class="gallery-img">
-                <img src="<?php echo URLROOT . htmlspecialchars($gd['image']); ?>" alt="<?php echo htmlspecialchars($gd['alt']); ?>" style="width:100%; height:100%; object-fit:cover; border-radius:16px;">
+            <div class="gallery-track">
+                <?php foreach ([1, 2] as $pass): ?>
+                    <?php foreach ($data['gallery'] as $g): $gd = $g['data']; ?>
+                    <div class="gallery-img" <?php echo $pass === 1 ? '' : 'aria-hidden="true"'; ?>>
+                        <img src="<?php echo URLROOT . htmlspecialchars($gd['image']); ?>" alt="<?php echo $pass === 1 ? htmlspecialchars($gd['alt']) : ''; ?>" style="width:100%; height:100%; object-fit:cover; border-radius:16px;">
+                    </div>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
         </div>
     </div>
 </section>
@@ -404,6 +416,26 @@
                 resetInterval();
             });
 
+            // Swipe support -- the arrow buttons are hidden on mobile since no
+            // fixed position stays clear of the per-slide text, so touch users
+            // need another way to change slides manually.
+            const heroSlider = document.getElementById('hero-slider');
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            heroSlider.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            heroSlider.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                const delta = touchEndX - touchStartX;
+                if (Math.abs(delta) > 40) {
+                    if (delta < 0) nextSlide(); else prevSlide();
+                    resetInterval();
+                }
+            }, { passive: true });
+
             // Start auto slide
             resetInterval();
         }
@@ -437,6 +469,20 @@
                 }
             }, { threshold: 0.5 });
             statsObserver.observe(statsSection);
+        }
+
+        // Testimonials: arrow-controlled slider (one card per row on mobile)
+        const testimonialsTrack = document.getElementById('testimonials-track');
+        const testimonialPrev = document.getElementById('testimonial-prev');
+        const testimonialNext = document.getElementById('testimonial-next');
+
+        if (testimonialsTrack && testimonialPrev && testimonialNext) {
+            testimonialNext.addEventListener('click', () => {
+                testimonialsTrack.scrollBy({ left: testimonialsTrack.clientWidth, behavior: 'smooth' });
+            });
+            testimonialPrev.addEventListener('click', () => {
+                testimonialsTrack.scrollBy({ left: -testimonialsTrack.clientWidth, behavior: 'smooth' });
+            });
         }
     });
 </script>

@@ -1,4 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<!-- Preload the main banner image to improve LCP / UX -->
+<link rel="preload" as="image" href="<?php echo URLROOT; ?>/images/services_bg.jpg">
 
 <!-- 1. Page Banner -->
 <section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/services_bg.jpg'); color: #fff;">
@@ -19,7 +21,6 @@
         <a href="#meetings-events">Meetings &amp; Events</a>
         <a href="#virtual-day-pass">Virtual &amp; Day Pass</a>
         <a href="#whats-included">What's Included</a>
-        <a href="#how-to-join">How to Join</a>
         <a href="#faq">FAQ</a>
     </div>
 </nav>
@@ -212,35 +213,7 @@
     </div>
 </section>
 
-<!-- 6. How to Become a Workiify Member -->
-<section class="membership-steps-section section-padding" id="how-to-join">
-    <div class="container text-center">
-        <span class="category-eyebrow">Getting Started</span>
-        <h2 class="section-title">How to Become a Workiify Member</h2>
-        <div class="steps-grid mt-4">
-            <div class="step-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="step-number"><span>1</span></div>
-                <p>Enquire with us (form, WhatsApp or info@workiify.com)</p>
-            </div>
-            <div class="step-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="step-number"><span>2</span></div>
-                <p>Book an optional guided tour</p>
-            </div>
-            <div class="step-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="step-number"><span>3</span></div>
-                <p>We assess your needs and send a quotation</p>
-            </div>
-            <div class="step-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="step-number"><span>4</span></div>
-                <p>Approve the quotation, sign the agreement and pay the deposit with the first month's rental</p>
-            </div>
-            <div class="step-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="step-number"><span>5</span></div>
-                <p>Pack your laptop bag, grab your team, and move in</p>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <!-- 7. FAQ -->
 <section class="faq-section section-padding bg-alt" id="faq">
