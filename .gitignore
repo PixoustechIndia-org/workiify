@@ -1,0 +1,31 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+error_log
+
+# PHP / Composer (if added later)
+vendor/
+composer.phar
+
+# Local environment overrides (keep config.php itself tracked, but never commit
+# a machine-specific override of it)
+.env
+*.local.php
+
+# Raw/scratch video & photo processing tools and output -- large, unused by the
+# site, and not meant to be committed (mission_full.mp4 alone is ~360MB, well
+# over GitHub's 100MB file limit)
+/watermark_removed/
+/public/videos/
+ffmpeg.exe
+ffmpeg.zip
+yt-dlp.exe
