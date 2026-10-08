@@ -33,7 +33,7 @@
 
         <div class="service-feature-grid">
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo placeholder-img">Hot Desk Photo</div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/hot_desk_enhanced_1791353156473.jpg" alt="Hot Desk" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Plan: Weekly</span>
                     <h3>Hot Desk</h3>
@@ -48,7 +48,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="sfc-photo placeholder-img">Dedicated Desk Photo</div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/dedicated_desk_enhanced_1791353327423.jpg" alt="Dedicated Desk" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Plan: Yearly</span>
                     <h3>Dedicated Desk</h3>
@@ -62,8 +62,8 @@
                 </div>
             </div>
 
-            <div class="service-feature-card is-featured" data-aos="fade-up" data-aos-delay="200">
-                <div class="sfc-photo placeholder-img">Private Office Photo</div>
+            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/private_office_enhanced_1791353356099.jpg" alt="Private Office" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Plan: Yearly</span>
                     <h3>Private Office</h3>
@@ -89,7 +89,7 @@
 
         <div class="service-feature-grid">
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo placeholder-img">Meeting Room Photo</div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/meeting_room_enhanced_1791353342929.jpg" alt="Meeting Room" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Booking: Hourly (max 2 hrs)</span>
                     <h3>Meeting Room</h3>
@@ -104,7 +104,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="sfc-photo placeholder-img">Event Space Photo <em>[Client to provide]</em></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/event_spaces.png" alt="Event Spaces" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Custom setup</span>
                     <h3>Event Spaces</h3>
@@ -130,7 +130,7 @@
 
         <div class="service-feature-grid">
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo placeholder-img">Virtual Office Photo</div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-front-office-reception.png" alt="Virtual Office" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Business address</span>
                     <h3>Virtual Office</h3>
@@ -145,7 +145,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="sfc-photo placeholder-img">Day Pass Photo</div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-boardroom.png" alt="Day Pass - Conference Hall" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Conference hall only</span>
                     <h3>Day Pass</h3>
@@ -219,23 +219,23 @@
         <h2 class="section-title">How to Become a Workiify Member</h2>
         <div class="steps-grid mt-4">
             <div class="step-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="step-number">1</div>
+                <div class="step-number"><span>1</span></div>
                 <p>Enquire with us (form, WhatsApp or info@workiify.com)</p>
             </div>
             <div class="step-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="step-number">2</div>
+                <div class="step-number"><span>2</span></div>
                 <p>Book an optional guided tour</p>
             </div>
             <div class="step-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="step-number">3</div>
+                <div class="step-number"><span>3</span></div>
                 <p>We assess your needs and send a quotation</p>
             </div>
             <div class="step-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="step-number">4</div>
+                <div class="step-number"><span>4</span></div>
                 <p>Approve the quotation, sign the agreement and pay the deposit with the first month's rental</p>
             </div>
-            <div class="step-card is-final" data-aos="fade-up" data-aos-delay="400">
-                <div class="step-number">5</div>
+            <div class="step-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="step-number"><span>5</span></div>
                 <p>Pack your laptop bag, grab your team, and move in</p>
             </div>
         </div>
@@ -254,7 +254,21 @@
             </div>
 
             <div class="faq-accordion" data-aos="fade-left">
-                <div class="faq-item">
+                <!-- Search and Categories -->
+                <div class="faq-controls" style="grid-column: 1 / -1; margin-bottom: 1rem;">
+                    <div class="faq-search" style="margin-bottom: 1rem; position: relative;">
+                        <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                        <input type="text" id="faq-search-input" placeholder="Search for answers..." style="width: 100%; padding: 12px 20px 12px 45px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); font-size: 1rem; outline: none; transition: border-color 0.3s;">
+                    </div>
+                    <div class="faq-categories" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="faq-cat-btn active" data-filter="all">All</button>
+                        <button class="faq-cat-btn" data-filter="general">General</button>
+                        <button class="faq-cat-btn" data-filter="plans">Plans &amp; Spaces</button>
+                        <button class="faq-cat-btn" data-filter="events">Meetings &amp; Events</button>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
                     <button class="faq-question">
                         Is the space open 24/7?
                         <i class="fas fa-chevron-down"></i>
@@ -263,7 +277,7 @@
                         <p>Yes. Members have 24/7 access, with 24-hour security.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="general">
                     <button class="faq-question">
                         Is parking available?
                         <i class="fas fa-chevron-down"></i>
@@ -272,7 +286,7 @@
                         <p>Yes, limited car and bike parking is available. Please check availability when you enquire.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="general">
                     <button class="faq-question">
                         Can I visit before joining?
                         <i class="fas fa-chevron-down"></i>
@@ -281,7 +295,7 @@
                         <p>Yes. Book a free guided tour through the enquiry form or WhatsApp.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="events">
                     <button class="faq-question">
                         Can I book a meeting room for a few hours?
                         <i class="fas fa-chevron-down"></i>
@@ -290,7 +304,7 @@
                         <p>Yes. Meeting rooms are booked hourly – minimum 1 hour, maximum 2 hours per booking.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="plans">
                     <button class="faq-question">
                         What plans do you offer?
                         <i class="fas fa-chevron-down"></i>
@@ -299,7 +313,7 @@
                         <p>Hot Desk weekly, Dedicated Desk yearly, Private Office yearly, Meeting Room hourly, plus Day Pass and Virtual Office.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="plans">
                     <button class="faq-question">
                         Can I use Workiify for just one day?
                         <i class="fas fa-chevron-down"></i>
@@ -308,7 +322,7 @@
                         <p>Yes, with a Day Pass, available in the conference hall.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="plans">
                     <button class="faq-question">
                         Do you offer a virtual office or business address?
                         <i class="fas fa-chevron-down"></i>
@@ -317,7 +331,7 @@
                         <p>Yes. You get a business address, a dedicated phone number and call handling, with meeting room access at a small extra fee.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="events">
                     <button class="faq-question">
                         Can I host an event at Workiify?
                         <i class="fas fa-chevron-down"></i>
@@ -326,7 +340,7 @@
                         <p>Yes. We host workshops, seminars, training sessions and meetups. Contact us with your date and number of guests.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="plans">
                     <button class="faq-question">
                         Can the office layout be customised?
                         <i class="fas fa-chevron-down"></i>
@@ -335,7 +349,7 @@
                         <p>Yes. Each floor is 10,000 sq ft with up to 120 seats and can be customised to your team.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="plans">
                     <button class="faq-question">
                         What is included in an office rental?
                         <i class="fas fa-chevron-down"></i>
@@ -344,7 +358,7 @@
                         <p>Furnished office, Wi-Fi, reception services, kitchen, cleaning, meeting room hours, IT support and more – see "Office rental includes" above.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="general">
                     <button class="faq-question">
                         Why are prices not shown on the website?
                         <i class="fas fa-chevron-down"></i>
@@ -353,7 +367,7 @@
                         <p>Every requirement is different, so we send a quotation after understanding your needs.</p>
                     </div>
                 </div>
-                <div class="faq-item">
+                <div class="faq-item" data-category="general">
                     <button class="faq-question">
                         How do I become a member?
                         <i class="fas fa-chevron-down"></i>
@@ -362,6 +376,8 @@
                         <p>Enquire, book a tour, receive a quotation, sign the agreement, and move in.</p>
                     </div>
                 </div>
+                
+                <div id="faq-no-results" style="display: none; grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-muted);">No FAQs found matching your criteria.</div>
             </div>
         </div>
     </div>
