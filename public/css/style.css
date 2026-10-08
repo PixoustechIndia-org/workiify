@@ -201,26 +201,12 @@ img {
     height: var(--header-height);
     display: flex;
     align-items: center;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
 }
 
-.site-header.scrolled {
-    top: 15px;
-    width: 95%;
-    max-width: var(--max-content-width);
-    margin: 0 auto;
-    border-radius: 40px;
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="dark"] .site-header.scrolled {
-    background-color: rgba(15, 23, 42, 0.85);
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+.site-header.header-hidden {
+    transform: translateY(-100%);
 }
 
 .header-container {
@@ -238,8 +224,13 @@ img {
 }
 
 .brand-icon img {
-    height: 48px; /* Slightly larger to match text */
-    width: auto;
+    /* The source SVG is a tall icon+wordmark lockup; crop to just the icon
+       glyph since the "WORKIIFY" wordmark is already set in HTML
+       right next to it -- showing both reads as a duplicated, ghosted logo. */
+    height: 60px;
+    width: 64px;
+    object-fit: cover;
+    object-position: top;
     display: block;
 }
 
@@ -477,9 +468,20 @@ img {
    Minimal single-bar footer
    ========================================================================== */
 .site-footer-mini {
-    background-color: var(--primary-color);
+    background:
+      radial-gradient(
+        circle at 85% 15%,
+        rgba(55, 130, 255, 0.25),
+        transparent 32%
+      ),
+      linear-gradient(
+        135deg,
+        #0B1F3A 0%,
+        #123B72 55%,
+        #1769E0 100%
+      );
     border-top: none;
-    padding: 20px 0;
+    padding: 30px 0 0 0;
 }
 
 .footer-mini-inner {
@@ -508,14 +510,10 @@ img {
 }
 
 .footer-mini-logo .brand-icon img {
-    height: 100%;
-    width: auto;
-}
-
-.footer-mini-logo .brand-icon img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: top;
     display: block;
 }
 
@@ -530,10 +528,8 @@ img {
     letter-spacing: 1px;
     color: #fff;
     text-transform: uppercase;
-    background: linear-gradient(120deg, #ffffff 0%, #ffffff 40%, #60a5fa 50%, #ffffff 60%, #ffffff 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    background: none;
+    -webkit-text-fill-color: #fff;
 }
 
 .footer-mini-logo .brand-text {
@@ -561,13 +557,13 @@ img {
 
 .footer-mini-nav a {
     font-size: 0.82rem;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255, 255, 255, 0.72);
     transition: color 0.2s ease;
     white-space: nowrap;
 }
 
 .footer-mini-nav a:hover {
-    color: #60a5fa;
+    color: #FFFFFF;
 }
 
 .footer-mini-bottom {
@@ -575,10 +571,18 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding-top: 15px;
-    margin-top: 15px;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 15px 0;
+    margin-top: 20px;
+    position: relative;
+    border-top: none;
     flex-wrap: wrap;
+}
+.footer-mini-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -50vw; right: -50vw; bottom: 0;
+    background: rgba(0, 0, 0, 0.12);
+    z-index: -1;
 }
 
 .footer-address {
@@ -586,7 +590,7 @@ img {
     align-items: flex-start;
     gap: 0.5rem;
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255, 255, 255, 0.55);
     max-width: 600px;
     line-height: 1.4;
 }
@@ -621,7 +625,7 @@ img {
 
 .footer-mini-copy {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255, 255, 255, 0.55);
     white-space: nowrap;
 }
 
@@ -1196,6 +1200,29 @@ img {
 .testimonial-card p { font-style: italic; color: var(--text-muted); margin-bottom: 1rem; }
 .testimonial-card h4 { font-size: 1rem; color: var(--text-main); margin: 0; }
 
+.testimonials-slider-wrapper { position: relative; }
+
+.testimonial-nav-btn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+.testimonial-nav-btn:hover { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+.testimonial-nav-btn.prev { left: -6px; }
+.testimonial-nav-btn.next { right: -6px; }
+
 /* Gallery */
 .gallery-header {
     display: flex;
@@ -1232,43 +1259,46 @@ img {
 }
 .btn-pill { border-radius: 999px; padding: 0.75rem 1.75rem; }
 
+/* Desktop: an auto-sliding strip of evenly-sized tiles instead of a fixed
+   masonry grid. The track's image set is rendered twice in the markup, and
+   sliding it exactly -50% loops seamlessly since the second half is an
+   identical copy of the first. */
 .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: 160px;
-    gap: 1rem;
+    overflow: hidden;
+    width: 100%;
 }
+
+.gallery-track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    animation: galleryScroll 36s linear infinite;
+}
+
+.gallery-grid:hover .gallery-track {
+    animation-play-state: paused;
+}
+
+@keyframes galleryScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-50% - 0.5rem)); }
+}
+
 .gallery-img {
-    min-height: 0;
-    height: 100%;
+    flex: 0 0 300px;
+    height: 220px;
     border-radius: 16px;
     overflow: hidden;
-    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     position: relative;
-    will-change: transform, opacity;
-    opacity: 0;
-    transform: translateY(50px) scale(0.95);
-}
-
-.gallery-img.is-visible {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none;
 }
 
-.gallery-img.is-visible:hover {
-    transform: scale(1.03) translateY(-8px);
+.gallery-img:hover {
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     z-index: 10;
 }
-
-/* Staggered transition delays to create a perfectly "random" pop-in sequence */
-.gallery-grid .gallery-img:nth-child(1) { grid-column: 1; grid-row: 1 / span 2; transition-delay: 0s, 0s, 0s; }
-.gallery-grid .gallery-img:nth-child(2) { grid-column: 2; grid-row: 1; transition-delay: 0.2s, 0.2s, 0s; }
-.gallery-grid .gallery-img:nth-child(3) { grid-column: 3; grid-row: 1; transition-delay: 0.5s, 0.5s, 0s; }
-.gallery-grid .gallery-img:nth-child(4) { grid-column: 4; grid-row: 1; transition-delay: 0.3s, 0.3s, 0s; }
-.gallery-grid .gallery-img:nth-child(5) { grid-column: 2; grid-row: 2 / span 2; transition-delay: 0.1s, 0.1s, 0s; }
-.gallery-grid .gallery-img:nth-child(6) { grid-column: 3; grid-row: 2; transition-delay: 0.4s, 0.4s, 0s; }
 
 /* Gentle, non-synchronized idle drift so the tiles never feel frozen in place.
    Lives on the <img> itself (not the tile) so it layers on top of the tile's
@@ -1578,6 +1608,7 @@ img {
     overflow: hidden;
     padding: 120px 0;
     color: #fff;
+    background-color: #0B1F3A; /* Fallback color for faster UX */
     background: var(--banner-img) center/cover no-repeat;
 }
 
@@ -1925,6 +1956,21 @@ img {
     z-index: 40;
     background: var(--bg-main);
     border-bottom: 1px solid var(--border-color);
+    transition: top 0.3s ease;
+}
+
+body.header-hidden .services-subnav {
+    top: 0;
+}
+
+/* On narrow screens this nav scrolls horizontally with no scrollbar visible --
+   fade the right edge so it reads as "more tabs this way" rather than a hard,
+   unexplained cutoff. */
+@media screen and (max-width: 767px) {
+    .services-subnav {
+        mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent 100%);
+    }
 }
 
 /* Offset anchor-jump targets so they land below the sticky header + subnav */
@@ -2168,17 +2214,27 @@ img {
         font-size: 2.5rem;
     }
 
-    .gallery-grid {
+    /* Below desktop width, fall back to a static uniform grid of just the
+       first (non-duplicated) set of photos -- the sliding strip is a desktop
+       flourish, not something to chase on a touch screen. */
+    .gallery-track {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: 200px;
+        width: auto;
+        animation: none;
+        transform: none;
+        gap: 1rem;
     }
 
-    .gallery-grid .gallery-img:nth-child(1) { grid-column: 1; grid-row: 1 / span 2; }
-    .gallery-grid .gallery-img:nth-child(2) { grid-column: 2; grid-row: 1; }
-    .gallery-grid .gallery-img:nth-child(3) { grid-column: 2; grid-row: 2; }
-    .gallery-grid .gallery-img:nth-child(4) { grid-column: 1; grid-row: 3; }
-    .gallery-grid .gallery-img:nth-child(5) { grid-column: 2; grid-row: 3 / span 2; }
-    .gallery-grid .gallery-img:nth-child(6) { grid-column: 1; grid-row: 4; }
+    .gallery-img {
+        flex: none;
+        height: 100%;
+    }
+
+    .gallery-img[aria-hidden="true"] {
+        display: none;
+    }
 }
 
 /* Mobile: up to 767px (Small Mobile/Mobile) */
@@ -2189,6 +2245,76 @@ img {
 
     .footer-grid {
         grid-template-columns: 1fr;
+    }
+
+    .footer-mini-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+        row-gap: 1.25rem;
+    }
+
+    /* Amenities: the desktop layout sizes each card at 25% (4 per row) with a
+       160px floor, so on a phone-width screen two cards no longer fit side by
+       side and everything stacks into one long single-file column. Switch to
+       a 3-column grid with compact spacing instead, sized to the content. */
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.7rem;
+        max-width: 100%;
+    }
+
+    .amenity-item {
+        width: auto;
+        min-width: 0;
+        min-height: 118px;
+        padding: 1rem 0.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .amenity-icon-wrapper {
+        margin-bottom: 0.6rem;
+    }
+
+    .amenity-item i {
+        font-size: 1.3rem;
+    }
+
+    .amenity-item p {
+        font-size: 0.78rem;
+        line-height: 1.3;
+    }
+
+    /* Trim the stacked padding at the Services -> Amenities seam: the services
+       card's own bottom padding, the section's bottom padding, and the next
+       section's top padding were all adding up on top of each other. */
+    .services-overview {
+        padding-bottom: 1.5rem;
+    }
+
+    .amenities-section {
+        padding: 2.25rem 0;
+    }
+
+    .amenity-context {
+        font-size: 0.65rem;
+        height: 14px;
+    }
+
+    .footer-mini-nav {
+        flex: 0 0 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 0.5rem;
+        order: 3;
+    }
+
+    .footer-mini-socials {
+        order: 2;
     }
 
     .tour-actions {
@@ -2218,12 +2344,59 @@ img {
         font-size: 2rem;
     }
 
-    .gallery-grid {
-        grid-template-columns: 1fr;
-        grid-auto-rows: 220px;
+    /* Testimonials (home page only): one card per row with arrow buttons to
+       step through them, instead of all 3 cards stacked full-width. */
+    .home-testimonials .testimonials-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        gap: var(--spacing-md);
     }
 
-    .gallery-grid .gallery-img:nth-child(n) { grid-column: 1; grid-row: auto; }
+    .home-testimonials .testimonials-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .home-testimonials .testimonial-card {
+        flex: 0 0 100%;
+        scroll-snap-align: center;
+    }
+
+    .home-testimonials .testimonial-nav-btn {
+        display: flex;
+        top: auto;
+        bottom: -40px;
+        transform: none;
+    }
+    .home-testimonials .testimonial-nav-btn.prev {
+        left: calc(50% - 45px);
+    }
+    .home-testimonials .testimonial-nav-btn.next {
+        left: calc(50% + 5px);
+        right: auto;
+    }
+    .testimonials-slider-wrapper {
+        margin-bottom: 50px;
+    }
+
+    /* Same auto-sliding strip as desktop, just with smaller tiles sized so
+       roughly one-and-a-bit are visible at once on a phone-width screen. */
+    .gallery-track {
+        display: flex;
+        width: max-content;
+        animation: galleryScroll 28s linear infinite;
+        gap: 0.6rem;
+    }
+
+    .gallery-img {
+        flex: 0 0 240px;
+        height: 170px;
+    }
+
+    .gallery-img[aria-hidden="true"] {
+        display: block;
+    }
 
     .section-title {
         font-size: 2rem;
@@ -2241,12 +2414,121 @@ img {
         font-size: 1.05rem;
     }
 
+    /* Keep both hero buttons on one row on mobile. Wrapping them onto two
+       lines makes the hero content taller than the hero section's fixed
+       height can hold, so the second button (WhatsApp) was getting clipped
+       off by the section's overflow:hidden instead of just reflowing. */
+    .hero-buttons {
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-buttons .btn {
+        padding: 0.65rem 0.9rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    /* The hero section has a fixed min-height (it hosts absolutely-positioned
+       cross-fading slides, so it can't just be height:auto) and the heading/
+       paragraph wrap onto more lines the narrower the screen gets. Give it
+       more room and shift the content up less aggressively so the buttons
+       and stats panel reliably fit instead of being clipped by overflow:hidden. */
+    .page-banner {
+        padding: 60px 0;
+    }
+
+    .hero-section {
+        min-height: 700px;
+        height: 100vh;
+    }
+
+    .hero-content {
+        margin-top: -220px;
+    }
+
+    /* On mobile the heading/paragraph wrap onto several lines and their total
+       height varies per slide, so no single fixed arrow position stays clear
+       of the text on every slide. The carousel already auto-rotates every 7s
+       and there's no swipe gesture to replace these with, so hide them here
+       rather than have them sit on top of the text. */
+    .slider-btn {
+        display: none;
+    }
+
     .hero-counters-wrapper {
-        bottom: 20px;
+        bottom: 110px;
     }
 
     .counters-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-sm);
+        padding: 1rem;
+    }
+    
+    .icon-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+
+    /* Services page cards: on mobile, show two compact cards per row instead
+       of one full card per row. Each card only has room for a photo, plan
+       badge and title at this width, so the description and checklist (still
+       shown in full on the dedicated service page) are hidden here, and the
+       whole card becomes the tap target via the existing "Enquire about X"
+       link stretched to cover it -- no need to show that link's text twice. */
+    .service-feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .service-feature-card {
+        position: relative;
+    }
+
+    .service-feature-card .sfc-photo,
+    .service-feature-card .sfc-photo img {
+        height: 100px !important;
+        min-height: 100px;
+    }
+
+    .service-feature-card .sfc-body {
+        padding: 0.75rem;
+    }
+
+    .service-feature-card .plan-badge {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.68rem;
+    }
+
+    .service-feature-card h3 {
+        font-size: 0.95rem;
+        margin: 0.5rem 0 0;
+        line-height: 1.3;
+    }
+
+    .service-feature-card > .sfc-body > p,
+    .service-feature-card .feature-list {
+        display: none;
+    }
+
+    /* Hide the link's text (the description already explains the plan) but
+       keep its arrow icon as a small "tap for details" affordance. */
+    .service-feature-card .sfc-cta {
+        font-size: 0;
+        margin-top: 0.4rem;
+    }
+
+    .service-feature-card .sfc-cta i {
+        font-size: 0.8rem;
+    }
+
+    .service-feature-card .sfc-cta::before {
+        content: '';
+        position: absolute;
+        inset: 0;
     }
 
     .counter-card h3 {
@@ -2267,6 +2549,39 @@ img {
 
     .grid-fixed-4 {
         grid-template-columns: 1fr !important;
+    }
+
+    /* Home page "Our Services" cards: show 2 per row instead of 1, following
+       the same simplified-card pattern used on the /services page -- image,
+       title and a small arrow, with the longer description hidden since the
+       whole card already links through to that service's full details. */
+    .services-grid.grid-fixed-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem;
+    }
+
+    .service-card .service-img,
+    .service-card img.service-img {
+        height: 90px !important;
+    }
+
+    .service-content {
+        padding: 0.75rem;
+    }
+
+    .service-content h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .service-content p {
+        display: none;
+    }
+
+    .service-arrow {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
     }
 }
 

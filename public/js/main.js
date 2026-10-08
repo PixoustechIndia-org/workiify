@@ -1,14 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Floating Header on Scroll ---
+    // --- Hide Header on Scroll Down, Reveal on Scroll Up ---
     const siteHeader = document.querySelector('.site-header');
     if (siteHeader) {
+        let lastScrollY = window.scrollY;
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                siteHeader.classList.add('scrolled');
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                siteHeader.classList.add('header-hidden');
+                document.body.classList.add('header-hidden');
             } else {
-                siteHeader.classList.remove('scrolled');
+                siteHeader.classList.remove('header-hidden');
+                document.body.classList.remove('header-hidden');
             }
+            lastScrollY = currentScrollY;
         });
     }
     
