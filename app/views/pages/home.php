@@ -98,7 +98,7 @@ function premiumHighlight($text) {
 
 <!-- 3. Our Services -->
 <section class="services-overview section-padding">
-    <div class="container" style="background: #FFF5F3; border-radius: 0; padding: 5rem 3rem; text-align: left;">
+    <div class="container services-container-animated" style="border-radius: 0; padding: 5rem 3rem; text-align: left;" data-aos="fade-in">
         <div class="services-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 2rem;">
             <div class="services-header-left" style="max-width: 600px;">
                 <span class="category-eyebrow" style="margin-left: 0; display: inline-block; position: relative;">
@@ -137,7 +137,9 @@ function premiumHighlight($text) {
                 </a>
                 <?php endforeach; ?>
             </div>
-            <a href="<?php echo URLROOT . htmlspecialchars($data['f']['services_cta_link']); ?>" class="btn btn-primary mt-4"><?php echo htmlspecialchars($data['f']['services_cta_text']); ?></a>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="<?php echo URLROOT . htmlspecialchars($data['f']['services_cta_link']); ?>" class="btn btn-primary"><?php echo htmlspecialchars($data['f']['services_cta_text']); ?></a>
+            </div>
     </div>
 </section>
 
@@ -170,8 +172,8 @@ function premiumHighlight($text) {
 <!-- 5. Welcome to Workiify -->
 <section class="welcome-section section-padding" style="background-color: #ffffff;">
     <div class="container split-layout max-w-1100" style="align-items: center; gap: 4rem;">
-        <div class="split-img" data-aos="fade-right" data-aos-duration="900">
-            <img src="<?php echo URLROOT; ?>/images/welcome-office.png" alt="Welcome to Workiify" loading="lazy" decoding="async" width="800" height="600" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 4/3;">
+        <div class="split-img premium-img-wrapper" data-aos="fade-right" data-aos-duration="900">
+            <img src="<?php echo URLROOT; ?>/images/welcome-office.png" alt="Welcome to Workiify" loading="lazy" decoding="async" width="800" height="600" class="premium-img">
         </div>
         <div class="split-content" data-aos="fade-left" data-aos-duration="900">
             <h2 class="section-title"><?php echo premiumHighlight($data['f']['welcome_heading']); ?></h2>
@@ -192,8 +194,8 @@ function premiumHighlight($text) {
                 <?php endforeach; ?>
             </ul>
         </div>
-        <div class="split-img" data-aos="fade-left" data-aos-duration="900">
-            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['whychoose_image']); ?>" alt="Why Choose Workiify" loading="lazy" decoding="async" width="800" height="600" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 4/3;">
+        <div class="split-img premium-img-wrapper" data-aos="fade-left" data-aos-duration="900">
+            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['whychoose_image']); ?>" alt="Why Choose Workiify" loading="lazy" decoding="async" width="800" height="600" class="premium-img">
         </div>
     </div>
 </section>

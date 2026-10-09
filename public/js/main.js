@@ -1,21 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Hide Header on Scroll Down, Reveal on Scroll Up ---
-    const siteHeader = document.querySelector('.site-header');
-    if (siteHeader) {
-        let lastScrollY = window.scrollY;
-        window.addEventListener('scroll', () => {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                siteHeader.classList.add('header-hidden');
-                document.body.classList.add('header-hidden');
-            } else {
-                siteHeader.classList.remove('header-hidden');
-                document.body.classList.remove('header-hidden');
-            }
-            lastScrollY = currentScrollY;
-        });
-    }
+    // --- Header is permanently sticky (scroll-hide logic removed) ---
     
     // --- Mobile Menu Toggle ---
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
