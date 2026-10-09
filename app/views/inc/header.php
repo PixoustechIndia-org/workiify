@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!-- Basic SEO tags -->
     <title><?php echo isset($data['title']) ? htmlspecialchars($data['title']) : SITENAME; ?></title>
-    <meta name="description" content="<?php echo isset($data['description']) ? htmlspecialchars($data['description']) : 'Premium Coworking Space in Coimbatore'; ?>">
+    <meta name="description" content="<?php echo isset($data['description']) ? htmlspecialchars($data['description']) : 'Premium Co Working Space'; ?>">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,28 +50,37 @@
                     if ($rel_path == '' || $rel_path == '/index.php') $rel_path = '/';
                 ?>
                 <ul class="nav-links">
-                    <li><a href="<?php echo URLROOT; ?>/" class="<?php echo ($rel_path == '/') ? 'active' : ''; ?>">Home</a></li>
-                    <li><a href="<?php echo URLROOT; ?>/about-us" class="<?php echo ($rel_path == '/about-us') ? 'active' : ''; ?>">About Us</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/" class="<?php echo ($rel_path == '/') ? 'active' : ''; ?>"><i class="fas fa-house nav-icon"></i>Home</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/about-us" class="<?php echo ($rel_path == '/about-us') ? 'active' : ''; ?>"><i class="fas fa-circle-info nav-icon"></i>About Us</a></li>
                     <li class="has-dropdown">
-                        <a href="<?php echo URLROOT; ?>/services" class="<?php echo (strpos($rel_path, '/services') === 0) ? 'active' : ''; ?>">
-                            Services <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="<?php echo URLROOT; ?>/services/hot-desk">Hot Desk</a></li>
-                            <li><a href="<?php echo URLROOT; ?>/services/dedicated-desk">Dedicated Desk</a></li>
-                            <li><a href="<?php echo URLROOT; ?>/services/private-office">Private Office</a></li>
-                            <li><a href="<?php echo URLROOT; ?>/services/meeting-room">Meeting Room</a></li>
-                            <li><a href="<?php echo URLROOT; ?>/services/event-spaces">Event Spaces</a></li>
-                        </ul>
+                        <div class="nav-link-row">
+                            <a href="<?php echo URLROOT; ?>/services" class="<?php echo (strpos($rel_path, '/services') === 0) ? 'active' : ''; ?>">
+                                <i class="fas fa-briefcase nav-icon"></i>Services <i class="fas fa-chevron-down dropdown-icon-desktop"></i>
+                            </a>
+                            <button type="button" class="dropdown-toggle" aria-label="Toggle Services submenu" aria-expanded="false">
+                                <i class="fas fa-chevron-down dropdown-icon"></i>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu-wrap">
+                            <ul class="dropdown-menu">
+                                <li><a href="<?php echo URLROOT; ?>/services/hot-desk"><i class="fas fa-chair"></i>Hot Desk</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/services/dedicated-desk"><i class="fas fa-desktop"></i>Dedicated Desk</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/services/private-office"><i class="fas fa-door-closed"></i>Private Office</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/services/meeting-room"><i class="fas fa-users"></i>Meeting Room</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/services/event-spaces"><i class="fas fa-calendar-days"></i>Event Spaces</a></li>
+                                <li><a href="<?php echo URLROOT; ?>/services/coworking-space-coimbatore"><i class="fas fa-city"></i>Co Working Space</a></li>
+                            </ul>
+                        </div>
                     </li>
-                    <li><a href="<?php echo URLROOT; ?>/gallery" class="<?php echo ($rel_path == '/gallery') ? 'active' : ''; ?>">Gallery</a></li>
-                    <li><a href="<?php echo URLROOT; ?>/contact-us" class="<?php echo ($rel_path == '/contact-us') ? 'active' : ''; ?>">Contact Us</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/gallery" class="<?php echo ($rel_path == '/gallery') ? 'active' : ''; ?>"><i class="fas fa-images nav-icon"></i>Gallery</a></li>
+                    <li><a href="<?php echo URLROOT; ?>/contact-us" class="<?php echo ($rel_path == '/contact-us') ? 'active' : ''; ?>"><i class="fas fa-envelope nav-icon"></i>Contact Us</a></li>
                 </ul>
                 
                 <div class="header-actions">
                     <a href="<?php echo URLROOT; ?>/contact-us#enquiry" class="btn btn-primary">Enquire Now</a>
                 </div>
             </nav>
+            <div class="nav-backdrop"></div>
         </div>
     </header>
     

@@ -1,4 +1,18 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<?php
+function premiumHighlight($text) {
+    $text = htmlspecialchars($text);
+    if (strpos($text, '*') !== false) {
+        return preg_replace('/\*(.*?)\*/', '<span style="color: var(--primary-color); font-weight: inherit;">$1</span>', $text);
+    }
+    $words = explode(' ', $text);
+    if (count($words) > 1) {
+        $lastWord = array_pop($words);
+        return implode(' ', $words) . ' <span style="color: var(--primary-color); font-weight: inherit;">' . $lastWord . '</span>';
+    }
+    return $text;
+}
+?>
 <!-- Preload the first hero slide image for LCP / UX -->
 <?php if (!empty($data['hero'][0])): ?>
 <link rel="preload" as="image" href="<?php echo URLROOT . htmlspecialchars($data['hero'][0]['data']['bg_image']); ?>">
@@ -36,14 +50,46 @@
     <!-- Hero Counters (Inside Hero) -->
     <div class="hero-counters-wrapper" id="stats">
         <div class="container">
+            <?php
+                // Access / Floors / Per-floor sq ft / Seats, always in this order
+                // (see Hero Counters in the CMS -- locked to exactly these 4).
+                $access = $data['counters'][0]['data'] ?? ['value' => '', 'suffix' => '', 'label' => ''];
+                $floors = $data['counters'][1]['data'] ?? ['value' => '', 'suffix' => '', 'label' => ''];
+                $sqft = $data['counters'][2]['data'] ?? ['value' => '', 'suffix' => '', 'label' => ''];
+                $seats = $data['counters'][3]['data'] ?? ['value' => '', 'suffix' => '', 'label' => ''];
+            ?>
             <div class="counters-grid">
-                <?php foreach ($data['counters'] as $c): $cd = $c['data']; ?>
+                <?php if (!empty($data['f']['contact_phone'])): ?>
+                <div class="counter-card counter-card-phone">
+                    <h3>
+                        <a href="tel:<?php echo htmlspecialchars($data['f']['contact_phone_link']); ?>">
+                            <i class="fas fa-phone"></i> <?php echo htmlspecialchars($data['f']['contact_phone']); ?>
+                        </a>
+                    </h3>
+                    <p>Call Us</p>
+                </div>
+                <?php endif; ?>
                 <div class="counter-card">
                     <div class="counter-line"></div>
-                    <h3><span class="odometer" data-target="<?php echo htmlspecialchars($cd['value']); ?>">0</span><?php echo htmlspecialchars($cd['suffix']); ?></h3>
-                    <p><?php echo htmlspecialchars($cd['label']); ?></p>
+                    <h3><span class="odometer" data-target="<?php echo htmlspecialchars($access['value']); ?>">0</span><?php echo htmlspecialchars($access['suffix']); ?></h3>
+                    <p><?php echo htmlspecialchars($access['label']); ?></p>
                 </div>
-                <?php endforeach; ?>
+                <div class="counter-card counter-card-combo">
+                    <div class="counter-combo-row">
+                        <span class="counter-combo-value"><span class="odometer" data-target="<?php echo htmlspecialchars($floors['value']); ?>">0</span><?php echo htmlspecialchars($floors['suffix']); ?></span>
+                        <span class="counter-combo-label"><?php echo htmlspecialchars($floors['label']); ?></span>
+                    </div>
+                    <div class="counter-combo-divider"></div>
+                    <div class="counter-combo-row">
+                        <span class="counter-combo-value"><span class="odometer" data-target="<?php echo htmlspecialchars($sqft['value']); ?>">0</span><?php echo htmlspecialchars($sqft['suffix']); ?></span>
+                        <span class="counter-combo-label"><?php echo htmlspecialchars($sqft['label']); ?></span>
+                    </div>
+                </div>
+                <div class="counter-card">
+                    <div class="counter-line"></div>
+                    <h3><span class="odometer" data-target="<?php echo htmlspecialchars($seats['value']); ?>">0</span><?php echo htmlspecialchars($seats['suffix']); ?></h3>
+                    <p><?php echo htmlspecialchars($seats['label']); ?></p>
+                </div>
             </div>
             <p class="counters-note">Fully customisable workspaces</p>
         </div>
@@ -52,23 +98,46 @@
 
 <!-- 3. Our Services -->
 <section class="services-overview section-padding">
-    <div class="container text-center">
-        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['services_heading']); ?></h2>
-        <p class="section-subtitle"><?php echo htmlspecialchars($data['f']['services_subtitle']); ?></p>
-
-        <div class="services-grid grid-fixed-4">
-            <?php foreach ($data['services'] as $i => $svc): $s = $svc['data']; ?>
-            <a href="<?php echo URLROOT . htmlspecialchars($s['link']); ?>" class="service-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
-                <img src="<?php echo URLROOT . htmlspecialchars($s['image']); ?>" alt="<?php echo htmlspecialchars($s['title']); ?>" class="service-img" style="object-fit: cover; width: 100%; height: 200px;">
-                <div class="service-content">
-                    <h3><?php echo htmlspecialchars($s['title']); ?></h3>
-                    <p><?php echo htmlspecialchars($s['description']); ?></p>
-                    <div class="service-arrow"><i class="fas fa-arrow-right"></i></div>
+    <div class="container" style="background: #FFF5F3; border-radius: 0; padding: 5rem 3rem; text-align: left;">
+        <div class="services-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 2rem;">
+            <div class="services-header-left" style="max-width: 600px;">
+                <span class="category-eyebrow" style="margin-left: 0; display: inline-block; position: relative;">
+                    <span style="display: inline-block; width: 20px; height: 2px; background: var(--services-accent); margin-right: 10px; vertical-align: middle;"></span>
+                    What We Offer
+                </span>
+                <h2 class="section-title" style="margin-top: 1rem; margin-bottom: 0; text-align: left; font-size: 2.5rem; line-height: 1.2;"><?php echo premiumHighlight($data['f']['services_heading']); ?></h2>
+                <p class="section-subtitle" style="margin-top: 1rem; margin-bottom: 0; text-align: left;"><?php echo htmlspecialchars($data['f']['services_subtitle']); ?></p>
+            </div>
+            <!-- Optional badge matching the mockup -->
+            <div class="services-header-right" style="display: inline-flex; align-items: center; gap: 0.65rem; white-space: nowrap; flex-shrink: 0;">
+                <div class="services-badge-icon" style="width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: #FF6B4A; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(255, 107, 74, 0.25);">
+                    <i class="fas fa-gem"></i>
                 </div>
-            </a>
-            <?php endforeach; ?>
+                <div class="services-badge-text" style="color: var(--services-heading); font-weight: 600; font-size: 1rem; white-space: nowrap; line-height: 1;">
+                    Premium Workspaces
+                </div>
+            </div>
         </div>
-        <a href="<?php echo URLROOT . htmlspecialchars($data['f']['services_cta_link']); ?>" class="btn btn-primary mt-4"><?php echo htmlspecialchars($data['f']['services_cta_text']); ?></a>
+
+            <div class="services-grid grid-fixed-4">
+                <?php foreach ($data['services'] as $i => $svc): $s = $svc['data']; ?>
+                <a href="<?php echo URLROOT . htmlspecialchars($s['link']); ?>" class="service-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                    <div class="service-img-wrap">
+                        <img src="<?php echo URLROOT . htmlspecialchars($s['image']); ?>" alt="<?php echo htmlspecialchars($s['title']); ?>" class="service-img" loading="lazy" decoding="async" width="400" height="200" style="object-fit: cover; width: 100%; height: 200px;">
+                    </div>
+                    <div class="service-content">
+                        <h3><?php echo htmlspecialchars($s['title']); ?></h3>
+                        <p><?php echo htmlspecialchars($s['description']); ?></p>
+                        <div class="service-link-wrapper">
+                            <div class="service-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <a href="<?php echo URLROOT . htmlspecialchars($data['f']['services_cta_link']); ?>" class="btn btn-primary mt-4"><?php echo htmlspecialchars($data['f']['services_cta_text']); ?></a>
     </div>
 </section>
 
@@ -83,7 +152,7 @@
     <canvas id="amenities-network" class="amenities-network-canvas"></canvas>
 
     <div class="container text-center position-relative z-10">
-        <h2 class="section-title amenities-title" style="color: var(--text-main);"><?php echo htmlspecialchars($data['f']['amenities_heading']); ?></h2>
+        <h2 class="section-title amenities-title" style="color: var(--text-main);"><?php echo premiumHighlight($data['f']['amenities_heading']); ?></h2>
         <p class="section-subtitle amenities-subtitle" style="color: var(--text-muted);"><?php echo htmlspecialchars($data['f']['amenities_subtitle']); ?></p>
 
         <div class="amenities-grid">
@@ -102,10 +171,10 @@
 <section class="welcome-section section-padding" style="background-color: #ffffff;">
     <div class="container split-layout max-w-1100" style="align-items: center; gap: 4rem;">
         <div class="split-img" data-aos="fade-right" data-aos-duration="900">
-            <img src="<?php echo URLROOT; ?>/images/welcome-office.png" alt="Welcome to Workiify" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 4/3;">
+            <img src="<?php echo URLROOT; ?>/images/welcome-office.png" alt="Welcome to Workiify" loading="lazy" decoding="async" width="800" height="600" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 4/3;">
         </div>
         <div class="split-content" data-aos="fade-left" data-aos-duration="900">
-            <h2 class="section-title"><?php echo htmlspecialchars($data['f']['welcome_heading']); ?></h2>
+            <h2 class="section-title"><?php echo premiumHighlight($data['f']['welcome_heading']); ?></h2>
             <p><?php echo htmlspecialchars($data['f']['welcome_text']); ?></p>
             <a href="<?php echo URLROOT . htmlspecialchars($data['f']['welcome_btn_link']); ?>" class="btn btn-primary mt-4"><?php echo htmlspecialchars($data['f']['welcome_btn_text']); ?></a>
         </div>
@@ -116,15 +185,15 @@
 <section class="why-choose-section section-padding bg-alt">
     <div class="container split-layout reverse max-w-1100" style="align-items: center; gap: 4rem;">
         <div class="split-content" data-aos="fade-right" data-aos-duration="900">
-            <h2 class="section-title"><?php echo htmlspecialchars($data['f']['whychoose_heading']); ?></h2>
+            <h2 class="section-title"><?php echo premiumHighlight($data['f']['whychoose_heading']); ?></h2>
             <ul class="feature-list">
-                <?php foreach ($data['whyChoosePoints'] as $p): ?>
-                <li><i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($p['data']['text']); ?></li>
+                <?php foreach ($data['whyChoosePoints'] as $i => $p): ?>
+                <li data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>"><i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($p['data']['text']); ?></li>
                 <?php endforeach; ?>
             </ul>
         </div>
         <div class="split-img" data-aos="fade-left" data-aos-duration="900">
-            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['whychoose_image']); ?>" alt="Why Choose Workiify" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 4/3;">
+            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['whychoose_image']); ?>" alt="Why Choose Workiify" loading="lazy" decoding="async" width="800" height="600" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 4/3;">
         </div>
     </div>
 </section>
@@ -133,7 +202,7 @@
 <section class="trusted-section section-padding">
     <div class="container">
         <div class="text-center">
-            <h2 class="section-title" data-aos="fade-up"><?php echo htmlspecialchars($data['f']['audience_heading']); ?></h2>
+            <h2 class="section-title" data-aos="fade-up"><?php echo premiumHighlight($data['f']['audience_heading']); ?></h2>
             <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100"><?php echo htmlspecialchars($data['f']['audience_subtitle']); ?></p>
         </div>
         <div class="teams-grid">
@@ -154,7 +223,6 @@
                 <div class="team-tile-icon"><i class="fas <?php echo htmlspecialchars($t['icon']); ?>"></i></div>
                 <h3><?php echo htmlspecialchars($t['title']); ?></h3>
                 <p><?php echo htmlspecialchars($t['description']); ?></p>
-                <a href="#" class="team-tile-link">Explore <i class="fas fa-arrow-right"></i></a>
             </div>
             <?php endforeach; ?>
         </div>
@@ -164,7 +232,7 @@
 <!-- 8. Testimonials -->
 <section class="testimonials-section section-padding bg-alt home-testimonials">
     <div class="container text-center max-w-1150">
-        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['testimonials_heading']); ?></h2>
+        <h2 class="section-title"><?php echo premiumHighlight($data['f']['testimonials_heading']); ?></h2>
         <div class="google-rating">
             <i class="fab fa-google"></i> <span><?php echo htmlspecialchars($data['f']['google_rating']); ?></span>
             <div class="stars">
@@ -175,14 +243,18 @@
         <div class="testimonials-slider-wrapper mt-4">
             <button type="button" class="testimonial-nav-btn prev" id="testimonial-prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
             <div class="testimonials-grid" id="testimonials-track">
-                <?php foreach ($data['testimonials'] as $i => $t): $td = $t['data']; ?>
+                <?php foreach ($data['testimonials'] as $i => $t): ?>
                 <div class="testimonial-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 150; ?>">
-                    <p>"<?php echo htmlspecialchars($td['quote']); ?>"</p>
-                    <h4><?php echo htmlspecialchars($td['author']); ?></h4>
+                    <p>"<?php echo htmlspecialchars($t->feedback); ?>"</p>
+                    <h4><?php echo htmlspecialchars($t->full_name); ?></h4>
                 </div>
                 <?php endforeach; ?>
             </div>
             <button type="button" class="testimonial-nav-btn next" id="testimonial-next" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="mt-4" data-aos="fade-up">
+            <a href="<?php echo URLROOT; ?>/testimonials" class="btn btn-primary btn-pill">View all testimonials</a>
         </div>
     </div>
 </section>
@@ -190,23 +262,23 @@
 <!-- 9. Workspace Gallery -->
 <section class="gallery-preview section-padding">
     <div class="container">
-        <div class="gallery-header">
-            <div>
-                <h2 class="section-title"><?php echo htmlspecialchars($data['f']['gallery_heading']); ?></h2>
-                <p class="section-subtitle"><?php echo htmlspecialchars($data['f']['gallery_subtitle']); ?></p>
-            </div>
-            <a href="<?php echo URLROOT . htmlspecialchars($data['f']['gallery_cta_link']); ?>" class="btn btn-outline btn-pill"><?php echo htmlspecialchars($data['f']['gallery_cta_text']); ?></a>
-        </div>
-
-        <div class="gallery-grid mt-4">
-            <div class="gallery-track">
-                <?php foreach ([1, 2] as $pass): ?>
-                    <?php foreach ($data['gallery'] as $g): $gd = $g['data']; ?>
-                    <div class="gallery-img" <?php echo $pass === 1 ? '' : 'aria-hidden="true"'; ?>>
-                        <img src="<?php echo URLROOT . htmlspecialchars($gd['image']); ?>" alt="<?php echo $pass === 1 ? htmlspecialchars($gd['alt']) : ''; ?>" style="width:100%; height:100%; object-fit:cover; border-radius:16px;">
-                    </div>
+        <div class="gallery-row">
+            <div class="gallery-scroll-viewport">
+                <div class="gallery-track">
+                    <?php foreach ([1, 2] as $pass): ?>
+                        <?php foreach ($data['gallery'] as $g): $gd = $g['data']; ?>
+                        <div class="gallery-img" <?php echo $pass === 1 ? '' : 'aria-hidden="true"'; ?>>
+                            <img src="<?php echo URLROOT . htmlspecialchars($gd['image']); ?>" alt="<?php echo $pass === 1 ? htmlspecialchars($gd['alt']) : ''; ?>" loading="lazy" decoding="async" width="480" height="320">
+                        </div>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="gallery-collage-cta" data-aos="fade-up">
+                <i class="fas fa-images"></i>
+                <h2><?php echo htmlspecialchars($data['f']['gallery_heading']); ?></h2>
+                <p><?php echo htmlspecialchars($data['f']['gallery_subtitle']); ?></p>
+                <a href="<?php echo URLROOT . htmlspecialchars($data['f']['gallery_cta_link']); ?>" class="btn btn-light btn-pill"><?php echo htmlspecialchars($data['f']['gallery_cta_text']); ?></a>
             </div>
         </div>
     </div>
@@ -227,8 +299,8 @@
                 </div>
 
                 <h2 class="section-title contact-heading" style="line-height: 1.2; margin-bottom: 1rem;">
-                    <?php echo htmlspecialchars($data['f']['contact_heading_line1']); ?><br>
-                    <span style="color: var(--primary-color);"><?php echo htmlspecialchars($data['f']['contact_heading_highlight']); ?></span>
+                    <?php echo premiumHighlight($data['f']['contact_heading_line1']); ?><br>
+                    <span style="color: var(--primary-color);"><?php echo premiumHighlight($data['f']['contact_heading_highlight']); ?></span>
                 </h2>
                 <p style="font-size: 1.05rem; color: var(--text-muted); max-width: 500px; margin-bottom: 2.5rem; line-height: 1.6;"><?php echo htmlspecialchars($data['f']['contact_subtitle']); ?></p>
 
@@ -258,7 +330,7 @@
 
                 <div class="contact-map" style="position: relative;">
                     <iframe src="https://www.google.com/maps?q=AV+Info+Tech+Park,+Saravanampatti,+Coimbatore&z=16&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    <a href="https://maps.google.com/?q=AV+Info+Tech+Park,+Saravanampatti,+Coimbatore" class="btn btn-primary" target="_blank" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); padding: 8px 20px; font-size: 0.9rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); z-index: 10;">
+                    <a href="https://maps.google.com/?q=AV+Info+Tech+Park,+Saravanampatti,+Coimbatore" class="btn btn-primary" target="_blank" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); padding: 8px 20px; font-size: 0.9rem; border-radius: 20px; box-shadow: 0 4px 12px rgba(37, 99, 235,0.3); z-index: 10;">
                         <i class="fas fa-directions"></i> Get Directions
                     </a>
                 </div>
@@ -286,6 +358,7 @@
             </div>
 
             <form id="enquiryForm" action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form">
+                <input type="hidden" name="source" value="home">
                 <div class="form-row">
                     <div class="form-group" style="margin: 0;">
                         <label for="companyName">Company Name *</label>
@@ -304,25 +377,28 @@
                         <input type="email" id="email" name="email" placeholder="you@company.com" required style="background: #fff;">
                     </div>
                 </div>
-                <div class="form-group" style="margin-top: 1.5rem;">
-                    <label for="reqType">Requirement *</label>
-                    <div class="select-wrapper">
-                        <select id="reqType" name="reqType" required style="background: #fff;">
-                            <option value="" disabled selected>Select Requirement Type</option>
-                            <option value="space">Required Space (in sq. ft.)</option>
-                            <option value="seats">Seats (in Nos.)</option>
-                        </select>
-                        <i class="fas fa-chevron-down select-arrow"></i>
+                <div class="form-row" style="margin-top: 1.5rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="reqType">Requirement *</label>
+                        <div class="select-wrapper">
+                            <select id="reqType" name="reqType" required style="background: #fff; color: var(--text-muted);" onchange="this.style.color='var(--text-main)';">
+                                <option value="" disabled selected>Select Requirement Type</option>
+                                <option value="space">Required Space (in sq. ft.)</option>
+                                <option value="seats">Seats (in Nos.)</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group" style="margin-top: 1.5rem;">
-                    <label for="reqValue">Requirement Value *</label>
-                    <input type="number" id="reqValue" name="reqValue" required min="1" disabled placeholder="Select a type first" style="background: #f8fafc;">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="reqValue">Requirement Value *</label>
+                        <input type="number" id="reqValue" name="reqValue" required min="1" disabled placeholder="Select a type first" style="background: #f8fafc;">
+                    </div>
                 </div>
                 <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 2rem;">
                     <label for="additional">Any Additional Requirements?</label>
                     <textarea id="additional" name="additional" placeholder="Tell us more about your requirements..." maxlength="1000" rows="3" style="background: #fff;"></textarea>
                 </div>
+                <div class="enquiry-result" role="status" aria-live="polite"></div>
                 <button type="submit" class="btn btn-primary w-100" style="padding: 1.2rem; font-size: 1.05rem; border-radius: 12px; font-weight: 600;">
                     <i class="fas fa-paper-plane me-2"></i> Submit Enquiry
                 </button>
@@ -334,21 +410,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Simple script to handle Requirement dropdown logic
-        const reqType = document.getElementById('reqType');
-        const reqValue = document.getElementById('reqValue');
-
-        if(reqType && reqValue) {
-            reqType.addEventListener('change', function() {
-                reqValue.disabled = false;
-                if(this.value === 'space') {
-                    reqValue.placeholder = "Required Space (in sq. ft.)";
-                } else if (this.value === 'seats') {
-                    reqValue.placeholder = "Seats (in Nos.)";
-                }
-            });
-        }
-
         // Intersection Observer for Smart Amenities
         const amenitiesSection = document.getElementById('smart-amenities');
         if (amenitiesSection) {
@@ -360,19 +421,6 @@
                 });
             }, { threshold: 0.2 });
             observer.observe(amenitiesSection);
-        }
-
-        // Intersection Observer for Services Overview gradient reveal
-        const servicesCard = document.querySelector('.services-overview .container');
-        if (servicesCard) {
-            const servicesObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        servicesCard.classList.add('is-visible');
-                    }
-                });
-            }, { threshold: 0.2 });
-            servicesObserver.observe(servicesCard);
         }
 
         // Hero Slider Logic
@@ -488,3 +536,6 @@
 </script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+
+
+

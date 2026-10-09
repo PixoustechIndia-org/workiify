@@ -1,11 +1,11 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
-<section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/coworking_main_1791350864870.jpg'); color: #fff;">
-    <div class="banner-overlay" style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.7) 100%);"></div>
+<section class="page-banner" style="--banner-img: url('<?php echo URLROOT . htmlspecialchars($data['f']['about_banner_image']); ?>'); color: #fff;">
+    <div class="banner-overlay"></div>
     <div class="container banner-content text-center" style="position: relative; z-index: 10;">
-        <h1 style="margin-bottom: 0.5rem;">About Workiify</h1>
-        <p class="tagline">Workspace Simplified</p>
+        <h1 style="margin-bottom: 0.5rem;"><?php echo htmlspecialchars($data['f']['about_banner_heading']); ?></h1>
+        <p class="tagline"><?php echo htmlspecialchars($data['f']['about_banner_tagline']); ?></p>
         <div class="breadcrumb" style="margin-top: 1.5rem;">
             <a href="<?php echo URLROOT; ?>/">Home</a> <span>&gt;</span> <span>About Us</span>
         </div>
@@ -16,12 +16,22 @@
 <section class="our-story-section section-padding">
     <div class="container split-layout max-w-1100" style="align-items: center; gap: 4rem; padding-bottom: 2rem;">
         <div class="split-img" style="flex: 1; max-width: 500px; margin: 0 auto;" data-aos="fade-right" data-aos-duration="900">
-            <img src="<?php echo URLROOT; ?>/images/coworking_lounge_1791350901804.jpg" alt="People working in Workiify" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
+            <?php 
+            $db_img = isset($data['f']['about_story_image']) ? $data['f']['about_story_image'] : '';
+            $about_img = '/images/gallery-open-workstation-area.png';
+            if (!empty($db_img)) {
+                $local_path = dirname(APPROOT) . '/public' . $db_img;
+                if (file_exists($local_path)) {
+                    $about_img = $db_img;
+                }
+            }
+            ?>
+            <img src="<?php echo URLROOT . htmlspecialchars($about_img); ?>" alt="People working in Workiify" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
         </div>
         <div class="split-content" style="flex: 1;" data-aos="fade-left" data-aos-duration="900">
-            <span class="eyebrow" style="color: var(--primary-color); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;">Fully Serviced Offices &amp; Coworking</span>
-            <h2 class="section-title" style="margin-top: 0.5rem;">Introducing Workiify</h2>
-            <p>Workiify offers professional shared workspaces that are connected and completely flexible. Move in today and have the freedom to upsize or downsize according to your needs. What's more, you get instant access to meeting facilities and excellent support services – everything you need to grow your business.</p>
+            <span class="eyebrow" style="color: var(--primary-color); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;"><?php echo htmlspecialchars($data['f']['about_story_eyebrow']); ?></span>
+            <h2 class="section-title" style="margin-top: 0.5rem;"><?php echo htmlspecialchars($data['f']['about_story_heading']); ?></h2>
+            <p><?php echo htmlspecialchars($data['f']['about_story_text']); ?></p>
         </div>
     </div>
 </section>
@@ -36,13 +46,13 @@
         <div class="mission-vision-grid mt-4">
             <div class="purpose-card">
                 <div class="purpose-card-icon"><i class="fas fa-bullseye"></i></div>
-                <h3>Our Mission</h3>
-                <p>To provide flexible, fully serviced workspaces with everything businesses need to work productively and grow.</p>
+                <h3><?php echo htmlspecialchars($data['f']['purpose_mission_heading']); ?></h3>
+                <p><?php echo htmlspecialchars($data['f']['purpose_mission_text']); ?></p>
             </div>
             <div class="purpose-card">
                 <div class="purpose-card-icon"><i class="fas fa-eye"></i></div>
-                <h3>Our Vision</h3>
-                <p>To be Coimbatore's most trusted coworking community, where individuals and businesses of every size can work, connect and grow.</p>
+                <h3><?php echo htmlspecialchars($data['f']['purpose_vision_heading']); ?></h3>
+                <p><?php echo htmlspecialchars($data['f']['purpose_vision_text']); ?></p>
             </div>
         </div>
     </div>
@@ -51,34 +61,21 @@
 <!-- 5. Your Ideal & Flexible Workspace Solution -->
 <section class="workspace-solution-section section-padding">
     <div class="container text-center">
-        <span class="category-eyebrow">Find Your Workspace</span>
-        <h2 class="section-title">Your Ideal &amp; Flexible Workspace Solution</h2>
-        <p class="section-subtitle">Communal Workiify workspaces are beneficial to both individuals and businesses who need a productive and professional work environment.</p>
+        <span class="category-eyebrow"><?php echo htmlspecialchars($data['f']['workspace_eyebrow']); ?></span>
+        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['workspace_heading']); ?></h2>
+        <p class="section-subtitle"><?php echo htmlspecialchars($data['f']['workspace_subtitle']); ?></p>
         <div class="workspace-tile-grid grid-fixed-4 mt-4">
-            <a href="<?php echo URLROOT; ?>/services" class="workspace-tile tile-sme" data-aos="fade-up" data-aos-delay="0">
-                <div class="workspace-tile-icon"><i class="fas fa-rocket"></i></div>
-                <h3>SMEs &amp; Entrepreneurs</h3>
-                <p>Flexible packages that let you downsize or grow without long-term commitments.</p>
+            <?php
+                $tileClasses = ['tile-sme', 'tile-corporate', 'tile-freelance', 'tile-student'];
+                foreach ($data['workspaceTiles'] as $i => $tile): $t = $tile['data'];
+            ?>
+            <a href="<?php echo URLROOT . htmlspecialchars($t['link']); ?>" class="workspace-tile <?php echo $tileClasses[$i % 4]; ?>" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <div class="workspace-tile-icon"><i class="fas <?php echo htmlspecialchars($t['icon']); ?>"></i></div>
+                <h3><?php echo htmlspecialchars($t['title']); ?></h3>
+                <p><?php echo htmlspecialchars($t['description']); ?></p>
                 <span class="workspace-tile-cta">Explore <i class="fas fa-arrow-right"></i></span>
             </a>
-            <a href="<?php echo URLROOT; ?>/services" class="workspace-tile tile-corporate" data-aos="fade-up" data-aos-delay="100">
-                <div class="workspace-tile-icon"><i class="fas fa-building"></i></div>
-                <h3>Corporates</h3>
-                <p>Coworking and serviced office packages; place up to 160 employees in coworking spaces with managers in private offices.</p>
-                <span class="workspace-tile-cta">Explore <i class="fas fa-arrow-right"></i></span>
-            </a>
-            <a href="<?php echo URLROOT; ?>/services" class="workspace-tile tile-freelance" data-aos="fade-up" data-aos-delay="200">
-                <div class="workspace-tile-icon"><i class="fas fa-briefcase"></i></div>
-                <h3>Freelancers &amp; Self-Employed</h3>
-                <p>Affordable coworking or serviced offices without long-term leases: a full-time office, a business address, or a desk a few days a week.</p>
-                <span class="workspace-tile-cta">Explore <i class="fas fa-arrow-right"></i></span>
-            </a>
-            <a href="<?php echo URLROOT; ?>/services" class="workspace-tile tile-student" data-aos="fade-up" data-aos-delay="300">
-                <div class="workspace-tile-icon"><i class="fas fa-graduation-cap"></i></div>
-                <h3>Students</h3>
-                <p>A peaceful place to study and work on assignments, occasionally or for a 3-month exam period.</p>
-                <span class="workspace-tile-cta">Explore <i class="fas fa-arrow-right"></i></span>
-            </a>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
@@ -86,37 +83,24 @@
 <!-- 6. Why Choose Workiify -->
 <section class="why-choose-cards section-padding bg-alt">
     <div class="container text-center max-w-1100">
-        <h2 class="section-title">Why Choose Workiify</h2>
+        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['whychoose_heading']); ?></h2>
         <div class="why-choose-grid mt-4">
-            <div class="why-choose-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="why-choose-icon"><i class="fas fa-handshake"></i></div>
-                <h3>Supportive &amp; Attractive Environment</h3>
-                <p>Workiify is known for friendly, efficient staff and exceptionally attractive, comfortable premises. Whether you need a boardroom booked, printing to be done or packages received from couriers – we are there to provide all the office support you need.</p>
+            <?php foreach ($data['whyChooseCards'] as $i => $card): $c = $card['data']; ?>
+            <div class="why-choose-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 150; ?>">
+                <div class="why-choose-icon"><i class="fas <?php echo htmlspecialchars($c['icon']); ?>"></i></div>
+                <h3><?php echo htmlspecialchars($c['title']); ?></h3>
+                <p><?php echo htmlspecialchars($c['text']); ?></p>
             </div>
-            <div class="why-choose-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="why-choose-icon"><i class="fas fa-map-marker-alt"></i></div>
-                <h3>Perfect Location</h3>
-                <p>Located near KGISL, Saravanampatti, in a prime business area with on-site business services and attractive relaxation areas.</p>
-            </div>
+            <?php endforeach; ?>
         </div>
 
         <div class="icon-cards-grid mt-4">
-            <div class="icon-card" data-aos="zoom-in" data-aos-delay="0">
-                <i class="fas fa-map-marker-alt"></i>
-                <p>Prime business location</p>
+            <?php foreach ($data['whyChooseIcons'] as $i => $icon): $ic = $icon['data']; ?>
+            <div class="icon-card" data-aos="zoom-in" data-aos-delay="<?php echo $i * 100; ?>">
+                <i class="fas <?php echo htmlspecialchars($ic['icon']); ?>"></i>
+                <p><?php echo htmlspecialchars($ic['text']); ?></p>
             </div>
-            <div class="icon-card" data-aos="zoom-in" data-aos-delay="100">
-                <i class="fas fa-couch"></i>
-                <p>Premium interior ambiance</p>
-            </div>
-            <div class="icon-card" data-aos="zoom-in" data-aos-delay="200">
-                <i class="fas fa-briefcase"></i>
-                <p>Flexible workspace options</p>
-            </div>
-            <div class="icon-card" data-aos="zoom-in" data-aos-delay="300">
-                <i class="fas fa-rocket"></i>
-                <p>Ideal for startups, consultants, and remote teams</p>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
@@ -125,11 +109,11 @@
 <section class="our-location-section section-padding">
     <div class="container split-layout reverse max-w-1100">
         <div class="split-content" data-aos="fade-right" data-aos-duration="900">
-            <h2 class="section-title">Our Location</h2>
-            <p>AV Info Tech Park, near KGISL campus, Saravanampatti – 5 floors, 24/7 member access, parking (limited)</p>
+            <h2 class="section-title"><?php echo htmlspecialchars($data['f']['location_heading']); ?></h2>
+            <p><?php echo htmlspecialchars($data['f']['location_text']); ?></p>
         </div>
         <div class="split-img" data-aos="fade-left" data-aos-duration="900">
-            <img src="<?php echo URLROOT; ?>/images/gallery-building-exterior.png" alt="Workiify building exterior" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
+            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['location_image']); ?>" alt="Workiify building exterior" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
         </div>
     </div>
 </section>
@@ -137,54 +121,44 @@
 <!-- 8. Our Commitment to Community -->
 <section class="community-events-section section-padding bg-alt">
     <div class="container text-center">
-        <h2 class="section-title">Our Commitment to Community</h2>
-        <p class="section-subtitle">We genuinely care about the communities in which we work and operate, and make it easy for our members to get involved.</p>
+        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['community_heading']); ?></h2>
+        <p class="section-subtitle"><?php echo htmlspecialchars($data['f']['community_subtitle']); ?></p>
 
-        <blockquote class="community-quote max-w-700" style="margin: 0 auto;" data-aos="zoom-in">"We believe that a vibrant community is a powerful determinant of people's ability to achieve and grow at work – and the joy they experience as a result of them."</blockquote>
+        <blockquote class="community-quote max-w-700" style="margin: 0 auto;" data-aos="zoom-in">"<?php echo htmlspecialchars($data['f']['community_quote']); ?>"</blockquote>
 
         <div class="photo-strip mt-4">
-            <div class="strip-item" data-aos="fade-up" data-aos-delay="0">
-                <img src="<?php echo URLROOT; ?>/images/gallery-pongal-celebration-2026.png" alt="Pongal Celebration 2026" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            <?php foreach ($data['communityPhotos'] as $i => $photo): $p = $photo['data']; ?>
+            <div class="strip-item" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <img src="<?php echo URLROOT . htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['alt']); ?>" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
             </div>
-            <div class="strip-item" data-aos="fade-up" data-aos-delay="100">
-                <img src="<?php echo URLROOT; ?>/images/gallery-office-inauguration.png" alt="Office Inauguration" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-            </div>
-            <div class="strip-item" data-aos="fade-up" data-aos-delay="200">
-                <img src="<?php echo URLROOT; ?>/images/gallery-dining-hall-1.png" alt="Community dining & networking" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-            </div>
-            <div class="strip-item" data-aos="fade-up" data-aos-delay="300">
-                <img src="<?php echo URLROOT; ?>/images/gallery-reception-workstations.png" alt="Team collaboration space" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
-            </div>
+            <?php endforeach; ?>
         </div>
 
-        <p class="community-note">All packages include community and networking events.</p>
+        <p class="community-note"><?php echo htmlspecialchars($data['f']['community_note']); ?></p>
     </div>
 </section>
 
 <!-- 9. Testimonials -->
 <section class="testimonials-section section-padding">
     <div class="container text-center max-w-1150">
-        <h2 class="section-title">What Our Members Say</h2>
+        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['about_testimonials_heading']); ?></h2>
         <div class="google-rating">
-            <i class="fab fa-google"></i> <span>5.0</span>
+            <i class="fab fa-google"></i> <span><?php echo htmlspecialchars($data['f']['about_google_rating']); ?></span>
             <div class="stars">
                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
             </div>
         </div>
-        
+
         <div class="testimonials-grid mt-4">
-            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="0">
-                <p>"Workiify gives our team the right mix of professionalism, comfort, and convenience. The location and ambiance are excellent."</p>
-                <h4>Ravi K., Founder, TechStart</h4>
+            <?php foreach ($data['testimonials'] as $i => $t): ?>
+            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 150; ?>">
+                <p>"<?php echo htmlspecialchars($t->feedback); ?>"</p>
+                <h4><?php echo htmlspecialchars($t->full_name); ?></h4>
             </div>
-            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="150">
-                <p>"A very polished coworking environment for meetings and focused work. Perfect for consultants and hybrid teams."</p>
-                <h4>Priya S., Consultant</h4>
-            </div>
-            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
-                <p>"Flexible options, premium look, and a strong business vibe. It feels like a modern office, not just a desk rental."</p>
-                <h4>Arun M., Startup Founder</h4>
-            </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="mt-4" data-aos="fade-up">
+            <a href="<?php echo URLROOT; ?>/testimonials" class="btn btn-primary btn-pill">View all testimonials</a>
         </div>
     </div>
 </section>
@@ -192,13 +166,11 @@
 <!-- 10. Client Logos -->
 <section class="client-logos-section section-padding bg-alt">
     <div class="container text-center max-w-1150">
-        <h2 class="section-title">Trusted By</h2>
+        <h2 class="section-title"><?php echo htmlspecialchars($data['f']['client_logos_heading']); ?></h2>
         <div class="logo-strip mt-4" data-aos="fade-up">
-            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
-            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
-            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
-            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
-            <div class="logo-item"><img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify"></div>
+            <?php foreach ($data['clientLogos'] as $logo): $l = $logo['data']; ?>
+            <div class="logo-item"><img src="<?php echo URLROOT . htmlspecialchars($l['image']); ?>" alt="<?php echo htmlspecialchars($l['alt']); ?>"></div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>

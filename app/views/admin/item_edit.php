@@ -1,10 +1,10 @@
 <?php require APPROOT . '/views/admin/inc/header.php'; ?>
 
 <div class="admin-wrap">
-    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['navKey']; ?>" class="admin-back-link">&larr; Back to <?php echo htmlspecialchars($data['schema']['label']); ?></a>
+    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['page']; ?>/<?php echo $data['navKey']; ?>" class="admin-back-link"><i class="fas fa-arrow-left"></i> Back to <?php echo htmlspecialchars($data['schema']['label']); ?></a>
 
     <div class="admin-card">
-        <h2 style="margin-top:0;"><?php echo $data['isNew'] ? 'Add New' : 'Edit'; ?> &mdash; <?php echo htmlspecialchars($data['schema']['label']); ?></h2>
+        <h2 style="margin-top:0;"><i class="fas <?php echo $data['isNew'] ? 'fa-plus' : 'fa-pen'; ?>" style="color:var(--admin-primary); margin-right:8px;"></i><?php echo $data['isNew'] ? 'Add New' : 'Edit'; ?> &mdash; <?php echo htmlspecialchars($data['schema']['label']); ?></h2>
 
         <form method="POST" enctype="multipart/form-data" class="admin-form">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
@@ -20,14 +20,16 @@
                     <textarea id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>"<?php echo !empty($f['maxlength']) ? ' maxlength="' . $f['maxlength'] . '"' : ''; ?>><?php echo htmlspecialchars($val); ?></textarea>
                 <?php elseif ($f['type'] === 'image'): ?>
                     <?php require APPROOT . '/views/admin/inc/image_field.php'; ?>
+                <?php elseif ($f['type'] === 'icon'): ?>
+                    <?php require APPROOT . '/views/admin/inc/icon_field.php'; ?>
                 <?php else: ?>
                     <input type="text" id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" value="<?php echo htmlspecialchars($val); ?>"<?php echo !empty($f['maxlength']) ? ' maxlength="' . $f['maxlength'] . '"' : ''; ?>>
                 <?php endif; ?>
             <?php endforeach; ?>
 
             <div class="admin-actions">
-                <button type="submit" class="admin-btn">Save Entry</button>
-                <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['navKey']; ?>" class="admin-btn admin-btn-secondary">Cancel</a>
+                <button type="submit" class="admin-btn"><i class="fas fa-check"></i> Save Entry</button>
+                <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['page']; ?>/<?php echo $data['navKey']; ?>" class="admin-btn admin-btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
