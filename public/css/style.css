@@ -108,6 +108,7 @@ body {
     background-color: var(--bg-main);
     line-height: 1.6;
     overflow-x: hidden;
+    padding-top: var(--header-height); /* Compensate for fixed header */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -181,13 +182,70 @@ img {
     transition: all 0.3s ease;
 }
 
+.btn-primary,
+.btn-whatsapp {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease, padding-right 0.3s ease;
+}
+
+/* The hover color sweeps in from the left instead of just snapping to a
+   new color, and an arrow fades/slides in at the right edge to make it
+   clear the button is clickable. */
+.btn-primary::before,
+.btn-whatsapp::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s ease;
+    z-index: -1;
+}
+
+.btn-primary:hover::before,
+.btn-whatsapp:hover::before {
+    transform: scaleX(1);
+}
+
+.btn-primary::after,
+.btn-whatsapp::after {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    content: '\f061'; /* fa-arrow-right */
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    opacity: 0;
+    transform: translate(8px, -50%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+.btn-primary:hover::after,
+.btn-whatsapp:hover::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.btn-primary:hover,
+.btn-whatsapp:hover {
+    padding-right: 2.5rem;
+}
+
 .btn-primary {
     background-color: var(--primary-color);
     color: #ffffff !important;
 }
 
-.btn-primary:hover {
+.btn-primary::before {
     background-color: var(--primary-hover);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
 }
 
 .btn-whatsapp {
@@ -195,8 +253,13 @@ img {
     color: #ffffff !important;
 }
 
-.btn-whatsapp:hover {
+.btn-whatsapp::before {
     background-color: var(--whatsapp-hover);
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
 }
 
 /* ==========================================================================
@@ -205,8 +268,10 @@ img {
 .site-header {
     background-color: var(--bg-main);
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
     height: var(--header-height);
     display: flex;
@@ -1177,18 +1242,71 @@ img {
     border-radius: 16px;
     padding: 1.5rem 0;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    /* For hover focus effect */
+    transition: all 0.4s ease;
 }
+
+/* When the grid is hovered, dim and slightly shrink all cards */
+.counters-grid:hover .counter-card {
+    opacity: 0.5;
+    transform: scale(0.95);
+    filter: blur(1px);
+}
+
 .counter-card { 
     text-align: center; 
     padding: 0 1.5rem; 
     flex: 1; 
     border-right: 1px solid rgba(255, 255, 255, 0.25); 
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
 }
+
+/* The specific hovered card pops out, sharpens, and scales up */
+.counters-grid .counter-card:hover {
+    opacity: 1;
+    transform: scale(1.15) translateY(-2px);
+    filter: blur(0);
+    z-index: 10;
+}
+
+/* Autonomous Idle Wave Animation to show interactivity */
+@keyframes autoFocusWave {
+    0%, 15%, 100% { transform: scale(1) translateY(0); }
+    7.5% { transform: scale(1.1) translateY(-2px); }
+}
+@keyframes autoFocusColor {
+    0%, 15%, 100% { color: #fff; }
+    7.5% { color: #4ade80; }
+}
+
+.counter-card {
+    animation: autoFocusWave 8s infinite ease-in-out;
+}
+.counter-card h3,
+.counter-card .counter-combo-value {
+    animation: autoFocusColor 8s infinite ease-in-out;
+}
+/* Stagger the animation across the 4 cards */
+.counter-card:nth-child(1), .counter-card:nth-child(1) h3, .counter-card:nth-child(1) .counter-combo-value { animation-delay: 0s; }
+.counter-card:nth-child(2), .counter-card:nth-child(2) h3, .counter-card:nth-child(2) .counter-combo-value { animation-delay: 0.2s; }
+.counter-card:nth-child(3), .counter-card:nth-child(3) h3, .counter-card:nth-child(3) .counter-combo-value { animation-delay: 0.4s; }
+.counter-card:nth-child(4), .counter-card:nth-child(4) h3, .counter-card:nth-child(4) .counter-combo-value { animation-delay: 0.6s; }
+
+/* Kill the autonomous wave entirely the moment the user interacts with the bar */
+.counters-grid:hover .counter-card,
+.counters-grid:hover .counter-card h3,
+.counters-grid:hover .counter-card .counter-combo-value {
+    animation: none !important;
+}
+
 .counter-card:last-child {
     border-right: none;
 }
 .counter-line { display: none; }
-.counter-card h3 { color: #fff; font-size: 1.8rem; margin: 0 0 5px 0; font-weight: 700; }
+.counter-card h3 { color: #fff; font-size: 1.8rem; margin: 0 0 5px 0; font-weight: 700; transition: color 0.3s ease; }
+.counter-card .counter-combo-value { transition: color 0.3s ease; }
+.counter-card:hover h3, .counter-card:hover .counter-combo-value { color: #4ade80; } /* Accent glow on hover */
 .counter-card p { font-size: 0.9rem; margin: 0; font-weight: 500; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px; }
 .counters-note { margin-top: 1rem; font-size: 0.9rem; color: rgba(255,255,255,1); font-weight: 700; font-style: italic; text-align: center; letter-spacing: 0.5px; }
 
@@ -1282,11 +1400,62 @@ img {
     display: inline-block !important;
 }
 
-.service-card { background: transparent; border: none; overflow: hidden; transition: transform 0.4s ease; display: flex; flex-direction: column; text-align: center; border-radius: 0; }
+/* Global container animated gradient drop */
+.services-container-animated {
+    /* Large gradient: top half is solid #FFF5F3, bottom half gradients into white */
+    background: linear-gradient(to bottom, #FFF5F3 0%, #FFF5F3 50%, #ffffff 85%, #ffffff 100%);
+    background-size: 100% 200%;
+    background-position: center top;
+    transition: background-position 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s;
+}
+
+/* Triggered when AOS adds .aos-animate to the container */
+.services-container-animated.aos-animate {
+    background-position: center bottom;
+}
+
+.service-card { 
+    background: #ffffff; 
+    border: none;
+    box-shadow: 0 4px 15px rgba(24, 43, 73, 0.03); 
+    overflow: hidden; 
+    transition: transform 0.4s ease, box-shadow 0.4s ease; 
+    display: flex; 
+    flex-direction: column; 
+    text-align: center; 
+    border-radius: 0; 
+    position: relative;
+}
+
+/* Animated edge-to-edge drawing borders */
+.service-card::before,
+.service-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 12;
+}
+.service-card::before {
+    border-top: 2px solid var(--card-accent, #3b82f6);
+    border-bottom: 2px solid var(--card-accent, #3b82f6);
+    transform: scaleX(0);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.service-card::after {
+    border-left: 2px solid var(--card-accent, #3b82f6);
+    border-right: 2px solid var(--card-accent, #3b82f6);
+    transform: scaleY(0);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover::after { transform: scaleY(1); }
+
 .service-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(36, 107, 253, 0.16);
-    border-color: rgba(36, 107, 253, 0.3);
+    box-shadow: 0 20px 40px rgba(36, 107, 253, 0.12);
 }
 .service-card .placeholder-img { border-radius: 0; }
 
@@ -1353,8 +1522,8 @@ img {
     filter: brightness(1.05);
 }
 
-.service-content { padding: 2rem var(--spacing-md); flex: 1; display: flex; flex-direction: column; background: transparent; transition: background-color 0.4s ease; }
-.service-card:hover .service-content { background: #fff; }
+.service-content { padding: 2rem var(--spacing-md); flex: 1; display: flex; flex-direction: column; background: #ffffff; transition: background-color 0.4s ease; position: relative; z-index: 11; }
+.service-card:hover .service-content { background: #ffffff; }
 .service-content h3 { color: var(--services-heading); font-size: 1.4rem; margin-bottom: 1rem; font-weight: 700; transition: color 0.3s ease; }
 .service-card:hover .service-content h3 { color: var(--services-primary); }
 .service-content p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
@@ -1378,6 +1547,12 @@ img {
     color: white;
     font-size: 12px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: idlePulse 2.5s infinite ease-in-out;
+}
+
+@keyframes idlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
 }
 .service-link-text {
     font-size: 0.9rem;
@@ -1391,7 +1566,8 @@ img {
     transform: translateX(8px);
 }
 .service-card:hover .service-arrow {
-    transform: scale(1.1);
+    animation: none;
+    transform: scale(1.15) translateX(4px);
 }
 
 /* Unique colors per card (Orange, Blue, Green, Purple) */
@@ -1672,9 +1848,79 @@ img {
 /* Gentle hover zoom on split-layout photos (Welcome to Workiify, Why
    Choose Us, etc.) -- the image keeps its own inline border-radius, this
    just clips the zoom to it. */
-.split-img { overflow: hidden; border-radius: 12px; }
-.split-img img { transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
-.split-img:hover img { transform: scale(1.06); }
+.split-img { overflow: visible; }
+
+/* Premium Animated Images */
+.premium-img-wrapper {
+    position: relative;
+    padding: 10px; /* Space for the glow and levitation */
+}
+
+/* Shine Sweep Animation */
+.premium-img-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 10px; left: -100%; width: 50%; height: calc(100% - 20px);
+    background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-20deg);
+    z-index: 5;
+    pointer-events: none;
+    border-radius: 12px;
+}
+
+.premium-img-wrapper:hover::after {
+    animation: hoverShine 0.8s ease forwards;
+}
+
+@keyframes hoverShine {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* Aurora Glow Background Blob */
+.premium-img-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    background: linear-gradient(135deg, var(--primary-color), #4ade80);
+    filter: blur(40px);
+    opacity: 0.2;
+    z-index: 0;
+    animation: blobPulse 8s infinite alternate ease-in-out;
+}
+
+/* Continuous Levitation and Styling */
+.premium-img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    object-fit: cover;
+    aspect-ratio: 4/3;
+    position: relative;
+    z-index: 1;
+    animation: levitate 6s ease-in-out infinite alternate;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* 3D Lift on Hover */
+.premium-img-wrapper:hover .premium-img {
+    animation-play-state: paused;
+    transform: scale(1.03) translateY(-8px);
+    box-shadow: 0 20px 40px rgba(36, 107, 253, 0.15);
+}
+
+@keyframes levitate {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-12px); }
+}
+
+@keyframes blobPulse {
+    0% { transform: scale(1); opacity: 0.15; }
+    100% { transform: scale(1.1); opacity: 0.25; }
+}
 
 /* Features */
 .feature-list li { margin-bottom: var(--spacing-sm); display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
@@ -1685,7 +1931,18 @@ img {
 .split-content .feature-list li { align-items: flex-start; }
 .faq-answer .feature-list i,
 .split-content .feature-list i { margin-top: 0.2em; }
-.feature-list i { color: var(--primary-color); font-size: 1.2rem; min-width: 28px; text-align: center; }
+.feature-list i { 
+    color: var(--primary-color); 
+    font-size: 1.2rem; 
+    min-width: 28px; 
+    text-align: center; 
+    animation: iconPulse 3s infinite ease-in-out;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
 
 /* Why Choose Us: each point nudges in and its check-mark pops slightly
    on hover, so the list feels a little more alive than plain static text. */
@@ -1714,14 +1971,44 @@ img {
     padding: 2.5rem 2rem;
     background: #ffffff;
     border-radius: 16px;
-    border: 1px solid var(--border-color);
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     z-index: 1;
+}
+
+/* Animated edge-to-edge drawing borders for Team Tiles with Rounded Corners */
+.team-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--accent, #3b82f6);
+    border-radius: 16px;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 12;
+    /* Animate a diamond clip-path expanding to a full rectangle */
+    clip-path: polygon(
+        50% 0%, 50% 0%, 
+        100% 50%, 100% 50%, 
+        50% 100%, 50% 100%, 
+        0% 50%, 0% 50%
+    );
+    transition: clip-path 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.team-tile:hover::before { 
+    clip-path: polygon(
+        0% 0%, 100% 0%, 
+        100% 0%, 100% 100%, 
+        100% 100%, 0% 100%, 
+        0% 100%, 0% 0%
+    );
 }
 
 
@@ -1772,9 +2059,8 @@ img {
 .team-tile p { position: relative; z-index: 1; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin: 0; flex-grow: 1; }
 
 .team-tile:hover {
-    border-color: var(--primary-color);
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
 }
 
 /* Testimonials */
@@ -2670,14 +2956,35 @@ img {
 
 /* Icon Cards */
 .icon-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-md); }
-.icon-card { background: var(--bg-main); padding: var(--spacing-lg) var(--spacing-md); border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.icon-card i { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem; }
-.icon-card p { font-weight: 500; font-size: 1.1rem; }
+.icon-card { 
+    background: #ffffff; 
+    padding: var(--spacing-lg) var(--spacing-md); 
+    border-radius: 12px; 
+    border: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    text-align: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.icon-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(36, 107, 253, 0.1);
+}
+.icon-card i { 
+    font-size: 2.2rem; 
+    color: var(--primary-color); 
+    margin-bottom: 1.25rem; 
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.icon-card:hover i {
+    transform: scale(1.2) rotate(5deg);
+}
+.icon-card p { font-weight: 600; font-size: 1.05rem; color: var(--text-main); line-height: 1.5; margin: 0; }
 
 /* Denser variant for longer item lists (e.g. "Office rental includes") */
-.icon-cards-grid.is-compact .icon-card { padding: var(--spacing-md) var(--spacing-sm); }
-.icon-cards-grid.is-compact .icon-card i { font-size: 2rem; margin-bottom: 0.75rem; }
-.icon-cards-grid.is-compact .icon-card p { font-size: 0.95rem; font-weight: 500; line-height: 1.4; }
+.icon-cards-grid.is-compact .icon-card { padding: var(--spacing-md); }
+.icon-cards-grid.is-compact .icon-card i { font-size: 1.8rem; margin-bottom: 1rem; }
+.icon-cards-grid.is-compact .icon-card p { font-size: 0.95rem; }
 
 /* Plan / Booking badge on service detail pages */
 .plan-badge {
@@ -2866,21 +3173,41 @@ body.header-hidden .services-subnav {
 
 /* Why Choose Cards */
 .why-choose-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--spacing-md); }
-.why-choose-card { background: var(--bg-main); padding: var(--spacing-lg); border-radius: 12px; border: 1px solid var(--border-color); text-align: left; }
+.why-choose-card { 
+    background: #ffffff; 
+    padding: var(--spacing-lg); 
+    border-radius: 16px; 
+    border: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    text-align: left; 
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.why-choose-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(36, 107, 253, 0.1);
+}
 .why-choose-icon {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
-    background: var(--contact-icon-bg);
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(36, 107, 253, 0.08), rgba(36, 107, 253, 0.15));
     color: var(--primary-color);
-    font-size: 1.5rem;
-    margin-bottom: 1.25rem;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.8);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
 }
-.why-choose-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
-.why-choose-card p { color: var(--text-muted); margin: 0; }
+.why-choose-card:hover .why-choose-icon {
+    transform: scale(1.1) rotate(-5deg);
+    background: var(--primary-color);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(36, 107, 253, 0.3);
+}
+.why-choose-card h3 { font-size: 1.3rem; margin-bottom: 0.75rem; font-weight: 700; color: var(--text-main); }
+.why-choose-card p { color: var(--text-muted); margin: 0; line-height: 1.6; }
 
 /* Photo Strip */
 .photo-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-sm); }
