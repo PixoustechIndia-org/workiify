@@ -1,0 +1,82 @@
+/* Premium Overlap Card Styles */
+.services-grid .service-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-align: center;
+    overflow: visible;
+}
+.services-grid .service-img {
+    border-radius: 0 !important;
+    width: 100%;
+    object-fit: cover;
+    height: 200px;
+}
+.services-grid .service-content {
+    background: #fff;
+    width: 85%;
+    margin: -40px auto 0 auto;
+    position: relative;
+    z-index: 2;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.services-grid .service-content h3 {
+    color: var(--services-heading);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+.services-grid .service-content p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: block !important;
+}
+.services-grid .service-link-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+.services-grid .service-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #F3F4F6 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4B5563 !important;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: none !important;
+}
+@media (max-width: 768px) {
+    .services-grid.grid-fixed-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    .services-grid .service-content {
+        padding: 0.75rem;
+        width: 95%;
+        margin-top: -20px;
+    }
+    .services-grid .service-content h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+    }
+    .services-grid .service-content p {
+        display: none !important;
+    }
+    .services-grid .service-img {
+        height: 120px !important;
+    }
+    .services-grid .service-link-wrapper {
+        margin-top: 0.75rem;
+    }
+    .services-grid .service-arrow {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+}

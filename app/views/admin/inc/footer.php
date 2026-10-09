@@ -16,8 +16,8 @@
             if (!toggle) return;
             const target = document.getElementById(toggle.dataset.target);
             if (!target) return;
-            const isOpen = toggle.classList.toggle('open');
-            target.style.display = isOpen ? 'block' : 'none';
+            toggle.classList.toggle('open');
+            target.classList.toggle('expanded');
         });
 
         function adminPickAsset(fieldKey, path, imgEl) {
@@ -27,8 +27,24 @@
             preview.style.display = 'block';
             const fileInput = document.getElementById('upload_' + fieldKey);
             if (fileInput) fileInput.value = '';
-            imgEl.parentElement.querySelectorAll('.admin-media-picker-thumb').forEach(function (el) { el.classList.remove('selected'); });
+            imgEl.closest('.admin-media-picker').querySelectorAll('.admin-media-picker-thumb').forEach(function (el) { el.classList.remove('selected'); });
             imgEl.classList.add('selected');
+        }
+
+        function adminUpdateIconPreview(fieldKey) {
+            const input = document.getElementById(fieldKey);
+            const preview = document.getElementById('iconPreview_' + fieldKey);
+            if (input && preview) {
+                preview.className = 'fas ' + (input.value.trim() || 'fa-icons');
+            }
+        }
+
+        function adminPickIcon(fieldKey, iconClass, btnEl) {
+            const input = document.getElementById(fieldKey);
+            if (input) input.value = iconClass;
+            adminUpdateIconPreview(fieldKey);
+            btnEl.closest('.admin-icon-picker').querySelectorAll('.admin-icon-picker-tile').forEach(function (el) { el.classList.remove('selected'); });
+            btnEl.classList.add('selected');
         }
     </script>
 </body>

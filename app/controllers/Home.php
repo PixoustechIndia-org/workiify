@@ -2,6 +2,7 @@
 class Home extends Controller {
     public function index() {
         $contentModel = $this->model('Home_content_model');
+        $testimonialModel = $this->model('Testimonial');
 
         $fieldKeys = [
             'services_heading', 'services_subtitle', 'services_cta_text', 'services_cta_link',
@@ -25,7 +26,7 @@ class Home extends Controller {
             'amenities' => $contentModel->getItems('amenities'),
             'whyChoosePoints' => $contentModel->getItems('why_choose_points'),
             'audience' => $contentModel->getItems('audience'),
-            'testimonials' => $contentModel->getItems('testimonials'),
+            'testimonials' => $testimonialModel->getHomeTestimonials(),
             'gallery' => $contentModel->getItems('gallery'),
         ];
 

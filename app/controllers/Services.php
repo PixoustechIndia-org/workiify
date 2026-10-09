@@ -55,4 +55,13 @@ class Services extends Controller {
         ];
         $this->view('pages/services-event-spaces', $data);
     }
+
+    public function coworking_space_coimbatore() {
+        $data = [
+            'title' => 'Coworking Space in Coimbatore - Workiify Spaces',
+            'description' => "Workiify Spaces offers a flexible coworking space in Coimbatore at Saravanampatti, near KGiSL Campus - hot desks, dedicated desks, private offices and meeting rooms.",
+            'hideTourBand' => true
+        ];
+        $this->view('pages/services-coworking-space-coimbatore', $data);
+    }
 }

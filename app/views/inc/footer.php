@@ -59,13 +59,110 @@
             </div>
         </div>
     </footer>
-    
-    <!-- Floating WhatsApp Button (FR-GEN-04) -->
-    <a href="https://api.whatsapp.com/send/?phone=919655500001&text&type=phone_number&app_absent=0" class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-    
+
+    <!-- Enquiry Popup: shown once per browser session, shortly after the
+         visitor's first page view. Stays open indefinitely once they start
+         filling it in; otherwise auto-dismisses after 15s. Always closable. -->
+    <div class="enquiry-popup" id="enquiryPopup" role="dialog" aria-label="Quick enquiry" aria-hidden="true">
+        <div class="enquiry-popup-backdrop"></div>
+        <div class="enquiry-popup-panel">
+            <button type="button" class="enquiry-popup-close" aria-label="Close">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="enquiry-popup-header">
+                <i class="fas fa-paper-plane"></i>
+                <div>
+                    <h3>Looking for a workspace?</h3>
+                    <p>Send us your requirement and we'll get back to you with the right plan.</p>
+                </div>
+            </div>
+            <form action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form">
+                <input type="hidden" name="source" value="popup">
+                <div class="form-row">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="popupCompanyName">Company Name *</label>
+                        <input type="text" id="popupCompanyName" name="companyName" placeholder="Enter your company name" required maxlength="150">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="popupCompanyAddress">Company Address *</label>
+                        <input type="text" id="popupCompanyAddress" name="companyAddress" placeholder="Enter your company address" required maxlength="250">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="popupContactNo">Contact No. *</label>
+                        <input type="tel" id="popupContactNo" name="contactNo" placeholder="+91 98765 43210" required pattern="[6-9][0-9]{9}">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="popupEmail">Organization E-Mail ID *</label>
+                        <input type="email" id="popupEmail" name="email" placeholder="you@company.com" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="popupReqType">Requirement *</label>
+                    <div class="select-wrapper">
+                        <select id="popupReqType" name="reqType" required style="color: var(--text-muted);" onchange="this.style.color='var(--text-main)';">
+                            <option value="" disabled selected>Select Requirement Type</option>
+                            <option value="space">Required Space (in sq. ft.)</option>
+                            <option value="seats">Seats (in Nos.)</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="popupReqValue">Requirement Value *</label>
+                    <input type="number" id="popupReqValue" name="reqValue" required min="1" disabled placeholder="Select a type first">
+                </div>
+                <input type="hidden" name="additional" value="">
+                <div class="enquiry-result" role="status" aria-live="polite"></div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-paper-plane"></i> Submit Enquiry
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chat Assistant: a quick-reply widget (no AI backend) that answers the
+         most common questions on the spot, with WhatsApp always one tap away
+         for anything that needs a real person. -->
+    <button type="button" class="chatbot-fab" id="chatbotFab" aria-label="Open chat assistant" aria-expanded="false">
+        <img src="<?php echo URLROOT; ?>/images/workiify-chatbot-icon.svg" alt="" width="60" height="60">
+    </button>
+
+    <div class="chatbot-panel" id="chatbotPanel" role="dialog" aria-label="Workiify chat assistant" aria-hidden="true">
+        <div class="chatbot-panel-header">
+            <img src="<?php echo URLROOT; ?>/images/workiify-chatbot-icon.svg" alt="" width="36" height="36">
+            <div class="chatbot-panel-title">
+                <strong>Workiify Assistant</strong>
+                <span>Quick answers, any time</span>
+            </div>
+            <button type="button" class="chatbot-panel-close" id="chatbotClose" aria-label="Close chat">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-bubble bot">
+                Hi! 👋 I'm the Workiify assistant. Type your question below, or pick a topic to get started.
+            </div>
+            <div class="chatbot-quick-replies" id="chatbotQuickReplies">
+                <button type="button" class="chatbot-chip" data-topic="pricing">💰 Pricing &amp; Plans</button>
+                <button type="button" class="chatbot-chip" data-topic="location">📍 Our Location</button>
+                <button type="button" class="chatbot-chip" data-topic="services">🏢 Services We Offer</button>
+                <button type="button" class="chatbot-chip" data-topic="tour">📅 Book a Tour</button>
+            </div>
+        </div>
+
+        <form class="chatbot-input-row" id="chatbotForm">
+            <input type="text" id="chatbotInput" placeholder="Type your question..." autocomplete="off" maxlength="200">
+            <button type="submit" class="chatbot-send" aria-label="Send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
     <!-- JS -->
+    <script>const SITE_URLROOT = <?php echo json_encode(URLROOT); ?>;</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="<?php echo URLROOT; ?>/js/main.js"></script>
     <script>

@@ -1,10 +1,10 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+﻿<?php require APPROOT . '/views/inc/header.php'; ?>
 <!-- Preload the main banner image to improve LCP / UX -->
 <link rel="preload" as="image" href="<?php echo URLROOT; ?>/images/services_bg.jpg">
 
 <!-- 1. Page Banner -->
 <section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/services_bg.jpg'); color: #fff;">
-    <div class="banner-overlay" style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.7) 100%); z-index: 1;"></div>
+    <div class="banner-overlay"></div>
     <div class="container banner-content text-center" style="position: relative; z-index: 10;">
         <h1 style="margin-bottom: 0.5rem;">Our Services</h1>
         <p class="tagline">Serviced offices and coworking facilities tailored to meet your needs.</p>
@@ -34,7 +34,7 @@
 
         <div class="service-feature-grid">
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/hot_desk_enhanced_1791353156473.jpg" alt="Hot Desk" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/hot_desk_enhanced_1791353156473.jpg" alt="Hot Desk" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Plan: Weekly</span>
                     <h3>Hot Desk</h3>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/dedicated_desk_enhanced_1791353327423.jpg" alt="Dedicated Desk" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/dedicated_desk_enhanced_1791353327423.jpg" alt="Dedicated Desk" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Plan: Yearly</span>
                     <h3>Dedicated Desk</h3>
@@ -64,7 +64,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/private_office_enhanced_1791353356099.jpg" alt="Private Office" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/private_office_enhanced_1791353356099.jpg" alt="Private Office" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Plan: Yearly</span>
                     <h3>Private Office</h3>
@@ -90,7 +90,7 @@
 
         <div class="service-feature-grid">
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/meeting_room_enhanced_1791353342929.jpg" alt="Meeting Room" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/meeting_room_enhanced_1791353342929.jpg" alt="Meeting Room" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Booking: Hourly (max 2 hrs)</span>
                     <h3>Meeting Room</h3>
@@ -105,7 +105,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/event_spaces.png" alt="Event Spaces" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/event_spaces.png" alt="Event Spaces" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Custom setup</span>
                     <h3>Event Spaces</h3>
@@ -131,7 +131,7 @@
 
         <div class="service-feature-grid">
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-front-office-reception.png" alt="Virtual Office" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-front-office-reception.png" alt="Virtual Office" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Business address</span>
                     <h3>Virtual Office</h3>
@@ -146,7 +146,7 @@
             </div>
 
             <div class="service-feature-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-boardroom.png" alt="Day Pass - Conference Hall" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-boardroom.png" alt="Day Pass - Conference Hall" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
                 <div class="sfc-body">
                     <span class="plan-badge">Conference hall only</span>
                     <h3>Day Pass</h3>
@@ -213,7 +213,13 @@
     </div>
 </section>
 
-
+<!-- 6. Coimbatore guide cross-link -->
+<section class="section-padding text-center">
+    <div class="container max-w-1100">
+        <h2 class="section-title">New to Coworking?</h2>
+        <p class="section-subtitle">Read our full guide to choosing and using a <a href="<?php echo URLROOT; ?>/services/coworking-space-coimbatore">co working space</a>.</p>
+    </div>
+</section>
 
 <!-- 7. FAQ -->
 <section class="faq-section section-padding bg-alt" id="faq">
