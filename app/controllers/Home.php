@@ -29,6 +29,7 @@ class Home extends Controller {
             'audience' => $contentModel->getItems('audience'),
             'testimonials' => $testimonialModel->getHomeTestimonials(),
             'gallery' => $contentModel->getItems('gallery'),
+            'hideTourBand' => true,
         ];
 
         $this->view('pages/home', $data);

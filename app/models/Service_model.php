@@ -706,12 +706,12 @@ class Service_model {
              'includes' => json_encode(['Furnished lockable office', '6 hours free boardroom use per month', 'Reception services', 'Business address', 'Customisable layout']), 'cta_label' => 'Enquire Now'],
 
             ['slug' => 'meeting-room', 'title' => 'Meeting Room', 'category' => 'meetings-events', 'status' => 'published', 'sort_order' => 40, 'show_in_nav' => 1,
-             'card_image' => $mtg, 'card_badge' => 'Booking: Hourly (max 2 hrs)', 'card_summary' => 'Host client meetings, team discussions, and presentations in a polished and well-equipped setting.',
-             'card_features' => ['Audio-visual equipment and Wi-Fi', 'AC and refreshment service', 'Minimum 1 hour, maximum 2 hours'], 'card_cta' => 'Check availability',
+             'card_image' => $mtg, 'card_badge' => 'Booking: Hourly – maximum 2 hours', 'card_summary' => 'Host client meetings, team discussions, and presentations in a polished and well-equipped setting.',
+             'card_features' => ['Audio-visual equipment and Wi-Fi', 'AC and refreshment service', 'Maximum 2 hours'], 'card_cta' => 'Check availability',
              'nav_label' => 'Meeting Room', 'nav_icon' => 'fa-users', 'nav_blurb' => 'Hourly rooms with AV setup',
              'banner_image' => $mtg, 'layout' => 'split-right', 'detail_image' => $mtg,
              'detail_intro' => 'Host client meetings, team discussions, and presentations in a polished and well-equipped setting.',
-             'badge_icon' => 'fa-clock', 'badge_text' => 'Booking: Hourly – minimum 1 hour, maximum 2 hours',
+             'badge_icon' => 'fa-clock', 'badge_text' => 'Booking: Hourly – maximum 2 hours',
              'includes' => json_encode(['Audio-visual equipment', 'Wi-Fi', 'AC', 'Refreshment service']), 'cta_label' => 'Enquire Now'],
 
             ['slug' => 'event-spaces', 'title' => 'Event Spaces', 'category' => 'meetings-events', 'status' => 'published', 'sort_order' => 50, 'show_in_nav' => 1,

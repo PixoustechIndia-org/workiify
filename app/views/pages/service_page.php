@@ -75,7 +75,7 @@ $highlight = function ($p, $secKey) use ($f, $e, $para, $img, $icon, $href, $val
             <?php
             $media = '';
             if ($imgUrl !== '') {
-                $media = '<div class="sw-ed-media" data-aos="fade-' . ($side === 'left' ? 'right' : 'left') . '"><img src="' . $imgUrl . '" alt="' . $e($val($p . '_heading')) . '" loading="lazy">';
+                $media = '<div class="sw-ed-media premium-img-wrapper" data-aos="fade-' . ($side === 'left' ? 'right' : 'left') . '"><img src="' . $imgUrl . '" alt="' . $e($val($p . '_heading')) . '" class="premium-img" loading="lazy">';
                 if ($val($p . '_badge_big') !== '' || $val($p . '_badge_small') !== '') {
                     $media .= '<div class="sw-ed-badge"><strong>' . $e($val($p . '_badge_big')) . '</strong><small>' . $e($val($p . '_badge_small')) . '</small></div>';
                 }
@@ -380,7 +380,11 @@ $head = function ($p) use ($e, $para, $val) {
         <div class="services-grid">
             <?php foreach ($data['related'] as $r): $rImg = $img($r['card_image'] ?? ''); ?>
             <a href="<?php echo URLROOT; ?>/services/<?php echo $e($r['slug']); ?>" class="service-card">
-                <?php if ($rImg !== ''): ?><img src="<?php echo $rImg; ?>" alt="<?php echo $e($r['title']); ?>" class="service-img" loading="lazy" decoding="async" style="object-fit: cover; width: 100%; height: 200px;"><?php endif; ?>
+                <?php if ($rImg !== ''): ?>
+                <div class="service-img-wrap">
+                    <img src="<?php echo $rImg; ?>" alt="<?php echo $e($r['title']); ?>" class="service-img" loading="lazy" decoding="async" style="object-fit: cover; width: 100%; height: 200px;">
+                </div>
+                <?php endif; ?>
                 <div class="service-content"><h3><?php echo $e($r['title']); ?></h3></div>
             </a>
             <?php endforeach; ?>

@@ -197,7 +197,7 @@ $renderGroup = function (array $group, $alt) use ($e) {
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p>Yes. Meeting rooms are booked hourly – minimum 1 hour, maximum 2 hours per booking.</p>
+                        <p>Yes. Meeting rooms are booked hourly – maximum 2 hours per booking.</p>
                     </div>
                 </div>
                 <div class="faq-item" data-category="plans">
