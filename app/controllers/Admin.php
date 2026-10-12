@@ -218,6 +218,7 @@ class Admin extends Controller {
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $this->checkCsrf();
+                $redirectTo = !empty($_POST['redirect_to_section']) ? (string)$_POST['redirect_to_section'] : null;
 
                 if ($isSettings) {
                     // Service Settings live on the service's own record (so the menu, the Services page and
@@ -230,7 +231,8 @@ class Admin extends Controller {
                         try {
                             $this->serviceModel->saveSettings($svc['id'], $clean);
                             $this->setFlash('Settings saved' . ($clean['status'] === 'published' ? ' and live on the site.' : ' (this service is still a draft).'), 'success');
-                            header('Location: ' . URLROOT . '/admin/section/' . $page . '/' . $key);
+                            $targetSec = $redirectTo ?: $key;
+                            header('Location: ' . URLROOT . '/admin/section/' . $page . '/' . $targetSec);
                             exit;
                         } catch (Throwable $e) {
                             error_log('Service settings save failed: ' . $e->getMessage());
@@ -250,6 +252,11 @@ class Admin extends Controller {
                         if ($value !== null) {
                             $this->contentModel->setField($f['key'], $value);
                         }
+                    }
+                    if ($redirectTo) {
+                        $this->setFlash('Saved successfully.', 'success');
+                        header('Location: ' . URLROOT . '/admin/section/' . $page . '/' . $redirectTo);
+                        exit;
                     }
                     $message = 'Saved successfully.';
                 }
@@ -279,6 +286,8 @@ class Admin extends Controller {
             'sectionHelp' => $section['help'] ?? '',
             'pageLabel' => Home_content_model::pageLabel($page),
             'isService' => (bool)$svc,
+            'service' => $svc,
+            'allSections' => Home_content_model::navSections($page),
             'publicUrl' => Home_content_model::pagePublicUrl($page),
             'serviceStatus' => $svc ? $svc['status'] : null,
             'fieldsData' => $fieldsData,
@@ -588,7 +597,7 @@ class Admin extends Controller {
     // Only ever redirects back into the services area.
     private function serviceReturnPath() {
         $r = $_POST['return'] ?? '';
-        if (is_string($r) && strpos($r, '/admin/services') === 0 && !preg_match('/[\r\n]/', $r)) {
+        if (is_string($r) && (strpos($r, '/admin/services') === 0 || strpos($r, '/admin/section/svc') === 0) && !preg_match('/[\r\n]/', $r)) {
             return $r;
         }
         return '/admin/services';

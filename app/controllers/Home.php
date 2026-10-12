@@ -14,6 +14,7 @@ class Home extends Controller {
             'gallery_heading', 'gallery_subtitle', 'gallery_cta_text', 'gallery_cta_link',
             'contact_badge', 'contact_heading_line1', 'contact_heading_highlight', 'contact_subtitle',
             'contact_address', 'contact_phone', 'contact_phone_link', 'contact_email',
+            'contact_email_1', 'contact_email_2',
         ];
 
         $data = [

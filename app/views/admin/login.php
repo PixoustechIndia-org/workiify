@@ -9,12 +9,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/css/admin.css">
+
+    <!-- Favicon (Animated Workiify Logo) -->
+    <link rel="icon" type="image/svg+xml" href="<?php echo URLROOT; ?>/images/favicon-animated.svg">
+    <link rel="alternate icon" href="<?php echo URLROOT; ?>/favicon.svg">
+    <script src="<?php echo URLROOT; ?>/js/favicon-animator.js" defer></script>
 </head>
 <body class="admin-body">
     <div class="admin-login-wrap">
         <div class="admin-card admin-login-card">
             <div class="admin-login-brand">
-                <span class="admin-login-mark"><i class="fas fa-layer-group"></i></span>
+                <span class="admin-login-mark"><img src="<?php echo URLROOT; ?>/images/favicon-animated.svg" alt="Workiify" width="46" height="46" style="display:block; border-radius:12px;"></span>
                 <h1>Workiify Admin</h1>
                 <p>Sign in to manage your site's content</p>
             </div>

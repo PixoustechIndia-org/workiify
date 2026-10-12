@@ -6,6 +6,11 @@
     <!-- Basic SEO tags -->
     <title><?php echo isset($data['title']) ? htmlspecialchars($data['title']) : SITENAME; ?></title>
     <meta name="description" content="<?php echo isset($data['description']) ? htmlspecialchars($data['description']) : 'Premium Co Working Space'; ?>">
+
+    <!-- Favicon (Animated Workiify Logo) -->
+    <link rel="icon" type="image/svg+xml" href="<?php echo URLROOT; ?>/images/favicon-animated.svg">
+    <link rel="alternate icon" href="<?php echo URLROOT; ?>/favicon.svg">
+    <script src="<?php echo URLROOT; ?>/js/favicon-animator.js" defer></script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

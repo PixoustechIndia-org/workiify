@@ -23,7 +23,9 @@ $flimit = !empty($f['maxlength']) ? ' maxlength="' . (int)$f['maxlength'] . '"' 
 <?php else: ?>
     <label for="<?php echo $fid; ?>">
         <?php echo htmlspecialchars($f['label']); ?>
-        <?php if (!empty($f['maxlength']) && $f['type'] !== 'icon'): ?><span class="admin-field-limit">max <?php echo (int)$f['maxlength']; ?> characters</span><?php endif; ?>
+        <?php if (!empty($f['maxlength']) && $f['type'] !== 'icon'): ?>
+            <span class="admin-field-limit"><span class="admin-char-count" data-for="<?php echo $fid; ?>"><?php echo mb_strlen((string)$val); ?></span> / <?php echo (int)$f['maxlength']; ?> characters</span>
+        <?php endif; ?>
     </label>
     <?php if ($f['type'] === 'textarea'): ?>
         <textarea id="<?php echo $fid; ?>" name="<?php echo $fid; ?>"<?php echo $flimit; ?>><?php echo htmlspecialchars((string)$val); ?></textarea>

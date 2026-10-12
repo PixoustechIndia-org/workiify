@@ -325,7 +325,19 @@ function premiumHighlight($text) {
                         <span class="contact-icon" style="background: #e0f2fe; color: var(--primary-color); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; flex-shrink: 0;"><i class="fas fa-envelope"></i></span>
                         <div>
                             <h4 style="font-size:0.85rem; margin:0 0 5px 0; color: var(--text-main); font-weight: 700;">Email</h4>
-                            <p style="margin:0; font-size:0.9rem; color: var(--text-muted);"><a href="mailto:<?php echo htmlspecialchars($data['f']['contact_email']); ?>" style="color: inherit;"><?php echo htmlspecialchars($data['f']['contact_email']); ?></a></p>
+                            <p style="margin:0; font-size:0.9rem; color: var(--text-muted);">
+                                <?php 
+                                    $email1 = !empty($data['f']['contact_email_1']) ? $data['f']['contact_email_1'] : ($data['f']['contact_email'] ?? '');
+                                    $email2 = $data['f']['contact_email_2'] ?? '';
+                                ?>
+                                <?php if (!empty($email1)): ?>
+                                    <a href="mailto:<?php echo htmlspecialchars($email1); ?>" style="color: inherit;"><?php echo htmlspecialchars($email1); ?></a>
+                                <?php endif; ?>
+                                <?php if (!empty($email2)): ?>
+                                    <?php if (!empty($email1)): ?><br><?php endif; ?>
+                                    <a href="mailto:<?php echo htmlspecialchars($email2); ?>" style="color: inherit;"><?php echo htmlspecialchars($email2); ?></a>
+                                <?php endif; ?>
+                            </p>
                         </div>
                     </div>
                 </div>
