@@ -931,14 +931,159 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // --- Shared widgets used by the Coimbatore service pages ---
-    // Carousel (prev / next scroll the snap track)
+    // Carousel (continuous hardware-accelerated cyclic loop with auto-advance)
     document.querySelectorAll('.sw-carousel-container').forEach(box => {
         const track = box.querySelector('.sw-carousel-track');
         const prev = box.querySelector('.sw-prev');
         const next = box.querySelector('.sw-next');
         if (!track) return;
-        if (prev) prev.addEventListener('click', () => track.scrollBy({ left: -track.offsetWidth, behavior: 'smooth' }));
-        if (next) next.addEventListener('click', () => track.scrollBy({ left: track.offsetWidth, behavior: 'smooth' }));
+
+        let viewport = box.querySelector('.sw-carousel-viewport');
+        if (!viewport) {
+            viewport = document.createElement('div');
+            viewport.className = 'sw-carousel-viewport';
+            track.parentNode.insertBefore(viewport, track);
+            viewport.appendChild(track);
+        }
+
+        const originalSlides = Array.from(track.querySelectorAll('.sw-carousel-slide:not(.sw-slide-clone)'));
+        if (originalSlides.length <= 1) {
+            if (prev) prev.style.display = 'none';
+            if (next) next.style.display = 'none';
+            return;
+        }
+
+        // Clean any existing clones if re-init
+        track.querySelectorAll('.sw-slide-clone').forEach(el => el.remove());
+
+        // Clone first and last slide for seamless infinite looping
+        const firstClone = originalSlides[0].cloneNode(true);
+        const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
+        firstClone.classList.add('sw-slide-clone');
+        lastClone.classList.add('sw-slide-clone');
+        firstClone.setAttribute('aria-hidden', 'true');
+        lastClone.setAttribute('aria-hidden', 'true');
+
+        track.appendChild(firstClone);
+        track.insertBefore(lastClone, originalSlides[0]);
+
+        const allSlides = Array.from(track.children);
+        let currentIndex = 1;
+        let isTransitioning = false;
+        let autoplayTimer = null;
+
+        const getStep = () => {
+            const gap = parseFloat(getComputedStyle(track).gap) || 24;
+            return viewport.clientWidth + gap;
+        };
+
+        const updateTrackPosition = (animate = true) => {
+            const step = getStep();
+            if (animate) {
+                track.style.transition = 'transform 0.48s cubic-bezier(0.25, 1, 0.5, 1)';
+            } else {
+                track.style.transition = 'none';
+            }
+            track.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
+        };
+
+        const goToSlide = (index) => {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            currentIndex = index;
+            updateTrackPosition(true);
+        };
+
+        const nextSlide = () => {
+            if (isTransitioning) return;
+            goToSlide(currentIndex + 1);
+        };
+
+        const prevSlide = () => {
+            if (isTransitioning) return;
+            goToSlide(currentIndex - 1);
+        };
+
+        // Seamless wrap-around jump when hitting clones (zero visible rewind)
+        track.addEventListener('transitionend', (e) => {
+            if (e.target !== track || e.propertyName !== 'transform') return;
+            isTransitioning = false;
+
+            // If we reached the clone of the first slide at the far right
+            if (currentIndex >= allSlides.length - 1) {
+                currentIndex = 1;
+                updateTrackPosition(false);
+                void track.offsetHeight;
+            }
+            // If we reached the clone of the last slide at the far left
+            else if (currentIndex <= 0) {
+                currentIndex = originalSlides.length;
+                updateTrackPosition(false);
+                void track.offsetHeight;
+            }
+        });
+
+        // Initialize at the real first slide (index 1)
+        updateTrackPosition(false);
+        window.addEventListener('load', () => updateTrackPosition(false));
+        window.addEventListener('resize', () => {
+            if (!isTransitioning) updateTrackPosition(false);
+        });
+
+        // Smooth automatic cyclic progression
+        const startAutoplay = () => {
+            stopAutoplay();
+            autoplayTimer = setInterval(() => {
+                nextSlide();
+            }, 4500);
+        };
+
+        const stopAutoplay = () => {
+            if (autoplayTimer) {
+                clearInterval(autoplayTimer);
+                autoplayTimer = null;
+            }
+        };
+
+        box.addEventListener('mouseenter', stopAutoplay);
+        box.addEventListener('mouseleave', startAutoplay);
+        box.addEventListener('focusin', stopAutoplay);
+        box.addEventListener('focusout', startAutoplay);
+
+        if (next) {
+            next.addEventListener('click', (e) => {
+                e.preventDefault();
+                nextSlide();
+                startAutoplay();
+            });
+        }
+
+        if (prev) {
+            prev.addEventListener('click', (e) => {
+                e.preventDefault();
+                prevSlide();
+                startAutoplay();
+            });
+        }
+
+        // Touch swiping support
+        let touchStartX = 0;
+        viewport.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stopAutoplay();
+        }, { passive: true });
+
+        viewport.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(diff) > 40) {
+                if (diff < 0) nextSlide();
+                else prevSlide();
+            }
+            startAutoplay();
+        }, { passive: true });
+
+        // Kick off smooth autoplay
+        startAutoplay();
     });
 
     // Location ticker (rotating highlights)

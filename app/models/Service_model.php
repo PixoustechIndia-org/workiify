@@ -719,7 +719,9 @@ class Service_model {
              'card_features' => ['Workshops and seminars', 'Training sessions and meetups', 'Flexible, customisable layout'], 'card_cta' => 'Plan an event',
              'nav_label' => 'Event Spaces', 'nav_icon' => 'fa-calendar-days', 'nav_blurb' => 'Workshops, seminars, meetups',
              'banner_image' => $img('gallery-building-exterior.png'), 'layout' => 'split-left', 'detail_image' => $img('event_spaces.png'),
-             'detail_intro' => 'Space for workshops, seminars, training sessions and meetups, customisable to your event.', 'cta_label' => 'Enquire Now'],
+             'detail_intro' => 'Space for workshops, seminars, training sessions and meetups, customisable to your event.',
+             'includes' => json_encode(['Audio-Visual & Presentation Setup', 'Flexible Seating Configurations', 'High-Speed Wi-Fi & Power Backup', 'Hospitality & Event Support']),
+             'cta_label' => 'Enquire Now'],
 
             ['slug' => 'coworking-space-coimbatore', 'title' => 'Co Working Space',
              'category' => 'workspaces', 'status' => 'published', 'sort_order' => 60, 'show_in_nav' => 1,
