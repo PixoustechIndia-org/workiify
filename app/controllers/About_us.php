@@ -24,7 +24,7 @@ class About_us extends Controller {
             'whyChooseCards' => $contentModel->getItems('why_choose_cards'),
             'whyChooseIcons' => $contentModel->getItems('why_choose_icons'),
             'communityPhotos' => $contentModel->getItems('community_photos'),
-            'testimonials' => $testimonialModel->getHomeTestimonials(),
+            'testimonials' => $testimonialModel->getApprovedTestimonials(),
             'clientLogos' => $contentModel->getItems('client_logos'),
         ];
 

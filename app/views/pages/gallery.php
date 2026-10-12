@@ -42,7 +42,7 @@
         <div class="gallery-pagination" id="galleryPagination"></div>
 
         <!-- 5. Video / Virtual Tour -->
-        <p class="text-center mt-4" style="color: var(--text-muted);"><em>[Client to provide a virtual tour video, if available]</em></p>
+        <p class="text-center mt-4" style="color: var(--text-muted);"></p>
     </div>
 </section>
 

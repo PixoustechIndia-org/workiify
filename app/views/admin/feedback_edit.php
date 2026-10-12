@@ -77,8 +77,21 @@
         
         <?php if (!empty($data['testimonial']->photo)): ?>
         <div class="admin-form-group">
-            <label class="admin-form-label">Uploaded Photo</label>
-            <img src="<?php echo URLROOT; ?>/uploads/testimonials/<?php echo htmlspecialchars($data['testimonial']->photo); ?>" style="max-width: 150px; border-radius: 8px;">
+            <label class="admin-form-label">Profile Photo</label>
+            <div style="display: flex; align-items: center; gap: 16px; margin-top: 8px;">
+                <img src="<?php echo URLROOT; ?>/uploads/testimonials/<?php echo htmlspecialchars($data['testimonial']->photo); ?>" 
+                     alt="<?php echo htmlspecialchars($data['testimonial']->full_name); ?>" 
+                     style="width: 72px; height: 72px; object-fit: cover; border-radius: 50%; border: 2px solid #3b82f6; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                <div>
+                    <div style="font-weight: 600; color: #1e293b;"><?php echo htmlspecialchars($data['testimonial']->photo); ?></div>
+                    <small class="admin-form-text">User uploaded profile avatar.</small>
+                    <div style="margin-top: 4px;">
+                        <a href="<?php echo URLROOT; ?>/uploads/testimonials/<?php echo htmlspecialchars($data['testimonial']->photo); ?>" target="_blank" style="color: #2563eb; font-size: 0.85rem; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> View full size
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php endif; ?>
 

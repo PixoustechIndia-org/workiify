@@ -117,6 +117,7 @@ class Service_schema {
                 'label' => 'Introduction',
                 'fields' => [
                     self::toggle('intro'),
+                    self::f('intro_heading', 'Section heading (optional)', 'text', 140),
                     self::f('intro_text', 'Paragraph', 'textarea', 800),
                     self::f('intro_btn_text', 'Button text', 'text', 60),
                     self::f('intro_btn_link', 'Button link', 'text', 160),

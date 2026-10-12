@@ -16,6 +16,118 @@
     </section>
     <?php endif; ?>
 
+    <?php 
+    // Show footer testimonial section on pages other than /testimonials (where the form is already on the page)
+    $isTestimonialsUrl = (strpos($_SERVER['REQUEST_URI'] ?? '', '/testimonials') !== false);
+    if (empty($data['hideFooterTestimonial']) && !$isTestimonialsUrl): 
+    ?>
+    <!-- Footer Testimonial Form Section -->
+    <section class="footer-testimonial-section" id="footer-feedback">
+        <div class="container max-w-1000">
+            <div class="footer-testimonial-card" data-aos="fade-up">
+                <div class="footer-testimonial-header text-center">
+                    <span class="ft-eyebrow"><i class="fas fa-heart"></i> Share Your Experience</span>
+                    <h3 class="ft-title">Help Our Coworking Community Grow</h3>
+                    <p class="ft-subtitle">Worked from Workiify? Tell us what you loved about our workspace, amenities, or team.</p>
+                </div>
+
+                <div id="footerFeedbackAlert" class="alert" style="display: none;"></div>
+
+                <form action="<?php echo URLROOT; ?>/testimonials" method="POST" enctype="multipart/form-data" class="feedback-form footer-feedback-form" id="footerFeedbackForm" novalidate>
+                    <input type="hidden" name="is_ajax" value="1">
+                    <input type="hidden" name="honeypot" value="" style="display: none;">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ft_full_name">Full Name <span class="required-star">*</span></label>
+                            <input type="text" name="full_name" id="ft_full_name" required maxlength="100" placeholder="Your name">
+                            <span class="invalid-feedback" id="ft_full_name_err"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="ft_email">Email <span class="required-star">*</span> <small>(never published)</small></label>
+                            <input type="email" name="email" id="ft_email" required placeholder="you@company.com">
+                            <span class="invalid-feedback" id="ft_email_err"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ft_company">Company <small>(Optional)</small></label>
+                            <input type="text" name="company" id="ft_company" maxlength="150" placeholder="Where you work">
+                        </div>
+                        <div class="form-group">
+                            <label for="ft_designation">Designation <small>(Optional)</small></label>
+                            <input type="text" name="designation" id="ft_designation" maxlength="100" placeholder="Your role / title">
+                        </div>
+                    </div>
+
+                    <div class="form-group ft-rating-group">
+                        <label class="ft-rating-label">Rating <span class="required-star">*</span></label>
+                        <div class="rating-input ft-rating-input">
+                            <input type="radio" id="ft_star5" name="rating" value="5" checked required>
+                            <label for="ft_star5" title="5 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="ft_star4" name="rating" value="4">
+                            <label for="ft_star4" title="4 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="ft_star3" name="rating" value="3">
+                            <label for="ft_star3" title="3 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="ft_star2" name="rating" value="2">
+                            <label for="ft_star2" title="2 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="ft_star1" name="rating" value="1">
+                            <label for="ft_star1" title="1 star"><i class="fas fa-star"></i></label>
+                        </div>
+                        <span class="invalid-feedback" id="ft_rating_err"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ft_feedback">Your Feedback <span class="required-star">*</span></label>
+                        <textarea name="feedback" id="ft_feedback" rows="3" required minlength="20" maxlength="1000" placeholder="Share a few sentences about your experience at Workiify (min. 20 characters)..."></textarea>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <small class="field-hint">Between 20 and 1000 characters.</small>
+                            <small class="field-hint" id="ftCharCount">0 / 1000</small>
+                        </div>
+                        <span class="invalid-feedback" id="ft_feedback_err"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ft_photo">Profile Photo <small>(Optional)</small></label>
+                        <div class="avatar-upload-row ft-avatar-row">
+                            <div class="avatar-preview-box" id="ftAvatarPreviewBox">
+                                <i class="fas fa-user-circle default-avatar-icon" id="ftAvatarDefaultIcon"></i>
+                                <img id="ftAvatarPreviewImg" src="" alt="Profile preview" style="display: none;">
+                            </div>
+                            <div class="avatar-upload-action">
+                                <div class="file-input-wrapper">
+                                    <input type="file" name="photo" id="ft_photo" accept="image/jpeg, image/png, image/webp">
+                                    <label for="ft_photo" class="file-input-label" id="ft_photos_label">
+                                        <i class="fas fa-camera"></i> <span id="ft_photos_label_text">Choose Profile Photo</span>
+                                    </label>
+                                </div>
+                                <small class="field-hint">Square portrait photo recommended (JPG, PNG, WebP up to 5MB).</small>
+                            </div>
+                        </div>
+                        <span class="invalid-feedback" id="ft_photo_err"></span>
+                    </div>
+
+                    <div class="form-group consent-group">
+                        <label class="consent-label">
+                            <input type="checkbox" name="consent" id="ft_consent" value="1" checked required>
+                            <span>I agree that Workiify may publish my name, company and feedback on its website. <span class="required-star">*</span></span>
+                        </label>
+                        <span class="invalid-feedback" id="ft_consent_err"></span>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-pill ft-submit-btn" id="ftSubmitBtn">
+                            <span>Submit Your Testimonial</span>
+                            <i class="fas fa-paper-plane ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
+
     <!-- Footer (FR-GEN-03) -->
     <footer class="site-footer-mini">
         <div class="container">
@@ -38,6 +150,7 @@
                     <a href="<?php echo URLROOT; ?>/about-us">About</a>
                     <a href="<?php echo URLROOT; ?>/services">Services</a>
                     <a href="<?php echo URLROOT; ?>/gallery">Gallery</a>
+                    <a href="<?php echo URLROOT; ?>/testimonials">Testimonials</a>
                     <a href="<?php echo URLROOT; ?>/contact-us">Contact</a>
                     <a href="<?php echo URLROOT; ?>/privacy-policy">Privacy</a>
                 </nav>
@@ -76,30 +189,30 @@
                     <p>Send us your requirement and we'll get back to you with the right plan.</p>
                 </div>
             </div>
-            <form action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form">
+            <form action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form" novalidate>
                 <input type="hidden" name="source" value="popup">
                 <div class="form-row">
                     <div class="form-group" style="margin: 0;">
-                        <label for="popupCompanyName">Company Name *</label>
-                        <input type="text" id="popupCompanyName" name="companyName" placeholder="Enter your company name" required maxlength="150">
+                        <label for="popupCompanyName">Company Name <span class="required-star">*</span></label>
+                        <input type="text" id="popupCompanyName" name="companyName" placeholder="Company Name" required maxlength="150">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="popupCompanyAddress">Company Address *</label>
-                        <input type="text" id="popupCompanyAddress" name="companyAddress" placeholder="Enter your company address" required maxlength="250">
+                        <label for="popupCompanyAddress">Company Address <span class="required-star">*</span></label>
+                        <input type="text" id="popupCompanyAddress" name="companyAddress" placeholder="Company Address" required maxlength="250">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="margin: 0;">
-                        <label for="popupContactNo">Contact No. *</label>
-                        <input type="tel" id="popupContactNo" name="contactNo" placeholder="+91 98765 43210" required pattern="[6-9][0-9]{9}">
+                        <label for="popupContactNo">Contact No. <span class="required-star">*</span></label>
+                        <input type="tel" id="popupContactNo" name="contactNo" placeholder="Contact No." required pattern="[6-9][0-9]{9}">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="popupEmail">Organization E-Mail ID *</label>
-                        <input type="email" id="popupEmail" name="email" placeholder="you@company.com" required>
+                        <label for="popupEmail">Organization E-Mail ID <span class="required-star">*</span></label>
+                        <input type="email" id="popupEmail" name="email" placeholder="Organization E-Mail ID" required>
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 1rem;">
-                    <label for="popupReqType">Requirement *</label>
+                    <label for="popupReqType">Requirement <span class="required-star">*</span></label>
                     <div class="select-wrapper">
                         <select id="popupReqType" name="reqType" required style="color: var(--text-muted);" onchange="this.style.color='var(--text-main)';">
                             <option value="" disabled selected>Select Requirement Type</option>
@@ -110,7 +223,7 @@
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 1rem;">
-                    <label for="popupReqValue">Requirement Value *</label>
+                    <label for="popupReqValue">Requirement Value <span class="required-star">*</span></label>
                     <input type="number" id="popupReqValue" name="reqValue" required min="1" disabled placeholder="Select a type first">
                 </div>
                 <input type="hidden" name="additional" value="">
@@ -171,6 +284,154 @@
             easing: 'ease-out-cubic',
             offset: 80,
             once: true
+        });
+    </script>
+    <script>
+        // Footer Testimonial Form Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const ftForm = document.getElementById('footerFeedbackForm');
+            if (!ftForm) return;
+
+            const ftFeedback = document.getElementById('ft_feedback');
+            const ftCharCount = document.getElementById('ftCharCount');
+            const ftPhotoInput = document.getElementById('ft_photo');
+            const ftAvatarImg = document.getElementById('ftAvatarPreviewImg');
+            const ftAvatarDefault = document.getElementById('ftAvatarDefaultIcon');
+            const ftLabelText = document.getElementById('ft_photos_label_text');
+            const ftAlert = document.getElementById('footerFeedbackAlert');
+            const ftSubmitBtn = document.getElementById('ftSubmitBtn');
+
+            // Live character count
+            if (ftFeedback && ftCharCount) {
+                ftFeedback.addEventListener('input', function() {
+                    const len = this.value.length;
+                    ftCharCount.textContent = len + ' / 1000';
+                    ftCharCount.style.color = (len >= 20 && len <= 1000) ? 'var(--text-muted)' : '#ef4444';
+                });
+            }
+
+            // Photo preview
+            if (ftPhotoInput) {
+                ftPhotoInput.addEventListener('change', function() {
+                    const file = this.files && this.files[0];
+                    if (file) {
+                        if (ftLabelText) ftLabelText.textContent = file.name;
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            if (ftAvatarImg) {
+                                ftAvatarImg.src = e.target.result;
+                                ftAvatarImg.style.display = 'block';
+                            }
+                            if (ftAvatarDefault) ftAvatarDefault.style.display = 'none';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        if (ftLabelText) ftLabelText.textContent = 'Choose Profile Photo';
+                        if (ftAvatarImg) {
+                            ftAvatarImg.src = '';
+                            ftAvatarImg.style.display = 'none';
+                        }
+                        if (ftAvatarDefault) ftAvatarDefault.style.display = 'block';
+                    }
+                });
+            }
+
+            // AJAX Form submission
+            ftForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                ftForm.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+                ftForm.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                if (ftAlert) ftAlert.style.display = 'none';
+
+                const fullName = document.getElementById('ft_full_name');
+                const email = document.getElementById('ft_email');
+                const feedback = document.getElementById('ft_feedback');
+                const consent = document.getElementById('ft_consent');
+
+                let hasErr = false;
+                if (!fullName.value.trim()) {
+                    fullName.classList.add('is-invalid');
+                    const errEl = document.getElementById('ft_full_name_err');
+                    if (errEl) errEl.textContent = 'Please enter your full name.';
+                    hasErr = true;
+                }
+                if (!email.value.trim() || !email.value.includes('@')) {
+                    email.classList.add('is-invalid');
+                    const errEl = document.getElementById('ft_email_err');
+                    if (errEl) errEl.textContent = 'Please enter a valid email address.';
+                    hasErr = true;
+                }
+                if (feedback.value.trim().length < 20) {
+                    feedback.classList.add('is-invalid');
+                    const errEl = document.getElementById('ft_feedback_err');
+                    if (errEl) errEl.textContent = 'Feedback must be at least 20 characters.';
+                    hasErr = true;
+                }
+                if (!consent.checked) {
+                    consent.classList.add('is-invalid');
+                    const errEl = document.getElementById('ft_consent_err');
+                    if (errEl) errEl.textContent = 'You must agree to publish your feedback.';
+                    hasErr = true;
+                }
+
+                if (hasErr) return;
+
+                const originalBtnHtml = ftSubmitBtn.innerHTML;
+                ftSubmitBtn.disabled = true;
+                ftSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting...';
+
+                const formData = new FormData(ftForm);
+
+                fetch(ftForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    ftSubmitBtn.disabled = false;
+                    ftSubmitBtn.innerHTML = originalBtnHtml;
+
+                    if (data.status === 'success') {
+                        ftForm.reset();
+                        if (ftCharCount) ftCharCount.textContent = '0 / 1000';
+                        if (ftAvatarImg) {
+                            ftAvatarImg.src = '';
+                            ftAvatarImg.style.display = 'none';
+                        }
+                        if (ftAvatarDefault) ftAvatarDefault.style.display = 'block';
+                        if (ftLabelText) ftLabelText.textContent = 'Choose Profile Photo';
+
+                        if (ftAlert) {
+                            ftAlert.className = 'alert alert-success';
+                            ftAlert.innerHTML = '<i class="fas fa-check-circle me-2"></i> ' + (data.message || 'Thank you! Your feedback has been submitted successfully and is pending review.');
+                            ftAlert.style.display = 'block';
+                            ftAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    } else if (data.status === 'error' && data.errors) {
+                        for (const [key, msg] of Object.entries(data.errors)) {
+                            const errEl = document.getElementById('ft_' + key + '_err');
+                            const inputEl = document.getElementById('ft_' + key);
+                            if (errEl) errEl.textContent = msg;
+                            if (inputEl) inputEl.classList.add('is-invalid');
+                        }
+                        if (data.errors.general && ftAlert) {
+                            ftAlert.className = 'alert alert-danger';
+                            ftAlert.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i> ' + data.errors.general;
+                            ftAlert.style.display = 'block';
+                        }
+                    }
+                })
+                .catch(() => {
+                    ftSubmitBtn.disabled = false;
+                    ftSubmitBtn.innerHTML = originalBtnHtml;
+                    ftForm.submit();
+                });
+            });
         });
     </script>
 </body>

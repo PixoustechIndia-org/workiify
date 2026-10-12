@@ -321,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initEnquiryForm(form) {
         if (!form || form.dataset.enquiryBound) return;
         form.dataset.enquiryBound = 'true';
+        form.setAttribute('novalidate', 'true');
 
         const reqType = form.querySelector('[name="reqType"]');
         const reqValue = form.querySelector('[name="reqValue"]');
@@ -328,11 +329,128 @@ document.addEventListener('DOMContentLoaded', () => {
             reqType.addEventListener('change', function() {
                 reqValue.disabled = false;
                 reqValue.placeholder = this.value === 'space' ? 'Required Space (in sq. ft.)' : 'Seats (in Nos.)';
+                validateField(reqType);
+                if (reqValue.classList.contains('is-invalid')) {
+                    validateField(reqValue);
+                }
             });
+        }
+
+        function validateField(field) {
+            if (!field) return true;
+            let isValid = true;
+            let message = '';
+            const name = field.name;
+            const value = (field.value || '').trim();
+
+            if (name === 'companyName') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter your company name.';
+                }
+            } else if (name === 'companyAddress') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter your company address.';
+                }
+            } else if (name === 'contactNo') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter a contact number.';
+                } else if (!/^[0-9+\s-]{8,15}$/.test(value) || value.replace(/\D/g, '').length < 10) {
+                    isValid = false;
+                    message = 'Please enter a valid 10-digit contact number.';
+                }
+            } else if (name === 'email') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter your organization email.';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    isValid = false;
+                    message = 'Please enter a valid organization email.';
+                }
+            } else if (name === 'reqType') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please select a requirement type.';
+                }
+            } else if (name === 'reqValue') {
+                if (!field.disabled && (!value || parseInt(value, 10) <= 0)) {
+                    isValid = false;
+                    message = 'Please enter requirement value.';
+                }
+            }
+
+            const group = field.closest('.form-group');
+            if (group) {
+                let errorEl = group.querySelector('.form-error-msg');
+                const wrapper = field.closest('.select-wrapper');
+                if (!isValid) {
+                    field.classList.add('is-invalid');
+                    if (wrapper) wrapper.classList.add('is-invalid');
+                    if (!errorEl) {
+                        errorEl = document.createElement('div');
+                        errorEl.className = 'form-error-msg';
+                        group.appendChild(errorEl);
+                    }
+                    errorEl.textContent = message;
+                } else {
+                    field.classList.remove('is-invalid');
+                    if (wrapper) wrapper.classList.remove('is-invalid');
+                    if (errorEl) errorEl.remove();
+                }
+            }
+
+            return isValid;
+        }
+
+        // Live input feedback: clear errors as user types
+        const inputsToValidate = form.querySelectorAll('input[required], select[required]');
+        inputsToValidate.forEach((input) => {
+            input.addEventListener('input', () => {
+                if (input.classList.contains('is-invalid')) {
+                    validateField(input);
+                }
+            });
+            input.addEventListener('change', () => {
+                if (input.classList.contains('is-invalid')) {
+                    validateField(input);
+                }
+            });
+            input.addEventListener('blur', () => {
+                if (input.value.trim() !== '') {
+                    validateField(input);
+                }
+            });
+        });
+
+        function clearAllErrors() {
+            form.querySelectorAll('.is-invalid').forEach((el) => el.classList.remove('is-invalid'));
+            form.querySelectorAll('.form-error-msg').forEach((el) => el.remove());
         }
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+
+            // Validate all required fields simultaneously
+            let isFormValid = true;
+            let firstInvalidField = null;
+
+            inputsToValidate.forEach((input) => {
+                const valid = validateField(input);
+                if (!valid) {
+                    isFormValid = false;
+                    if (!firstInvalidField) firstInvalidField = input;
+                }
+            });
+
+            if (!isFormValid) {
+                if (firstInvalidField) {
+                    firstInvalidField.focus();
+                }
+                return;
+            }
+
             const submitBtn = form.querySelector('button[type="submit"]');
             const resultEl = form.querySelector('.enquiry-result');
             const originalHtml = submitBtn ? submitBtn.innerHTML : '';
@@ -358,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     if (data.success) {
                         form.reset();
+                        clearAllErrors();
                         if (reqValue) reqValue.disabled = true;
                         form.dispatchEvent(new CustomEvent('enquiry:success'));
                     }
@@ -377,6 +496,361 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     document.querySelectorAll('.enquiry-form').forEach(initEnquiryForm);
+
+    // --- Testimonial / Feedback Form Validation ---
+    function initFeedbackForm(form) {
+        if (!form || form.dataset.feedbackBound) return;
+        form.dataset.feedbackBound = 'true';
+        form.setAttribute('novalidate', 'true');
+
+        function validateFeedbackField(field) {
+            if (!field) return true;
+            let isValid = true;
+            let message = '';
+            const name = field.name;
+            const value = (field.value || '').trim();
+
+            if (name === 'full_name') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter your full name.';
+                }
+            } else if (name === 'email') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter your email.';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    isValid = false;
+                    message = 'Please enter a valid email address.';
+                }
+            } else if (name === 'rating') {
+                const checked = form.querySelector('input[name="rating"]:checked');
+                if (!checked) {
+                    isValid = false;
+                    message = 'Please select a star rating.';
+                }
+            } else if (name === 'feedback') {
+                if (!value) {
+                    isValid = false;
+                    message = 'Please enter your feedback.';
+                } else if (value.length < 20) {
+                    isValid = false;
+                    message = 'Feedback must be at least 20 characters.';
+                }
+            } else if (name === 'consent') {
+                if (!field.checked) {
+                    isValid = false;
+                    message = 'Please agree to the publication consent.';
+                }
+            }
+
+            const group = field.closest ? field.closest('.form-group') : form.querySelector('.rating-input')?.closest('.form-group');
+            if (group) {
+                let errorEl = group.querySelector('.invalid-feedback');
+                if (!isValid) {
+                    if (field.classList) field.classList.add('is-invalid');
+                    if (!errorEl) {
+                        errorEl = document.createElement('span');
+                        errorEl.className = 'invalid-feedback';
+                        group.appendChild(errorEl);
+                    }
+                    errorEl.textContent = message;
+                    errorEl.style.display = 'block';
+                } else {
+                    if (field.classList) field.classList.remove('is-invalid');
+                    if (errorEl) {
+                        errorEl.textContent = '';
+                        errorEl.style.display = 'none';
+                    }
+                }
+            }
+
+            return isValid;
+        }
+
+        const inputs = form.querySelectorAll('input[required], textarea[required]');
+        inputs.forEach((input) => {
+            input.addEventListener('input', () => {
+                if (input.classList.contains('is-invalid') || input.value.trim().length > 0) {
+                    validateFeedbackField(input);
+                }
+            });
+            input.addEventListener('change', () => validateFeedbackField(input));
+        });
+
+        const ratingRadios = form.querySelectorAll('input[name="rating"]');
+        ratingRadios.forEach((r) => {
+            r.addEventListener('change', () => {
+                validateFeedbackField({ name: 'rating' });
+            });
+        });
+
+        // Profile photo input single-file circular avatar preview handler
+        const photoInput = form.querySelector('input[type="file"][name="photo"], #photo');
+        const avatarPreviewImg = form.querySelector('#avatarPreviewImg');
+        const avatarDefaultIcon = form.querySelector('#avatarDefaultIcon');
+        const labelText = form.querySelector('#photos-label-text');
+
+        if (photoInput) {
+            photoInput.addEventListener('change', () => {
+                const file = photoInput.files && photoInput.files[0];
+                if (!file) {
+                    if (avatarPreviewImg) {
+                        avatarPreviewImg.style.display = 'none';
+                        avatarPreviewImg.src = '';
+                    }
+                    if (avatarDefaultIcon) avatarDefaultIcon.style.display = 'block';
+                    if (labelText) labelText.textContent = 'Choose Profile Photo';
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file (JPG, PNG, or WebP).');
+                    photoInput.value = '';
+                    return;
+                }
+
+                if (labelText) {
+                    labelText.textContent = file.name.length > 25 ? file.name.substring(0, 22) + '...' : file.name;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    if (avatarPreviewImg) {
+                        avatarPreviewImg.src = ev.target.result;
+                        avatarPreviewImg.style.display = 'block';
+                    }
+                    if (avatarDefaultIcon) {
+                        avatarDefaultIcon.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            let isFormValid = true;
+            let firstInvalid = null;
+
+            inputs.forEach((input) => {
+                const valid = validateFeedbackField(input);
+                if (!valid) {
+                    isFormValid = false;
+                    if (!firstInvalid) firstInvalid = input;
+                }
+            });
+
+            // Validate rating
+            const ratingChecked = form.querySelector('input[name="rating"]:checked');
+            if (!ratingChecked) {
+                validateFeedbackField({ name: 'rating' });
+                isFormValid = false;
+                if (!firstInvalid) firstInvalid = form.querySelector('.rating-input');
+            }
+
+            if (!isFormValid) {
+                e.preventDefault();
+                if (firstInvalid) {
+                    if (typeof firstInvalid.focus === 'function') firstInvalid.focus();
+                    else firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+    }
+    document.querySelectorAll('.feedback-form').forEach(initFeedbackForm);
+
+    // --- Share Your Experience Smooth Scroll & Form Highlight ---
+    const btnShareExperience = document.getElementById('btnShareExperience');
+    const floatingShareCta = document.getElementById('floatingShareCta');
+    const feedbackFormSection = document.getElementById('feedbackFormSection');
+
+    if (btnShareExperience && feedbackFormSection) {
+        btnShareExperience.addEventListener('click', (e) => {
+            e.preventDefault();
+            feedbackFormSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Trigger dynamic running glow animation on the form
+            feedbackFormSection.classList.remove('highlight-glow');
+            void feedbackFormSection.offsetWidth; // Force DOM reflow
+            feedbackFormSection.classList.add('highlight-glow');
+
+            // Focus the first form input after scrolling smoothly
+            setTimeout(() => {
+                const firstInput = feedbackFormSection.querySelector('input#full_name');
+                if (firstInput) firstInput.focus();
+            }, 700);
+
+            // Remove glow after 8 seconds of active display
+            setTimeout(() => {
+                feedbackFormSection.classList.remove('highlight-glow');
+            }, 8000);
+        });
+
+        // Hide floating CTA button reliably when scrolling near/into the feedback form section
+        function updateFloatingCtaVisibility() {
+            if (!floatingShareCta || !feedbackFormSection) return;
+            const formRect = feedbackFormSection.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+
+            // When the top of the form is within 250px of the viewport bottom or above it
+            const isNearOrInsideForm = formRect.top <= (windowHeight - 80);
+
+            if (isNearOrInsideForm) {
+                floatingShareCta.classList.add('is-hidden');
+            } else {
+                floatingShareCta.classList.remove('is-hidden');
+            }
+        }
+
+        window.addEventListener('scroll', updateFloatingCtaVisibility, { passive: true });
+        window.addEventListener('resize', updateFloatingCtaVisibility, { passive: true });
+        updateFloatingCtaVisibility(); // Initial check on load
+    }
+
+    // --- Testimonial Photos Lightbox / Modal Viewer ---
+    function initTestimonialAlbumViewer() {
+        const lightbox = document.getElementById('testimonial-lightbox');
+        if (!lightbox) return;
+
+        const backdrop = document.getElementById('tl-backdrop');
+        const closeBtn = document.getElementById('tl-close-btn');
+        const prevBtn = document.getElementById('tl-prev-btn');
+        const nextBtn = document.getElementById('tl-next-btn');
+        const activeImg = document.getElementById('tl-active-img');
+        const counterEl = document.getElementById('tl-counter');
+        const captionEl = document.getElementById('tl-author-caption');
+        const thumbsEl = document.getElementById('tl-thumbnails');
+
+        let currentPhotos = [];
+        let currentIndex = 0;
+        let currentAuthor = '';
+
+        function renderActivePhoto() {
+            if (!currentPhotos.length) return;
+            const photoUrl = currentPhotos[currentIndex];
+
+            activeImg.style.opacity = '0.3';
+            const tempImg = new Image();
+            tempImg.src = photoUrl;
+            tempImg.onload = () => {
+                activeImg.src = photoUrl;
+                activeImg.style.opacity = '1';
+            };
+
+            if (counterEl) {
+                counterEl.textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
+            }
+
+            if (captionEl) {
+                captionEl.textContent = currentAuthor ? `Photos from ${currentAuthor}` : 'Community Feedback Photos';
+            }
+
+            // Update thumbnails active state
+            if (thumbsEl) {
+                const thumbItems = thumbsEl.querySelectorAll('.tl-thumb-item');
+                thumbItems.forEach((thumb, idx) => {
+                    if (idx === currentIndex) {
+                        thumb.classList.add('active');
+                        thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    } else {
+                        thumb.classList.remove('active');
+                    }
+                });
+            }
+
+            // Hide nav buttons if only 1 photo
+            if (prevBtn) prevBtn.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
+            if (nextBtn) nextBtn.style.display = currentPhotos.length > 1 ? 'flex' : 'none';
+        }
+
+        function openLightbox(photos, startIndex, author) {
+            currentPhotos = photos;
+            currentIndex = startIndex >= 0 && startIndex < photos.length ? startIndex : 0;
+            currentAuthor = author || '';
+
+            // Build thumbnail strip
+            if (thumbsEl) {
+                thumbsEl.innerHTML = '';
+                if (currentPhotos.length > 1) {
+                    thumbsEl.style.display = 'flex';
+                    currentPhotos.forEach((src, idx) => {
+                        const thumb = document.createElement('div');
+                        thumb.className = `tl-thumb-item ${idx === currentIndex ? 'active' : ''}`;
+                        thumb.innerHTML = `<img src="${src}" alt="Thumbnail ${idx + 1}">`;
+                        thumb.addEventListener('click', () => {
+                            currentIndex = idx;
+                            renderActivePhoto();
+                        });
+                        thumbsEl.appendChild(thumb);
+                    });
+                } else {
+                    thumbsEl.style.display = 'none';
+                }
+            }
+
+            renderActivePhoto();
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = '';
+            if (activeImg) activeImg.src = '';
+            currentPhotos = [];
+        }
+
+        function prevPhoto() {
+            if (currentPhotos.length <= 1) return;
+            currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+            renderActivePhoto();
+        }
+
+        function nextPhoto() {
+            if (currentPhotos.length <= 1) return;
+            currentIndex = (currentIndex + 1) % currentPhotos.length;
+            renderActivePhoto();
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prevPhoto(); });
+        if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); nextPhoto(); });
+        if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+        if (backdrop) backdrop.addEventListener('click', closeLightbox);
+
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.style.display === 'flex') {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') prevPhoto();
+                if (e.key === 'ArrowRight') nextPhoto();
+            }
+        });
+
+        // Delegate click on any testimonial album thumbnail or badge
+        document.querySelectorAll('.testimonial-album').forEach((album) => {
+            let photos = [];
+            try {
+                photos = JSON.parse(album.getAttribute('data-photos') || '[]');
+            } catch (err) {
+                photos = [];
+            }
+            const author = album.getAttribute('data-author') || '';
+
+            album.querySelectorAll('.album-thumb-item').forEach((item) => {
+                item.addEventListener('click', () => {
+                    const idx = parseInt(item.getAttribute('data-index') || '0', 10);
+                    openLightbox(photos, idx, author);
+                });
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const idx = parseInt(item.getAttribute('data-index') || '0', 10);
+                        openLightbox(photos, idx, author);
+                    }
+                });
+            });
+        });
+    }
+    initTestimonialAlbumViewer();
 
     // --- Enquiry Popup: shown once per browser session, 20s after the visitor arrives ---
     const enquiryPopup = document.getElementById('enquiryPopup');
