@@ -90,16 +90,18 @@ $highlight = function ($p, $secKey) use ($f, $e, $para, $img, $icon, $href, $val
                 <?php if ($rows && $style === 'slides'): ?>
                 <div class="sw-carousel-container">
                     <button class="sw-carousel-btn sw-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
-                    <div class="sw-carousel-track">
-                        <?php foreach ($rows as $r): ?>
-                        <div class="sw-carousel-slide">
-                            <?php if ($icon($r['icon'] ?? '')): ?><i class="fas <?php echo $icon($r['icon']); ?>"></i><?php endif; ?>
-                            <div>
-                                <h3><?php echo $e($r['title'] ?? ''); ?></h3>
-                                <?php if (trim((string)($r['text'] ?? '')) !== ''): ?><p><?php echo $para($r['text']); ?></p><?php endif; ?>
+                    <div class="sw-carousel-viewport">
+                        <div class="sw-carousel-track">
+                            <?php foreach ($rows as $r): ?>
+                            <div class="sw-carousel-slide">
+                                <?php if ($icon($r['icon'] ?? '')): ?><i class="fas <?php echo $icon($r['icon']); ?>"></i><?php endif; ?>
+                                <div>
+                                    <h3><?php echo $e($r['title'] ?? ''); ?></h3>
+                                    <?php if (trim((string)($r['text'] ?? '')) !== ''): ?><p><?php echo $para($r['text']); ?></p><?php endif; ?>
+                                </div>
                             </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
                     </div>
                     <button class="sw-carousel-btn sw-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
                 </div>
