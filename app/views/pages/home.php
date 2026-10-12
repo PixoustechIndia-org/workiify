@@ -231,9 +231,9 @@ function premiumHighlight($text) {
     </div>
 </section>
 
-<!-- 8. Testimonials -->
-<section class="testimonials-section section-padding bg-alt home-testimonials">
-    <div class="container text-center max-w-1150">
+<!-- 8. Testimonials (Enhanced Continuous Carousel with Edge-to-Edge Border Stream) -->
+<section class="testimonials-section section-padding bg-alt home-testimonials about-testimonials-section">
+    <div class="container text-center max-w-1150 mb-4">
         <h2 class="section-title"><?php echo premiumHighlight($data['f']['testimonials_heading']); ?></h2>
         <div class="google-rating">
             <i class="fab fa-google"></i> <span><?php echo htmlspecialchars($data['f']['google_rating']); ?></span>
@@ -241,25 +241,143 @@ function premiumHighlight($text) {
                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
             </div>
         </div>
+    </div>
 
-        <div class="testimonials-slider-wrapper mt-4">
-            <button type="button" class="testimonial-nav-btn prev" id="testimonial-prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
-            <div class="testimonials-grid" id="testimonials-track">
-                <?php foreach ($data['testimonials'] as $i => $t): ?>
-                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="<?php echo $i * 150; ?>">
-                    <p>"<?php echo htmlspecialchars($t->feedback); ?>"</p>
-                    <h4><?php echo htmlspecialchars($t->full_name); ?></h4>
+    <!-- Infinite Continuous One-Row Carousel -->
+    <div class="about-testimonials-carousel-wrapper">
+        <div class="about-testimonials-track">
+            <?php 
+                // Loop twice to ensure seamless infinite looping marquee
+                for ($loop = 0; $loop < 2; $loop++): 
+                    foreach ($data['testimonials'] as $i => $t):
+                        $photoName = !empty($t->photo) ? trim($t->photo) : '';
+                        $hasAvatar = !empty($photoName) && file_exists(APPROOT . '/../public/uploads/testimonials/' . $photoName);
+                        $avatarUrl = $hasAvatar ? (URLROOT . '/uploads/testimonials/' . htmlspecialchars($photoName)) : '';
+                        $roleCompany = htmlspecialchars($t->designation ?? '');
+                        if (!empty($t->designation) && !empty($t->company)) $roleCompany .= ' &middot; ';
+                        $roleCompany .= htmlspecialchars($t->company ?? '');
+                        $feedbackLen = mb_strlen(trim($t->feedback));
+                        $isLong = ($feedbackLen > 115);
+            ?>
+                <div class="about-testimonial-card compact-card" 
+                     data-index="<?php echo $i; ?>"
+                     data-author="<?php echo htmlspecialchars($t->full_name); ?>"
+                     data-role="<?php echo $roleCompany; ?>"
+                     data-rating="<?php echo (int)($t->rating ?? 5); ?>"
+                     data-feedback="<?php echo htmlspecialchars($t->feedback); ?>"
+                     data-avatar="<?php echo $avatarUrl; ?>">
+                    <div class="at-card-inner">
+                        <div class="testimonial-card-header">
+                            <div class="rating">
+                                <?php for ($s = 0; $s < ($t->rating ?? 5); $s++) : ?>
+                                    <i class="fas fa-star"></i>
+                                <?php endfor; ?>
+                                <?php for ($s = ($t->rating ?? 5); $s < 5; $s++) : ?>
+                                    <i class="far fa-star"></i>
+                                <?php endfor; ?>
+                            </div>
+                            <span class="card-open-hint" title="Click to view full review">
+                                <i class="fas fa-arrow-up-right-from-square"></i>
+                            </span>
+                        </div>
+
+                        <div class="feedback-body">
+                            <p class="feedback-text">"<?php echo htmlspecialchars($t->feedback); ?>"</p>
+                            <?php if ($isLong): ?>
+                                <span class="read-more-trigger" title="Click to read full review">
+                                    <span>...</span> <span class="read-more-link">Read more</span>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="client-info">
+                            <div class="avatar-placeholder">
+                                <?php if ($hasAvatar) : ?>
+                                    <img src="<?php echo $avatarUrl; ?>" 
+                                         alt="<?php echo htmlspecialchars($t->full_name); ?>" 
+                                         class="client-avatar-img">
+                                <?php else : ?>
+                                    <i class="fas fa-user-tie"></i>
+                                <?php endif; ?>
+                            </div>
+                            <div class="client-details">
+                                <h4 class="client-name"><?php echo htmlspecialchars($t->full_name); ?></h4>
+                                <?php if (!empty($t->designation) || !empty($t->company)) : ?>
+                                    <p class="client-role">
+                                        <?php echo htmlspecialchars($t->designation); ?>
+                                        <?php if (!empty($t->designation) && !empty($t->company)) echo ' &middot; '; ?>
+                                        <?php echo htmlspecialchars($t->company); ?>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <?php endforeach; ?>
-            </div>
-            <button type="button" class="testimonial-nav-btn next" id="testimonial-next" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
-        </div>
-        
-        <div class="mt-4" data-aos="fade-up">
-            <a href="<?php echo URLROOT; ?>/testimonials" class="btn btn-primary btn-pill">View all testimonials</a>
+            <?php 
+                    endforeach; 
+                endfor; 
+            ?>
         </div>
     </div>
+
+    <div class="container text-center mt-5">
+        <a href="<?php echo URLROOT; ?>/testimonials" class="btn btn-primary btn-pill">
+            <i class="fas fa-star" style="margin-right: 6px;"></i> View all testimonials
+        </a>
+    </div>
 </section>
+
+<!-- Testimonial Full Reader Modal / Popup with Next/Prev Carousel Navigation -->
+<div id="testimonial-detail-modal" class="testimonial-detail-modal" role="dialog" aria-modal="true" aria-labelledby="tdmAuthorName" style="display: none;">
+    <div class="tdm-backdrop" id="tdmBackdrop"></div>
+    <div class="tdm-dialog">
+        <!-- Close Button -->
+        <button type="button" class="tdm-close-btn" id="tdmCloseBtn" aria-label="Close review dialog">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Navigation Arrows (Previous / Next) -->
+        <button type="button" class="tdm-nav-arrow tdm-prev-arrow" id="tdmPrevBtn" aria-label="Previous testimonial" title="Previous review (Left Arrow)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button type="button" class="tdm-nav-arrow tdm-next-arrow" id="tdmNextBtn" aria-label="Next testimonial" title="Next review (Right Arrow)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="tdm-header">
+            <div class="tdm-avatar-wrap" id="tdmAvatarWrap">
+                <i class="fas fa-user-tie" id="tdmDefaultIcon"></i>
+                <img id="tdmAvatarImg" src="" alt="Author Avatar" style="display: none;">
+            </div>
+            <div class="tdm-author-meta">
+                <div class="tdm-meta-top">
+                    <h3 class="tdm-name" id="tdmAuthorName">Client Name</h3>
+                    <span class="tdm-counter" id="tdmCounter">1 / 5</span>
+                </div>
+                <p class="tdm-role" id="tdmAuthorRole">Designation & Company</p>
+                <div class="tdm-rating" id="tdmRatingStars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="tdm-body">
+            <i class="fas fa-quote-left tdm-quote-icon"></i>
+            <p class="tdm-full-text" id="tdmFeedbackText">Feedback text...</p>
+        </div>
+
+        <div class="tdm-footer">
+            <span class="tdm-verified-tag"><i class="fas fa-check-circle"></i> Verified Workiify Member Review</span>
+            <div class="tdm-footer-actions">
+                <button type="button" class="btn btn-outline btn-sm tdm-close-action" id="tdmCloseAction">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- 9. Workspace Gallery -->
 <section class="gallery-preview section-padding">
@@ -371,29 +489,29 @@ function premiumHighlight($text) {
                 </div>
             </div>
 
-            <form id="enquiryForm" action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form">
+            <form id="enquiryForm" action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form" novalidate>
                 <input type="hidden" name="source" value="home">
                 <div class="form-row">
                     <div class="form-group" style="margin: 0;">
-                        <label for="companyName">Company Name *</label>
-                        <input type="text" id="companyName" name="companyName" placeholder="Enter your company name" required maxlength="150" style="background: #fff;">
+                        <label for="companyName">Company Name <span class="required-star">*</span></label>
+                        <input type="text" id="companyName" name="companyName" placeholder="Company Name" required maxlength="150" style="background: #fff;">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="companyAddress">Company Address *</label>
-                        <input type="text" id="companyAddress" name="companyAddress" placeholder="Enter your company address" required maxlength="250" style="background: #fff;">
+                        <label for="companyAddress">Company Address <span class="required-star">*</span></label>
+                        <input type="text" id="companyAddress" name="companyAddress" placeholder="Company Address" required maxlength="250" style="background: #fff;">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="contactNo">Contact No. *</label>
-                        <input type="tel" id="contactNo" name="contactNo" placeholder="+91 98765 43210" required pattern="[6-9][0-9]{9}" style="background: #fff;">
+                        <label for="contactNo">Contact No. <span class="required-star">*</span></label>
+                        <input type="tel" id="contactNo" name="contactNo" placeholder="Contact No." required pattern="[6-9][0-9]{9}" style="background: #fff;">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="email">Organization E-Mail ID *</label>
-                        <input type="email" id="email" name="email" placeholder="you@company.com" required style="background: #fff;">
+                        <label for="email">Organization E-Mail ID <span class="required-star">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="Organization E-Mail ID" required style="background: #fff;">
                     </div>
                 </div>
                 <div class="form-row" style="margin-top: 1.5rem;">
                     <div class="form-group" style="margin: 0;">
-                        <label for="reqType">Requirement *</label>
+                        <label for="reqType">Requirement <span class="required-star">*</span></label>
                         <div class="select-wrapper">
                             <select id="reqType" name="reqType" required style="background: #fff; color: var(--text-muted);" onchange="this.style.color='var(--text-main)';">
                                 <option value="" disabled selected>Select Requirement Type</option>
@@ -404,13 +522,13 @@ function premiumHighlight($text) {
                         </div>
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="reqValue">Requirement Value *</label>
+                        <label for="reqValue">Requirement Value <span class="required-star">*</span></label>
                         <input type="number" id="reqValue" name="reqValue" required min="1" disabled placeholder="Select a type first" style="background: #f8fafc;">
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 2rem;">
                     <label for="additional">Any Additional Requirements?</label>
-                    <textarea id="additional" name="additional" placeholder="Tell us more about your requirements..." maxlength="1000" rows="3" style="background: #fff;"></textarea>
+                    <textarea id="additional" name="additional" placeholder="Optional — Any Additional Requirements?" maxlength="1000" rows="3" style="background: #fff;"></textarea>
                 </div>
                 <div class="enquiry-result" role="status" aria-live="polite"></div>
                 <button type="submit" class="btn btn-primary w-100" style="padding: 1.2rem; font-size: 1.05rem; border-radius: 12px; font-weight: 600;">
@@ -533,19 +651,133 @@ function premiumHighlight($text) {
             statsObserver.observe(statsSection);
         }
 
-        // Testimonials: arrow-controlled slider (one card per row on mobile)
-        const testimonialsTrack = document.getElementById('testimonials-track');
-        const testimonialPrev = document.getElementById('testimonial-prev');
-        const testimonialNext = document.getElementById('testimonial-next');
+        // --- Testimonial Detail Reader Modal Popup with Next/Prev Carousel Navigation ---
+        const tdmModal = document.getElementById('testimonial-detail-modal');
+        const tdmBackdrop = document.getElementById('tdmBackdrop');
+        const tdmCloseBtn = document.getElementById('tdmCloseBtn');
+        const tdmCloseAction = document.getElementById('tdmCloseAction');
+        const tdmPrevBtn = document.getElementById('tdmPrevBtn');
+        const tdmNextBtn = document.getElementById('tdmNextBtn');
+        const tdmAvatarImg = document.getElementById('tdmAvatarImg');
+        const tdmDefaultIcon = document.getElementById('tdmDefaultIcon');
+        const tdmAuthorName = document.getElementById('tdmAuthorName');
+        const tdmAuthorRole = document.getElementById('tdmAuthorRole');
+        const tdmRatingStars = document.getElementById('tdmRatingStars');
+        const tdmFeedbackText = document.getElementById('tdmFeedbackText');
+        const tdmCounter = document.getElementById('tdmCounter');
+        const track = document.querySelector('.home-testimonials .about-testimonials-track');
 
-        if (testimonialsTrack && testimonialPrev && testimonialNext) {
-            testimonialNext.addEventListener('click', () => {
-                testimonialsTrack.scrollBy({ left: testimonialsTrack.clientWidth, behavior: 'smooth' });
-            });
-            testimonialPrev.addEventListener('click', () => {
-                testimonialsTrack.scrollBy({ left: -testimonialsTrack.clientWidth, behavior: 'smooth' });
+        // Collect unique testimonials data from the DOM
+        const uniqueCards = Array.from(document.querySelectorAll('.home-testimonials .about-testimonial-card'))
+            .filter((c, idx, arr) => arr.findIndex(item => item.dataset.author === c.dataset.author) === idx);
+        
+        let currentTestimonialIndex = 0;
+
+        function renderTestimonialData(index) {
+            if (!uniqueCards.length) return;
+            // Wrap around circularly
+            currentTestimonialIndex = (index + uniqueCards.length) % uniqueCards.length;
+            const card = uniqueCards[currentTestimonialIndex];
+
+            const author = card.dataset.author || '';
+            const role = card.dataset.role || '';
+            const feedback = card.dataset.feedback || '';
+            const avatar = card.dataset.avatar || '';
+            const rating = parseInt(card.dataset.rating, 10) || 5;
+
+            tdmAuthorName.textContent = author;
+            tdmAuthorRole.textContent = role;
+            tdmFeedbackText.textContent = `"${feedback}"`;
+
+            if (tdmCounter) {
+                tdmCounter.textContent = `${currentTestimonialIndex + 1} / ${uniqueCards.length}`;
+            }
+
+            // Avatar
+            if (avatar && avatar.trim() !== '') {
+                tdmAvatarImg.src = avatar;
+                tdmAvatarImg.style.display = 'block';
+                tdmDefaultIcon.style.display = 'none';
+            } else {
+                tdmAvatarImg.style.display = 'none';
+                tdmDefaultIcon.style.display = 'block';
+            }
+
+            // Rating Stars
+            tdmRatingStars.innerHTML = '';
+            for (let s = 0; s < rating; s++) {
+                tdmRatingStars.innerHTML += '<i class="fas fa-star"></i>';
+            }
+            for (let s = rating; s < 5; s++) {
+                tdmRatingStars.innerHTML += '<i class="far fa-star"></i>';
+            }
+        }
+
+        function openTestimonialModal(card) {
+            if (!tdmModal || !card) return;
+            const matchedIndex = uniqueCards.findIndex(c => c.dataset.author === card.dataset.author);
+            renderTestimonialData(matchedIndex >= 0 ? matchedIndex : 0);
+
+            // Pause marquee running animation when modal opens
+            if (track) track.style.animationPlayState = 'paused';
+
+            tdmModal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                tdmModal.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
             });
         }
+
+        function closeTestimonialModal() {
+            if (!tdmModal) return;
+            tdmModal.classList.remove('is-open');
+            document.body.style.overflow = '';
+            setTimeout(() => {
+                tdmModal.style.display = 'none';
+                // Resume marquee running animation
+                if (track) track.style.animationPlayState = 'running';
+            }, 250);
+        }
+
+        function nextTestimonial() {
+            renderTestimonialData(currentTestimonialIndex + 1);
+        }
+
+        function prevTestimonial() {
+            renderTestimonialData(currentTestimonialIndex - 1);
+        }
+
+        // Attach click triggers to all cards in the continuous stream
+        document.querySelectorAll('.home-testimonials .about-testimonial-card').forEach(card => {
+            card.addEventListener('click', () => openTestimonialModal(card));
+        });
+
+        // Close triggers
+        if (tdmCloseBtn) tdmCloseBtn.addEventListener('click', closeTestimonialModal);
+        if (tdmCloseAction) tdmCloseAction.addEventListener('click', closeTestimonialModal);
+        if (tdmBackdrop) tdmBackdrop.addEventListener('click', closeTestimonialModal);
+
+        // Arrow navigation
+        if (tdmNextBtn) tdmNextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            nextTestimonial();
+        });
+        if (tdmPrevBtn) tdmPrevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            prevTestimonial();
+        });
+
+        // Keyboard navigation (Escape to close, Left/Right arrows to cycle)
+        document.addEventListener('keydown', (e) => {
+            if (!tdmModal || !tdmModal.classList.contains('is-open')) return;
+            if (e.key === 'Escape') {
+                closeTestimonialModal();
+            } else if (e.key === 'ArrowRight') {
+                nextTestimonial();
+            } else if (e.key === 'ArrowLeft') {
+                prevTestimonial();
+            }
+        });
     });
 </script>
 

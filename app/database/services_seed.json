@@ -843,8 +843,24 @@
             "steps_show": "0",
             "related_show": "0"
         },
-        "items": {
-            "intro_strip": [],
+            "intro_strip": [
+                {
+                    "icon": "fa-chair",
+                    "text": "Hot & Dedicated Desks"
+                },
+                {
+                    "icon": "fa-door-closed",
+                    "text": "Private Cabins & Meeting Rooms"
+                },
+                {
+                    "icon": "fa-wifi",
+                    "text": "High-Speed Wi-Fi & Modern Amenities"
+                },
+                {
+                    "icon": "fa-location-dot",
+                    "text": "Saravanampatti, AV Info Tech Park"
+                }
+            ],
             "options": [
                 {
                     "image": "/images/hot_desk_enhanced_1791353156473.jpg",

@@ -159,17 +159,68 @@ $head = function ($p) use ($e, $para, $val) {
 </nav>
 <?php endif; ?>
 
-<?php if ($vis['introduction']): $strip = $list('intro_strip'); ?>
+<?php if ($vis['introduction']):
+    $strip = $list('intro_strip');
+    $displayStrip = $strip;
+    if (empty($displayStrip)) {
+        $displayStrip = [
+            ['icon' => 'fa-location-dot', 'text' => 'AV Info Tech Park, Saravanampatti'],
+            ['icon' => 'fa-clock', 'text' => 'Flexible 24/7 Workspace Access'],
+            ['icon' => 'fa-wifi', 'text' => 'High-Speed Wi-Fi & Modern Amenities'],
+            ['icon' => 'fa-users', 'text' => 'Startups, Freelancers & Teams']
+        ];
+    }
+    $introHeading = $val('intro_heading');
+    if ($introHeading === '') {
+        $introHeading = 'Why Choose Workiify ' . $e($s['title']) . ' in Coimbatore?';
+    }
+?>
 <!-- Introduction -->
-<section class="section-padding<?php echo $bg(); ?>" id="sec-introduction">
-    <div class="container text-center max-w-1100">
-        <?php if ($val('intro_text') !== ''): ?><p style="font-size: 1.1rem; color: var(--text-muted);"><?php echo $para($val('intro_text')); ?></p><?php endif; ?>
-        <?php if ($val('intro_btn_text') !== ''): ?><a href="<?php echo $href($val('intro_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary mt-4"><?php echo $e($val('intro_btn_text')); ?></a><?php endif; ?>
-        <?php if ($strip): ?>
-        <div class="sw-proof">
-            <?php foreach ($strip as $r): ?><span><?php if ($icon($r['icon'] ?? '')): ?><i class="fas <?php echo $icon($r['icon']); ?>"></i><?php endif; ?><?php echo $e($r['text'] ?? ''); ?></span><?php endforeach; ?>
+<section class="section-padding<?php echo $bg(); ?> sw-intro-section" id="sec-introduction">
+    <div class="container max-w-1100">
+        <div class="sw-intro-card" data-aos="fade-up">
+            <div class="sw-intro-header">
+                <span class="sw-intro-eyebrow">
+                    <i class="fas fa-sparkles"></i> Overview &amp; Highlights
+                </span>
+                <h2 class="sw-intro-title"><?php echo $e($introHeading); ?></h2>
+            </div>
+
+            <?php if ($val('intro_text') !== ''): ?>
+            <div class="sw-intro-body">
+                <p class="sw-intro-lead"><?php echo $para($val('intro_text')); ?></p>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($displayStrip)): ?>
+            <div class="sw-intro-highlights">
+                <?php foreach ($displayStrip as $r):
+                    $ic = $icon($r['icon'] ?? '');
+                    if (!$ic) $ic = 'fa-check-circle';
+                    $tx = $e($r['text'] ?? '');
+                    if ($tx === '') continue;
+                ?>
+                <div class="sw-intro-pill">
+                    <div class="sw-intro-pill-icon"><i class="fas <?php echo $ic; ?>"></i></div>
+                    <span class="sw-intro-pill-text"><?php echo $tx; ?></span>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if ($val('intro_btn_text') !== ''): ?>
+            <div class="sw-intro-actions">
+                <a href="<?php echo $href($val('intro_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary sw-intro-btn">
+                    <span><?php echo $e($val('intro_btn_text')); ?></span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <div class="sw-intro-subnote">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Flexible Plans &bull; Instant Walk-in Tours &bull; Zero Setup Hassle</span>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
     </div>
 </section>
 <?php endif; ?>

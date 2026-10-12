@@ -89,29 +89,29 @@
                 </div>
             </div>
 
-            <form id="enquiryForm" action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form">
+            <form id="enquiryForm" action="<?php echo URLROOT; ?>/contact-us" method="POST" class="enquiry-form" novalidate>
                 <input type="hidden" name="source" value="contact">
                 <div class="form-row">
                     <div class="form-group" style="margin: 0;">
-                        <label for="companyName">Company Name *</label>
-                        <input type="text" id="companyName" name="companyName" placeholder="Enter your company name" required maxlength="150" style="background: #fff;">
+                        <label for="companyName">Company Name <span class="required-star">*</span></label>
+                        <input type="text" id="companyName" name="companyName" placeholder="Company Name" required maxlength="150" style="background: #fff;">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="companyAddress">Company Address *</label>
-                        <input type="text" id="companyAddress" name="companyAddress" placeholder="Enter your company address" required maxlength="250" style="background: #fff;">
+                        <label for="companyAddress">Company Address <span class="required-star">*</span></label>
+                        <input type="text" id="companyAddress" name="companyAddress" placeholder="Company Address" required maxlength="250" style="background: #fff;">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="contactNo">Contact No. *</label>
-                        <input type="tel" id="contactNo" name="contactNo" placeholder="+91 98765 43210" required pattern="[6-9][0-9]{9}" style="background: #fff;">
+                        <label for="contactNo">Contact No. <span class="required-star">*</span></label>
+                        <input type="tel" id="contactNo" name="contactNo" placeholder="Contact No." required pattern="[6-9][0-9]{9}" style="background: #fff;">
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="email">Organization E-Mail ID *</label>
-                        <input type="email" id="email" name="email" placeholder="you@company.com" required style="background: #fff;">
+                        <label for="email">Organization E-Mail ID <span class="required-star">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="Organization E-Mail ID" required style="background: #fff;">
                     </div>
                 </div>
                 <div class="form-row" style="margin-top: 1.5rem;">
                     <div class="form-group" style="margin: 0;">
-                        <label for="reqType">Requirement *</label>
+                        <label for="reqType">Requirement <span class="required-star">*</span></label>
                         <div class="select-wrapper">
                             <select id="reqType" name="reqType" required style="background: #fff; color: var(--text-muted);" onchange="this.style.color='var(--text-main)';">
                                 <option value="" disabled selected>Select Requirement Type</option>
@@ -122,13 +122,13 @@
                         </div>
                     </div>
                     <div class="form-group" style="margin: 0;">
-                        <label for="reqValue">Requirement Value *</label>
+                        <label for="reqValue">Requirement Value <span class="required-star">*</span></label>
                         <input type="number" id="reqValue" name="reqValue" required min="1" disabled placeholder="Select a type first" style="background: #f8fafc;">
                     </div>
                 </div>
                 <div class="form-group" style="margin-top: 1.5rem; margin-bottom: 2rem;">
                     <label for="additional">Any Additional Requirements?</label>
-                    <textarea id="additional" name="additional" placeholder="Tell us more about your requirements..." maxlength="1000" rows="3" style="background: #fff;"></textarea>
+                    <textarea id="additional" name="additional" placeholder="Optional — Any Additional Requirements?" maxlength="1000" rows="3" style="background: #fff;"></textarea>
                 </div>
                 <div class="enquiry-result" role="status" aria-live="polite"></div>
                 <button type="submit" class="btn btn-primary w-100" style="padding: 1.2rem; font-size: 1.05rem; border-radius: 12px; font-weight: 600;">
