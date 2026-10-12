@@ -59,7 +59,7 @@
         <input type="text" class="admin-form-control" value="<?php echo $data['enquiry']->email_sent ? 'Sent successfully' : 'Failed to send (enquiry is still saved here)'; ?>" disabled>
     </div>
 
-    <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--border-color);">
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--admin-border);">
 
     <form action="<?php echo URLROOT; ?>/admin/enquiry_view/<?php echo $data['enquiry']->id; ?>" method="POST">
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrf_token']); ?>">

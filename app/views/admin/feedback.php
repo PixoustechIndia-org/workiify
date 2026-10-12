@@ -56,7 +56,7 @@
                         </td>
                         <td>
                             <?php if ($item->show_on_home): ?>
-                                <span style="color: var(--primary-color);"><i class="fas fa-check-circle"></i> Yes</span>
+                                <span style="color: var(--admin-primary);"><i class="fas fa-check-circle"></i> Yes</span>
                             <?php else: ?>
                                 <span style="color: #9ca3af;">-</span>
                             <?php endif; ?>
@@ -76,28 +76,5 @@
         </table>
     </div>
 </div>
-
-<style>
-    .admin-status-badge {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    .admin-status-badge.pending {
-        background-color: #fef3c7;
-        color: #d97706;
-    }
-    .admin-status-badge.approved {
-        background-color: #d1fae5;
-        color: #059669;
-    }
-    .admin-status-badge.rejected {
-        background-color: #fee2e2;
-        color: #dc2626;
-    }
-</style>
 
 <?php require APPROOT . '/views/admin/inc/footer.php'; ?>

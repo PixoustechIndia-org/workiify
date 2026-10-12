@@ -129,12 +129,9 @@
 
         <div class="photo-strip mt-4">
             <?php foreach ($data['communityPhotos'] as $i => $photo): $p = $photo['data']; ?>
-            <div class="strip-item community-gallery-item" data-caption="<?php echo htmlspecialchars($p['alt'] ?? 'Community Event'); ?>" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+            <div class="strip-item community-gallery-item" data-category="events" data-caption="<?php echo htmlspecialchars($p['alt'] ?? 'Community Event'); ?>" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
                 <img src="<?php echo URLROOT . htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['alt']); ?>" loading="lazy" decoding="async">
-                <div class="strip-item-overlay">
-                    <span class="strip-item-zoom"><i class="fas fa-search-plus"></i></span>
-                    <span class="strip-item-caption"><?php echo htmlspecialchars($p['alt'] ?? 'Community Event'); ?></span>
-                </div>
+                <div class="gallery-caption"><?php echo htmlspecialchars($p['alt'] ?? 'Community Event'); ?></div>
             </div>
             <?php endforeach; ?>
         </div>

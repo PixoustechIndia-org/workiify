@@ -37,7 +37,7 @@
             <small class="admin-form-text">Check to feature this testimonial on the main website sections.</small>
         </div>
 
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--border-color);">
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--admin-border);">
 
         <div class="admin-form-group">
             <label class="admin-form-label">Full Name</label>
