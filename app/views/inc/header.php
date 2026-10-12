@@ -63,12 +63,16 @@
                         </div>
                         <div class="dropdown-menu-wrap">
                             <ul class="dropdown-menu">
-                                <li><a href="<?php echo URLROOT; ?>/services/hot-desk"><i class="fas fa-chair"></i>Hot Desk</a></li>
-                                <li><a href="<?php echo URLROOT; ?>/services/dedicated-desk"><i class="fas fa-desktop"></i>Dedicated Desk</a></li>
-                                <li><a href="<?php echo URLROOT; ?>/services/private-office"><i class="fas fa-door-closed"></i>Private Office</a></li>
-                                <li><a href="<?php echo URLROOT; ?>/services/meeting-room"><i class="fas fa-users"></i>Meeting Room</a></li>
-                                <li><a href="<?php echo URLROOT; ?>/services/event-spaces"><i class="fas fa-calendar-days"></i>Event Spaces</a></li>
-                                <li><a href="<?php echo URLROOT; ?>/services/coworking-space-coimbatore"><i class="fas fa-city"></i>Co Working Space</a></li>
+                                <?php
+                                    // Menu entries come from Admin > Services (Show in menu).
+                                    require_once APPROOT . '/models/Service_model.php';
+                                    $navServices = (new Service_model())->navItems();
+                                    foreach ($navServices as $navSvc):
+                                        $navLabel = $navSvc['nav_label'] !== '' ? $navSvc['nav_label'] : $navSvc['title'];
+                                        $navIcon = $navSvc['nav_icon'] !== '' ? $navSvc['nav_icon'] : 'fa-briefcase';
+                                ?>
+                                <li><a href="<?php echo URLROOT; ?>/services/<?php echo htmlspecialchars($navSvc['slug']); ?>"><span class="dd-icon"><i class="fas <?php echo htmlspecialchars($navIcon); ?>"></i></span><span class="dd-text"><strong><?php echo htmlspecialchars($navLabel); ?></strong><?php if ($navSvc['nav_blurb'] !== ''): ?><small><?php echo htmlspecialchars($navSvc['nav_blurb']); ?></small><?php endif; ?></span></a></li>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
                     </li>

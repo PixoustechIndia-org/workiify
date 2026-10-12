@@ -3,6 +3,7 @@ class Admin extends Controller {
     private $adminModel;
     private $contentModel;
     private $mediaModel;
+    private $serviceModel;
 
     public function __construct() {
         if (session_status() === PHP_SESSION_NONE) {
@@ -13,6 +14,7 @@ class Admin extends Controller {
         $this->mediaModel = $this->model('Media_model');
         $this->testimonialModel = $this->model('Testimonial');
         $this->enquiryModel = $this->model('Enquiry');
+        $this->serviceModel = $this->model('Service_model');
     }
 
     private function requireLogin() {
@@ -149,11 +151,44 @@ class Admin extends Controller {
         return $path;
     }
 
+    // Reads one form field out of $_POST according to its type. Returns the value to store, or
+    // null when the field should be left as it is (e.g. an image input with nothing chosen).
+    private function fieldValueFromPost(array $f) {
+        switch ($f['type']) {
+            case 'heading':
+                return null;
+            case 'image':
+                $uploaded = $this->handleUpload($f['key']);
+                if ($uploaded) return $uploaded;
+                return isset($_POST[$f['key'] . '_existing']) ? (string)$_POST[$f['key'] . '_existing'] : null;
+            case 'toggle':
+                return isset($_POST[$f['key']]) ? '1' : '0';
+            case 'select':
+                $v = (string)($_POST[$f['key']] ?? '');
+                return array_key_exists($v, $f['options']) ? $v : null;
+            default:
+                return $this->clamp(trim((string)($_POST[$f['key']] ?? '')), $f);
+        }
+    }
+
+    // The values the Service Settings screen shows, taken from the service's own row.
+    private function serviceSettingsValues(array $svc, array $fields) {
+        $out = [];
+        foreach ($fields as $f) {
+            $k = $f['key'];
+            if ($f['type'] === 'heading') continue;
+            if ($k === 'card_features') { $out[$k] = implode("\n", $svc['card_features']); continue; }
+            if ($f['type'] === 'toggle') { $out[$k] = !empty($svc[$k]) ? '1' : '0'; continue; }
+            $out[$k] = (string)($svc[$k] ?? '');
+        }
+        return $out;
+    }
+
     // One combined edit screen per nav section (text/images on top, repeatable
-    // entries below), e.g. /admin/section/home/our-services
+    // entries below), e.g. /admin/section/home/our-services or /admin/section/svc3/faq
     public function section($page = '', $key = '') {
         $this->requireLogin();
-        if (!isset(Home_content_model::pages()[$page])) {
+        if (!Home_content_model::pageExists($page)) {
             header('Location: ' . URLROOT . '/admin');
             exit;
         }
@@ -168,39 +203,62 @@ class Admin extends Controller {
             exit;
         }
 
+        $svc = Home_content_model::isServicePage($page) ? $this->serviceModel->get(Home_content_model::servicePageId($page)) : null;
         $message = '';
+        $errors = [];
         $fieldsData = null;
 
         if (!empty($section['fields'])) {
             $fieldGroups = Home_content_model::fieldGroups($page);
             $fieldsSchema = $fieldGroups[$section['fields']];
+            $inputFields = array_values(array_filter($fieldsSchema['fields'], function ($f) { return $f['type'] !== 'heading'; }));
+            $fieldKeys = array_column($inputFields, 'key');
+            $isSettings = !empty($section['settings']) && $svc;
+            $values = null;
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $this->checkCsrf();
 
-                $fieldKeys = array_column($fieldsSchema['fields'], 'key');
-                $before = $this->contentModel->getFields($fieldKeys);
-                $this->contentModel->saveRevision('fields', $section['key'], $section['label'], $before);
-
-                foreach ($fieldsSchema['fields'] as $f) {
-                    if ($f['type'] === 'image') {
-                        $uploaded = $this->handleUpload($f['key']);
-                        if ($uploaded) {
-                            $this->contentModel->setField($f['key'], $uploaded);
-                        } elseif (isset($_POST[$f['key'] . '_existing'])) {
-                            $this->contentModel->setField($f['key'], $_POST[$f['key'] . '_existing']);
+                if ($isSettings) {
+                    // Service Settings live on the service's own record (so the menu, the Services page and
+                    // the URL router can find them), not in the page-content tables.
+                    $in = $_POST;
+                    $in['card_image'] = $this->serviceUpload('card_image', 'Card photo', $errors) ?: (string)($_POST['card_image_existing'] ?? '');
+                    [$clean, $validationErrors] = $this->serviceModel->validateSettings($in, $svc, $this->contentModel->getFields(['banner_heading']));
+                    $errors = array_merge($errors, $validationErrors);
+                    if (empty($errors)) {
+                        try {
+                            $this->serviceModel->saveSettings($svc['id'], $clean);
+                            $this->setFlash('Settings saved' . ($clean['status'] === 'published' ? ' and live on the site.' : ' (this service is still a draft).'), 'success');
+                            header('Location: ' . URLROOT . '/admin/section/' . $page . '/' . $key);
+                            exit;
+                        } catch (Throwable $e) {
+                            error_log('Service settings save failed: ' . $e->getMessage());
+                            $errors[] = 'Could not save (a database error occurred). Nothing was changed.';
                         }
-                    } else {
-                        $this->contentModel->setField($f['key'], $this->clamp(trim($_POST[$f['key']] ?? ''), $f));
                     }
+                    // show what was typed, so nothing is lost
+                    $values = [];
+                    foreach ($inputFields as $f) {
+                        $values[$f['key']] = $f['type'] === 'toggle' ? (isset($_POST[$f['key']]) ? '1' : '0') : (string)($f['key'] === 'card_image' ? $in['card_image'] : ($_POST[$f['key']] ?? ''));
+                    }
+                } else {
+                    $before = $this->contentModel->getFields($fieldKeys);
+                    $this->contentModel->saveRevision('fields', $section['key'], $section['label'], $before);
+                    foreach ($inputFields as $f) {
+                        $value = $this->fieldValueFromPost($f);
+                        if ($value !== null) {
+                            $this->contentModel->setField($f['key'], $value);
+                        }
+                    }
+                    $message = 'Saved successfully.';
                 }
-                $message = 'Saved successfully.';
             }
 
-            $fieldsData = [
-                'schema' => $fieldsSchema,
-                'values' => $this->contentModel->getFields(array_column($fieldsSchema['fields'], 'key')),
-            ];
+            if ($values === null) {
+                $values = $isSettings ? $this->serviceSettingsValues($svc, $inputFields) : $this->contentModel->getFields($fieldKeys);
+            }
+            $fieldsData = ['schema' => $fieldsSchema, 'values' => $values];
         }
 
         $itemsData = null;
@@ -218,9 +276,15 @@ class Admin extends Controller {
             'page' => $page,
             'navKey' => $key,
             'sectionLabel' => $section['label'],
+            'sectionHelp' => $section['help'] ?? '',
+            'pageLabel' => Home_content_model::pageLabel($page),
+            'isService' => (bool)$svc,
+            'publicUrl' => Home_content_model::pagePublicUrl($page),
+            'serviceStatus' => $svc ? $svc['status'] : null,
             'fieldsData' => $fieldsData,
             'itemsData' => $itemsData,
             'message' => $message,
+            'errors' => $errors,
             'flash' => $this->takeFlash(),
             'csrfToken' => $this->csrfToken(),
             'mediaAssets' => $this->mediaModel->getAll(),
@@ -271,6 +335,10 @@ class Admin extends Controller {
     // edit screen's live-preview panel; never writes anything.
     public function preview($page = '') {
         $this->requireLogin();
+        if (Home_content_model::isServicePage($page)) {
+            $this->previewService($page);
+            return;
+        }
         if (!isset(Home_content_model::pages()[$page])) {
             http_response_code(404);
             exit;
@@ -319,7 +387,7 @@ class Admin extends Controller {
     // Add or edit one item, e.g. /admin/item-edit/home/services/new or /admin/item-edit/home/services/5
     public function item_edit($page = '', $section = '', $id = 'new') {
         $this->requireLogin();
-        if (!isset(Home_content_model::pages()[$page])) {
+        if (!Home_content_model::pageExists($page)) {
             header('Location: ' . URLROOT . '/admin');
             exit;
         }
@@ -384,6 +452,7 @@ class Admin extends Controller {
 
         $this->view('admin/item_edit', [
             'title' => ($isNew ? 'Add' : 'Edit') . ' ' . $schema['label'] . ' - Admin - Workiify',
+            'pageLabel' => Home_content_model::pageLabel($page),
             'page' => $page,
             'section' => $section,
             'navKey' => $navKey,
@@ -435,7 +504,7 @@ class Admin extends Controller {
     // Delete one item (POST only), e.g. posts to /admin/item-delete/home/services/5
     public function item_delete($page = '', $section = '', $id = '') {
         $this->requireLogin();
-        if (!isset(Home_content_model::pages()[$page])) {
+        if (!Home_content_model::pageExists($page)) {
             header('Location: ' . URLROOT . '/admin');
             exit;
         }
@@ -468,6 +537,9 @@ class Admin extends Controller {
         $this->requireLogin();
         $pageLabels = Home_content_model::pages();
         $revisions = Home_content_model::getRecentRevisions(50);
+        foreach ($revisions as $r) {
+            if (!isset($pageLabels[$r['page']])) $pageLabels[$r['page']] = Home_content_model::pageLabel($r['page']);
+        }
 
         foreach ($revisions as &$rev) {
             $rev['sectionLabel'] = $rev['section_key'];
@@ -507,6 +579,208 @@ class Admin extends Controller {
         }
         header('Location: ' . URLROOT . '/admin/history');
         exit;
+    }
+
+    // ---- Services Module -----------------------------------------------
+    // Adding, removing, publishing and ordering services. A service's own content is edited
+    // through the same section screens as every other page (see section() above).
+
+    // Only ever redirects back into the services area.
+    private function serviceReturnPath() {
+        $r = $_POST['return'] ?? '';
+        if (is_string($r) && strpos($r, '/admin/services') === 0 && !preg_match('/[\r\n]/', $r)) {
+            return $r;
+        }
+        return '/admin/services';
+    }
+
+    // Handles one image input. Returns the new library path, null when nothing was uploaded,
+    // and records a message when an upload was rejected.
+    private function serviceUpload($key, $label, array &$errors) {
+        $file = $_FILES[$key] ?? null;
+        if (!$file || $file['error'] === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $errors[] = $label . ': the upload failed (the file may be larger than the server allows).';
+            return null;
+        }
+        if ($file['size'] > 5 * 1024 * 1024) {
+            $errors[] = $label . ': the image is larger than 5 MB.';
+            return null;
+        }
+        $path = $this->handleUpload($key);
+        if (!$path) {
+            $errors[] = $label . ': please upload a JPG, PNG, WebP or GIF image.';
+        }
+        return $path;
+    }
+
+    public function services() {
+        $this->requireLogin();
+        $this->view('admin/services', [
+            'title' => 'Services - Admin - Workiify',
+            'services' => $this->serviceModel->adminList(false),
+            'trashed' => $this->serviceModel->adminList(true),
+            'offline' => Service_model::isOffline(),
+            'categories' => Service_model::categories(),
+            'flash' => $this->takeFlash(),
+            'csrfToken' => $this->csrfToken(),
+        ]);
+    }
+
+    // Add a service: it gets the shared page template, blank or copied from another service.
+    public function service_new() {
+        $this->requireLogin();
+        $errors = [];
+        $form = ['title' => '', 'slug' => '', 'category' => 'workspaces', 'copy_from' => 0];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $form['title'] = (string)($_POST['title'] ?? '');
+            $form['slug'] = (string)($_POST['slug'] ?? '');
+            $form['category'] = (string)($_POST['category'] ?? 'workspaces');
+            $form['copy_from'] = (int)($_POST['copy_from'] ?? 0);
+
+            [$title, $slug, $category] = $this->serviceModel->validateIdentity($form['title'], $form['slug'], $form['category'], 0, $errors);
+            $copy = null;
+            if ($form['copy_from']) {
+                $copy = $this->serviceModel->get($form['copy_from']);
+                if (!$copy || $copy['deleted_at']) {
+                    $errors[] = 'The service you chose to copy no longer exists.';
+                }
+            }
+            if (empty($errors)) {
+                try {
+                    $id = $this->serviceModel->create($title, $slug, $category, $copy ? $copy['id'] : 0);
+                    $this->setFlash('"' . $title . '" was created as a draft using the shared page template. Fill in its sections, then set it to Published in Service Settings.', 'success');
+                    header('Location: ' . URLROOT . '/admin/section/' . Service_model::pageKey($id) . '/banner');
+                    exit;
+                } catch (Throwable $e) {
+                    error_log('Service create failed: ' . $e->getMessage());
+                    $errors[] = 'Could not create the service (a database error occurred).';
+                }
+            }
+        }
+
+        $this->view('admin/service_new', [
+            'title' => 'Add a Service - Admin - Workiify',
+            'form' => $form,
+            'errors' => $errors,
+            'categories' => Service_model::categories(),
+            'existing' => $this->serviceModel->adminList(false),
+            'csrfToken' => $this->csrfToken(),
+        ]);
+    }
+
+    // POST-only actions from the list screen, e.g. /admin/service-action/trash/7
+    public function service_action($action = '', $id = '') {
+        $this->requireLogin();
+        $back = function () {
+            header('Location: ' . URLROOT . $this->serviceReturnPath());
+            exit;
+        };
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . URLROOT . '/admin/services');
+            exit;
+        }
+        $this->checkCsrf();
+
+        $svc = $this->serviceModel->get((int)$id);
+        if (!$svc) {
+            $this->setFlash('That service no longer exists.', 'error');
+            $back();
+        }
+        $name = '"' . $svc['title'] . '"';
+
+        switch ($action) {
+            case 'publish':
+                $this->contentModel->setPage(Service_model::pageKey($svc['id']));
+                $heading = $this->contentModel->getField('banner_heading', '');
+                if (trim($heading) === '') {
+                    $this->setFlash($name . ' has no main heading yet. Open its Page Banner, add one, then publish.', 'error');
+                } elseif ($svc['show_on_listing'] && $svc['card_summary'] === '') {
+                    $this->setFlash($name . ' has no short description for its card yet. Open Service Settings and add one (or hide it from the Services page), then publish.', 'error');
+                } else {
+                    $this->serviceModel->setFlag($svc['id'], 'status', 'published');
+                    $this->setFlash($name . ' is now live.', 'success');
+                }
+                break;
+            case 'unpublish':
+                $this->serviceModel->setFlag($svc['id'], 'status', 'draft');
+                $this->setFlash($name . ' was unpublished: it is now a draft and hidden from visitors.', 'success');
+                break;
+            case 'up':
+            case 'down':
+                if (!$this->serviceModel->move($svc['id'], $action)) {
+                    $this->setFlash($name . ' is already at the ' . ($action === 'up' ? 'top' : 'bottom') . ' of its category.', 'info');
+                }
+                break;
+            case 'trash':
+                $this->serviceModel->trash($svc['id']);
+                $this->setFlash($name . ' was removed from the site. You can bring it back from "Recently removed" below.', 'success');
+                break;
+            case 'restore':
+                $this->serviceModel->restore($svc['id']);
+                $this->setFlash($name . ' was restored as a draft. Review it, then publish when ready.', 'success');
+                break;
+            case 'purge':
+                if (!$svc['deleted_at']) {
+                    $this->setFlash('Remove it first.', 'error');
+                } elseif ($this->serviceModel->purge($svc['id'])) {
+                    $this->setFlash($name . ' was permanently deleted, along with all of its content.', 'success');
+                }
+                break;
+            default:
+                $this->setFlash('Unknown action.', 'error');
+        }
+        $back();
+    }
+
+    // Moves one entry up/down within its list (POST only), e.g. /admin/item-move/svc3/faq/12/up
+    public function item_move($page = '', $section = '', $id = '', $direction = '') {
+        $this->requireLogin();
+        if (!Home_content_model::pageExists($page)) {
+            header('Location: ' . URLROOT . '/admin');
+            exit;
+        }
+        $this->contentModel->setPage($page);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($direction, ['up', 'down'], true)) {
+            $this->checkCsrf();
+            $existing = $this->contentModel->getItem((int)$id);
+            if ($existing && $existing['page'] === $page && $existing['section_key'] === $section) {
+                $this->contentModel->moveItem((int)$id, $direction);
+            }
+        }
+        header('Location: ' . URLROOT . '/admin/section/' . $page . '/' . Home_content_model::navKeyForItems($section, $page));
+        exit;
+    }
+
+    // Live preview of a service page with the section form's unsaved edits applied.
+    private function previewService($page) {
+        $svc = $this->serviceModel->get(Home_content_model::servicePageId($page));
+        if (!$svc || $svc['deleted_at']) {
+            http_response_code(404);
+            exit;
+        }
+        $this->checkCsrf();
+        $content = $this->serviceModel->pageContent($svc['id']);
+        $overrides = json_decode($_POST['fields_json'] ?? '[]', true);
+        if (is_array($overrides)) {
+            foreach ($overrides as $k => $v) {
+                if (array_key_exists($k, $content['f'])) {
+                    $content['f'][$k] = is_string($v) ? $v : '';
+                }
+            }
+        }
+        $this->view('pages/service_page', [
+            'title' => $svc['title'] . ' - Workiify',
+            'service' => $svc,
+            'content' => $content,
+            'related' => $this->serviceModel->related($svc['id']),
+            'isDraft' => false,
+            'hideTourBand' => true,
+        ]);
     }
 
     // ---- Feedback Module ----------------------------------------------

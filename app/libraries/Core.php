@@ -38,7 +38,9 @@ class Core {
         if(isset($url[1])){
             $methodName = str_replace('-', '_', $url[1]);
             // Check to see if method exists in controller
-            if(method_exists($this->currentController, $methodName)){
+            // is_callable (not just method_exists) so private/protected helpers on a
+            // controller can never be reached through the URL.
+            if(method_exists($this->currentController, $methodName) && is_callable([$this->currentController, $methodName])){
                 $this->currentMethod = $methodName;
                 unset($url[1]);
             }

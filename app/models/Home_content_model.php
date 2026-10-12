@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/Service_model.php';
 // Despite the class name (kept for backward compatibility with the Home
 // controller), this model now drives the CMS for any page, not just Home --
 // every row in home_fields/home_items is scoped by a `page` column, and
@@ -428,16 +429,82 @@ class Home_content_model {
         ];
     }
 
+    // ---- Service pages -------------------------------------------------
+    // Every service is a CMS page too (page key "svc<id>"), built from one shared template
+    // described by Service_schema, so it is edited with exactly the same admin screens.
+    public static function isServicePage($page) {
+        return (bool)preg_match('/^svc[0-9]+$/', (string)$page);
+    }
+
+    public static function servicePageId($page) {
+        return self::isServicePage($page) ? (int)substr($page, 3) : 0;
+    }
+
+    private static function serviceRow($page) {
+        static $cache = [];
+        if (!isset($cache[$page])) {
+            $cache[$page] = (new Service_model())->get(self::servicePageId($page));
+        }
+        return $cache[$page];
+    }
+
+    // True for the static CMS pages and for any service that exists and is not in the Trash.
+    public static function pageExists($page) {
+        if (isset(self::pages()[$page])) return true;
+        if (!self::isServicePage($page)) return false;
+        $svc = self::serviceRow($page);
+        return $svc && !$svc['deleted_at'];
+    }
+
+    public static function pageLabel($page) {
+        if (isset(self::pages()[$page])) return self::pages()[$page];
+        if (self::isServicePage($page)) {
+            $svc = self::serviceRow($page);
+            return $svc ? $svc['title'] : 'Service #' . self::servicePageId($page);
+        }
+        return $page;
+    }
+
+    // Public URL of a CMS page (for "View page" links), or null.
+    public static function pagePublicUrl($page) {
+        $map = ['home' => '/', 'about' => '/about-us', 'contact' => '/contact-us', 'gallery' => '/gallery'];
+        if (isset($map[$page])) return $map[$page];
+        $svc = self::isServicePage($page) ? self::serviceRow($page) : null;
+        return $svc ? '/services/' . $svc['slug'] : null;
+    }
+
     public static function fieldGroups($page = 'home') {
+        if (self::isServicePage($page)) return Service_schema::fieldGroups();
         return self::allFieldGroups()[$page] ?? [];
     }
 
     public static function itemSchemas($page = 'home') {
+        if (self::isServicePage($page)) return Service_schema::itemSchemas();
         return self::allItemSchemas()[$page] ?? [];
     }
 
     public static function navSections($page = 'home') {
+        if (self::isServicePage($page)) return self::serviceNavSections($page);
         return self::allNavSections()[$page] ?? [];
+    }
+
+    // Settings first, then every template section in page order, each flagged when switched off.
+    private static function serviceNavSections($page) {
+        $db = new Database();
+        $db->query("SELECT field_key, field_value FROM home_fields WHERE page = :p AND field_key LIKE '%\\_show'");
+        $db->bind(':p', $page);
+        $show = [];
+        foreach ($db->resultSet() as $r) $show[$r->field_key] = $r->field_value;
+
+        $out = [Service_schema::settingsSection()];
+        foreach (Service_schema::contentSections() as $s) {
+            $group = Service_schema::fieldGroups()[$s['fields']];
+            $toggleKey = null;
+            foreach ($group['fields'] as $f) { if ($f['type'] === 'toggle') { $toggleKey = $f['key']; break; } }
+            $s['off'] = $toggleKey !== null && (($show[$toggleKey] ?? '0') !== '1');
+            $out[] = $s;
+        }
+        return $out;
     }
 
     // Reverse lookup: given a repeatable-items key (e.g. 'services') on a given
@@ -533,6 +600,59 @@ class Home_content_model {
         $this->db->query('DELETE FROM home_items WHERE id = :id');
         $this->db->bind(':id', $id);
         return $this->db->execute();
+    }
+
+    // Everything on the current page in one query each (fields as key => value, items as
+    // section => [data, ...]); used by the public service template.
+    public function getAllFields() {
+        $this->db->query('SELECT field_key, field_value FROM home_fields WHERE page = :p');
+        $this->db->bind(':p', $this->page);
+        $out = [];
+        foreach ($this->db->resultSet() as $r) $out[$r->field_key] = (string)$r->field_value;
+        return $out;
+    }
+
+    public function getAllItems() {
+        $this->db->query('SELECT section_key, data FROM home_items WHERE page = :p ORDER BY sort_order ASC, id ASC');
+        $this->db->bind(':p', $this->page);
+        $out = [];
+        foreach ($this->db->resultSet() as $r) $out[$r->section_key][] = json_decode($r->data, true) ?: [];
+        return $out;
+    }
+
+    // Removes every field and item of the current page (and optionally its undo history).
+    public function deletePage($withRevisions = false) {
+        foreach (['home_fields', 'home_items'] as $table) {
+            $this->db->query("DELETE FROM $table WHERE page = :p");
+            $this->db->bind(':p', $this->page);
+            $this->db->execute();
+        }
+        if ($withRevisions) {
+            $this->db->query('DELETE FROM content_revisions WHERE page = :p');
+            $this->db->bind(':p', $this->page);
+            $this->db->execute();
+        }
+    }
+
+    // Moves one item up or down within its section (swaps positions with its neighbour).
+    public function moveItem($id, $direction) {
+        $item = $this->getItem((int)$id);
+        if (!$item) return false;
+        $this->db->query('SELECT id FROM home_items WHERE page = :p AND section_key = :s ORDER BY sort_order ASC, id ASC');
+        $this->db->bind(':p', $item['page']);
+        $this->db->bind(':s', $item['section_key']);
+        $ids = array_map(function ($r) { return (int)$r->id; }, $this->db->resultSet());
+        $pos = array_search((int)$id, $ids, true);
+        $to = $direction === 'up' ? $pos - 1 : $pos + 1;
+        if ($pos === false || $to < 0 || $to >= count($ids)) return false;
+        [$ids[$pos], $ids[$to]] = [$ids[$to], $ids[$pos]];
+        foreach ($ids as $order => $iid) {   // renumber so ties can never block a move
+            $this->db->query('UPDATE home_items SET sort_order = :o WHERE id = :id');
+            $this->db->bind(':o', $order);
+            $this->db->bind(':id', $iid);
+            $this->db->execute();
+        }
+        return true;
     }
 
     // ---- Undo history -------------------------------------------------

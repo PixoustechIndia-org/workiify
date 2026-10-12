@@ -1,8 +1,21 @@
 <?php require APPROOT . '/views/admin/inc/header.php'; ?>
 
 <div class="admin-wrap">
+    <?php if (!empty($data['isService'])): ?>
+        <a href="<?php echo URLROOT; ?>/admin/services" class="admin-back-link"><i class="fas fa-arrow-left"></i> All Services</a>
+    <?php endif; ?>
     <div class="admin-page-header">
-        <h1><?php echo htmlspecialchars($data['sectionLabel']); ?></h1>
+        <div>
+            <h1><?php echo htmlspecialchars($data['sectionLabel']); ?></h1>
+            <?php if (!empty($data['isService'])): ?>
+                <p class="admin-page-subtitle admin-service-context">
+                    <strong><?php echo htmlspecialchars($data['pageLabel']); ?></strong>
+                    <span class="admin-status-chip <?php echo $data['serviceStatus'] === 'published' ? 'is-live' : 'is-draft'; ?>"><?php echo $data['serviceStatus'] === 'published' ? 'Published' : 'Draft'; ?></span>
+                    <?php if (!empty($data['publicUrl'])): ?><a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener">View page <i class="fas fa-arrow-up-right-from-square"></i></a><?php endif; ?>
+                </p>
+            <?php endif; ?>
+            <?php if (!empty($data['sectionHelp'])): ?><p class="admin-page-subtitle"><?php echo htmlspecialchars($data['sectionHelp']); ?></p><?php endif; ?>
+        </div>
         <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-secondary admin-btn-sm">
             <i class="fas fa-desktop"></i> Live Preview
         </button>
@@ -15,6 +28,13 @@
         <div class="admin-<?php echo $data['flash']['type'] === 'error' ? 'error' : 'message'; ?>"><?php echo htmlspecialchars($data['flash']['message']); ?></div>
     <?php endif; ?>
 
+    <?php if (!empty($data['errors'])): ?>
+        <div class="admin-error" role="alert">
+            <strong>Please fix the following:</strong>
+            <ul style="margin:8px 0 0 18px; padding:0;"><?php foreach ($data['errors'] as $err): ?><li><?php echo htmlspecialchars($err); ?></li><?php endforeach; ?></ul>
+        </div>
+    <?php endif; ?>
+
     <?php if ($data['fieldsData']): ?>
         <div class="admin-card">
             <div class="admin-card-header">
@@ -25,21 +45,8 @@
 
                 <?php foreach ($data['fieldsData']['schema']['fields'] as $f):
                     $val = $data['fieldsData']['values'][$f['key']] ?? '';
-                ?>
-                    <label for="<?php echo $f['key']; ?>">
-                        <?php echo htmlspecialchars($f['label']); ?>
-                        <?php if (!empty($f['maxlength'])): ?><span class="admin-field-limit">max <?php echo $f['maxlength']; ?> characters</span><?php endif; ?>
-                    </label>
-                    <?php if ($f['type'] === 'textarea'): ?>
-                        <textarea id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>"<?php echo !empty($f['maxlength']) ? ' maxlength="' . $f['maxlength'] . '"' : ''; ?>><?php echo htmlspecialchars($val); ?></textarea>
-                    <?php elseif ($f['type'] === 'image'): ?>
-                        <?php require APPROOT . '/views/admin/inc/image_field.php'; ?>
-                    <?php elseif ($f['type'] === 'icon'): ?>
-                        <?php require APPROOT . '/views/admin/inc/icon_field.php'; ?>
-                    <?php else: ?>
-                        <input type="text" id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" value="<?php echo htmlspecialchars($val); ?>"<?php echo !empty($f['maxlength']) ? ' maxlength="' . $f['maxlength'] . '"' : ''; ?>>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                    require APPROOT . '/views/admin/inc/field_input.php';
+                endforeach; ?>
 
                 <div class="admin-actions">
                     <button type="submit" class="admin-btn"><i class="fas fa-check"></i> Save Changes</button>
@@ -88,7 +95,7 @@
             <?php if (empty($data['itemsData']['items'])): ?>
                 <p class="admin-empty">No entries yet. Click "+ Add New" to create one.</p>
             <?php else: ?>
-                <?php foreach ($data['itemsData']['items'] as $item):
+                <?php foreach ($data['itemsData']['items'] as $idx => $item):
                     $d = $item['data'];
                     $title = $d[$titleKey] ?? ('Item #' . $item['id']);
                     $sub = '';
@@ -105,6 +112,18 @@
                             <?php if ($sub): ?><span><?php echo htmlspecialchars($sub); ?></span><?php endif; ?>
                         </div>
                         <div class="admin-item-row-actions">
+                            <?php if ($count > 1): ?>
+                                <?php foreach (['up' => ['fa-chevron-up', $idx === 0], 'down' => ['fa-chevron-down', $idx === $count - 1]] as $dir => $cfg): ?>
+                                    <?php if ($cfg[1]): ?>
+                                        <span class="admin-move-btn is-disabled"><i class="fas <?php echo $cfg[0]; ?>"></i></span>
+                                    <?php else: ?>
+                                        <form method="POST" action="<?php echo URLROOT; ?>/admin/item-move/<?php echo $data['page']; ?>/<?php echo $data['itemsData']['sectionKey']; ?>/<?php echo $item['id']; ?>/<?php echo $dir; ?>" style="margin:0;">
+                                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
+                                            <button type="submit" class="admin-move-btn" title="Move <?php echo $dir; ?>"><i class="fas <?php echo $cfg[0]; ?>"></i></button>
+                                        </form>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                             <a href="<?php echo URLROOT; ?>/admin/item-edit/<?php echo $data['page']; ?>/<?php echo $data['itemsData']['sectionKey']; ?>/<?php echo $item['id']; ?>" class="admin-btn admin-btn-sm admin-btn-secondary"><i class="fas fa-pen"></i> Edit</a>
                             <?php if ($atMin): ?>
                                 <span class="admin-btn admin-btn-sm admin-btn-danger-ghost is-disabled" title="At least <?php echo $min; ?> required"><i class="fas fa-trash"></i> Delete</span>
@@ -171,8 +190,11 @@
     function collectFieldValues() {
         var values = {};
         if (!form) return values;
-        form.querySelectorAll('input[type="text"], textarea').forEach(function(el) {
+        form.querySelectorAll('input[type="text"], textarea, select').forEach(function(el) {
             if (el.id) values[el.id] = el.value;
+        });
+        form.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
+            if (el.id) values[el.id] = el.checked ? '1' : '0';
         });
         return values;
     }
@@ -225,6 +247,9 @@
     if (form) {
         form.querySelectorAll('input[type="text"], textarea').forEach(function(el) {
             el.addEventListener('input', scheduleRender);
+        });
+        form.querySelectorAll('select, input[type="checkbox"]').forEach(function(el) {
+            el.addEventListener('change', scheduleRender);
         });
     }
 })();

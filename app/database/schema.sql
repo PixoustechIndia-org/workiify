@@ -83,3 +83,39 @@ CREATE TABLE IF NOT EXISTS enquiries (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Services: one row per service, holding what the site needs to FIND it (name, URL, category,
+-- status, order, the card on the Services page, its menu entry and SEO text). The content of a
+-- service's page (every heading, paragraph, photo, card, FAQ ...) is stored in home_fields /
+-- home_items with page = 'svc<id>', exactly like the Home and About pages, and is edited with the
+-- same admin screens. Service_schema describes the sections of the one shared page template.
+-- NOTE: this table is created and seeded automatically by Service_model the first time it is
+-- needed, so running this file is optional (documentation / manual installs).
+--   deleted_at -> soft delete ("Recently removed"); restoring clears it, deleting forever removes
+--                 the row and the page's content
+--   old_slugs  -> JSON list of previous slugs, used for 301 redirects
+CREATE TABLE IF NOT EXISTS services (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(80) NOT NULL UNIQUE,
+    old_slugs TEXT NULL,
+    title VARCHAR(150) NOT NULL,
+    category VARCHAR(30) NOT NULL DEFAULT 'workspaces',
+    status ENUM('published','draft') NOT NULL DEFAULT 'draft',
+    sort_order INT NOT NULL DEFAULT 0,
+    show_on_listing TINYINT(1) NOT NULL DEFAULT 1,
+    show_in_nav TINYINT(1) NOT NULL DEFAULT 0,
+    card_image VARCHAR(255) NOT NULL DEFAULT '',
+    card_badge VARCHAR(80) NOT NULL DEFAULT '',
+    card_summary VARCHAR(300) NOT NULL DEFAULT '',
+    card_features TEXT NULL,
+    card_cta VARCHAR(60) NOT NULL DEFAULT '',
+    nav_label VARCHAR(60) NOT NULL DEFAULT '',
+    nav_icon VARCHAR(50) NOT NULL DEFAULT '',
+    nav_blurb VARCHAR(80) NOT NULL DEFAULT '',
+    meta_title VARCHAR(120) NOT NULL DEFAULT '',
+    meta_description VARCHAR(255) NOT NULL DEFAULT '',
+    deleted_at DATETIME NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_public (status, deleted_at, category, sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

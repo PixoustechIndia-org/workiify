@@ -1,67 +1,75 @@
 <?php
+/*
+ * Services
+ *   /services            -> the services listing
+ *   /services/{slug}     -> one service, looked up in the services table (managed in Admin > Services)
+ *
+ * Every service renders through the one shared template, pages/service_page, from its content in
+ * the admin (Service_schema describes the sections).
+ */
 class Services extends Controller {
-    public function index() {
-        $data = [
-            'title' => 'Services - Workiify'
-        ];
-        $this->view('pages/services', $data);
+    private $serviceModel;
+
+    public function __construct() {
+        $this->serviceModel = $this->model('Service_model');
     }
 
-    public function hot_desk() {
-        $data = [
-            'title' => 'Hot Desk - Workiify'
-        ];
-        $this->view('pages/services-hot-desk', $data);
+    public function index($slug = null, ...$extra) {
+        if ($slug === null || $slug === '') {
+            $this->view('pages/services', [
+                'title' => 'Services - Workiify',
+                'groups' => $this->serviceModel->listingGrouped(),
+            ]);
+            return;
+        }
+        if (!empty($extra)) {
+            $this->notFound();
+            return;
+        }
+        $this->renderService((string)$slug);
     }
 
-    public function dedicated_desk() {
+    private function renderService($slug) {
+        $isAdmin = $this->isAdmin();
+        $service = $this->serviceModel->findBySlug($slug, $isAdmin);
+
+        if (!$service) {
+            // A service whose URL was changed in the admin keeps working via a permanent redirect.
+            $moved = $this->serviceModel->findByOldSlug($slug);
+            if ($moved) {
+                header('Location: ' . URLROOT . '/services/' . $moved['slug'], true, 301);
+                exit;
+            }
+            $this->notFound();
+            return;
+        }
+
         $data = [
-            'title' => 'Dedicated Desk - Workiify'
+            'title' => $service['meta_title'] !== '' ? $service['meta_title'] : $service['title'] . ' - Workiify',
+            'description' => $service['meta_description'] !== '' ? $service['meta_description'] : $service['card_summary'],
+            'service' => $service,
+            'content' => $this->serviceModel->pageContent($service['id']),
+            'related' => $this->serviceModel->related($service['id']),
+            'isDraft' => $service['status'] !== 'published',
+            'hideTourBand' => true,
         ];
-        $this->view('pages/services-dedicated-desk', $data);
+        $this->view('pages/service_page', $data);
     }
 
-    public function private_office() {
-        $data = [
-            'title' => 'Private Office - Workiify'
-        ];
-        $this->view('pages/services-private-office', $data);
+    private function notFound() {
+        http_response_code(404);
+        $this->view('pages/404', ['title' => '404 Page Not Found - Workiify']);
     }
 
-    public function meeting_room() {
-        $data = [
-            'title' => 'Meeting Room - Workiify'
-        ];
-        $this->view('pages/services-meeting-room', $data);
-    }
-
-    public function virtual_office() {
-        $data = [
-            'title' => 'Virtual Office - Workiify'
-        ];
-        $this->view('pages/services-virtual-office', $data);
-    }
-
-    public function day_pass() {
-        $data = [
-            'title' => 'Day Pass - Workiify'
-        ];
-        $this->view('pages/services-day-pass', $data);
-    }
-
-    public function event_spaces() {
-        $data = [
-            'title' => 'Event Spaces - Workiify'
-        ];
-        $this->view('pages/services-event-spaces', $data);
-    }
-
-    public function coworking_space_coimbatore() {
-        $data = [
-            'title' => 'Coworking Space in Coimbatore - Workiify Spaces',
-            'description' => "Workiify Spaces offers a flexible coworking space in Coimbatore at Saravanampatti, near KGiSL Campus - hot desks, dedicated desks, private offices and meeting rooms.",
-            'hideTourBand' => true
-        ];
-        $this->view('pages/services-coworking-space-coimbatore', $data);
+    // Drafts are visible to a logged-in admin (as a preview). Only resumes an existing
+    // session; never starts one for ordinary visitors.
+    private function isAdmin() {
+        if (session_status() === PHP_SESSION_NONE && !empty($_COOKIE[session_name()])) {
+            session_start();
+            $ok = !empty($_SESSION['admin_logged_in']);
+            session_write_close();
+            return $ok;
+        }
+        return !empty($_SESSION['admin_logged_in']);
     }
 }

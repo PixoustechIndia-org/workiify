@@ -26,6 +26,24 @@
         </div>
     <?php endforeach; ?>
 
+    <div class="admin-group-title"><i class="fas fa-briefcase"></i> Services</div>
+    <div class="admin-link-grid">
+        <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/services">
+            <span class="admin-link-card-icon"><i class="fas fa-briefcase"></i></span>
+            <span>
+                <strong>Manage Services</strong>
+                <span>Add, remove, publish and order services</span>
+            </span>
+        </a>
+        <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/service-new">
+            <span class="admin-link-card-icon"><i class="fas fa-plus"></i></span>
+            <span>
+                <strong>Add a Service</strong>
+                <span>Create a new service page</span>
+            </span>
+        </a>
+    </div>
+
     <div class="admin-group-title"><i class="fas fa-box-archive"></i> Assets</div>
     <div class="admin-link-grid">
         <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/media">

@@ -83,6 +83,40 @@
                 <?php endforeach; ?>
             </nav>
 
+            <div class="admin-nav-page-label">Services</div>
+            <nav class="admin-sidebar-nav">
+                <div class="admin-nav-page">
+                    <a href="<?php echo URLROOT; ?>/admin/services" class="admin-nav-link admin-nav-top-link<?php echo (admin_nav_active('/admin/services', $current) || admin_nav_active('/admin/service-new', $current)) ? ' active' : ''; ?>">
+                        <i class="fas fa-list"></i> All Services
+                    </a>
+                </div>
+                <?php foreach (Service_model::sidebarList() as $navSvc):
+                    $svcKey = Service_model::pageKey($navSvc['id']);
+                    $svcActive = admin_nav_active('/admin/section/' . $svcKey . '/', $current) || admin_nav_active('/admin/item-edit/' . $svcKey . '/', $current);
+                ?>
+                    <div class="admin-nav-page">
+                        <button type="button" class="admin-nav-page-toggle<?php echo $svcActive ? ' open' : ''; ?>" data-target="admin-nav-<?php echo $svcKey; ?>-sections">
+                            <span class="admin-nav-page-icon"><i class="fas <?php echo htmlspecialchars($navSvc['nav_icon'] ?: 'fa-briefcase'); ?>"></i></span>
+                            <span class="admin-nav-page-text"><?php echo htmlspecialchars($navSvc['title']); ?><?php if ($navSvc['status'] !== 'published'): ?> <em class="admin-nav-draft">draft</em><?php endif; ?></span>
+                            <i class="fas fa-chevron-right admin-nav-chevron"></i>
+                        </button>
+                        <ul class="admin-nav-page-sections<?php echo $svcActive ? ' expanded' : ''; ?>" id="admin-nav-<?php echo $svcKey; ?>-sections">
+                            <?php foreach (Home_content_model::navSections($svcKey) as $section):
+                                $active = admin_nav_active('/admin/section/' . $svcKey . '/' . $section['key'], $current)
+                                    || (!empty($section['items']) && admin_nav_active('/admin/item-edit/' . $svcKey . '/' . $section['items'], $current));
+                            ?>
+                                <li>
+                                    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $svcKey; ?>/<?php echo $section['key']; ?>" class="admin-nav-link<?php echo $active ? ' active' : ''; ?><?php echo !empty($section['off']) ? ' is-off' : ''; ?>">
+                                        <i class="fas <?php echo !empty($section['settings']) ? 'fa-gear' : (!empty($section['off']) ? 'fa-eye-slash' : 'fa-pen-to-square'); ?>"></i>
+                                        <?php echo htmlspecialchars($section['label']); ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endforeach; ?>
+            </nav>
+
             <div class="admin-nav-page-label">Modules</div>
             <nav class="admin-sidebar-nav">
                 <div class="admin-nav-page">
