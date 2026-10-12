@@ -1115,6 +1115,76 @@ a.svc-title:hover { color: var(--admin-primary); }
     .svc-stats-grid { grid-template-columns: 1fr; }
 }
 
+/* ==========================================================================
+   Modules (Enquiries & Feedback) — breadcrumbs, tables, and form controls
+   ========================================================================== */
+
+.admin-page-title { margin: 0 0 4px; font-size: 1.5rem; letter-spacing: -0.01em; }
+
+.max-w-800 { max-width: 800px; }
+
+.admin-breadcrumbs { font-size: 0.82rem; font-weight: 600; color: var(--admin-muted); margin-bottom: 6px; }
+.admin-breadcrumbs a { color: var(--admin-primary); text-decoration: none; }
+.admin-breadcrumbs a:hover { text-decoration: underline; }
+
+.admin-alert { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-radius: var(--admin-radius-sm); margin-bottom: 20px; font-size: 0.88rem; border: 1px solid transparent; }
+.admin-alert-success { background: var(--admin-success-soft); color: var(--admin-success); border-color: var(--admin-success-border); }
+.admin-alert-error { background: var(--admin-danger-soft); color: var(--admin-danger-dark); border-color: var(--admin-danger-border); }
+
+.admin-table-responsive { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.admin-table th, .admin-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--admin-border); vertical-align: middle; }
+.admin-table th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--admin-muted); font-weight: 700; background: var(--admin-bg); }
+.admin-table tbody tr:hover { background: rgba(245, 246, 250, 0.6); }
+.admin-table small { color: var(--admin-muted); font-size: 0.8rem; }
+
+.admin-empty-state { text-align: center; color: var(--admin-muted); padding: 34px 20px; font-size: 0.88rem; }
+
+.admin-btn-primary { background: var(--admin-primary); color: #fff; }
+.admin-btn-primary:hover { background: var(--admin-primary-dark); }
+.admin-btn-outline { background: #fff; color: var(--admin-text-soft); border-color: var(--admin-border-strong); box-shadow: none; }
+.admin-btn-outline:hover { background: var(--admin-bg); border-color: var(--admin-muted-soft); color: var(--admin-text); }
+
+.admin-form-group { margin-bottom: 20px; }
+.admin-form-group:last-child { margin-bottom: 0; }
+.admin-form-label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--admin-text-soft); margin: 0 0 7px; }
+.admin-form-control {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--admin-text);
+    background: #fff;
+    transition: border-color 0.15s var(--admin-ease), box-shadow 0.15s var(--admin-ease);
+}
+.admin-form-control:hover { border-color: var(--admin-border-strong); }
+.admin-form-control:focus { outline: none; border-color: var(--admin-primary); box-shadow: 0 0 0 3.5px var(--admin-primary-soft); }
+.admin-form-control[disabled] { background: var(--admin-bg); color: var(--admin-muted); cursor: not-allowed; }
+.admin-form-control[rows] { resize: vertical; line-height: 1.55; }
+.admin-form-text { display: block; margin-top: 6px; font-size: 0.8rem; color: var(--admin-muted); }
+.admin-form-actions { margin-top: 26px; display: flex; gap: 10px; flex-wrap: wrap; }
+.admin-checkbox-label { font-size: 0.9rem; color: var(--admin-text-soft); cursor: pointer; }
+
+.admin-status-badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+.admin-status-badge.new { background-color: #fef3c7; color: #d97706; }
+.admin-status-badge.contacted { background-color: #dbeafe; color: #1d4ed8; }
+.admin-status-badge.closed { background-color: #d1fae5; color: #059669; }
+.admin-status-badge.pending { background-color: #fef3c7; color: #d97706; }
+.admin-status-badge.approved { background-color: #d1fae5; color: #059669; }
+.admin-status-badge.rejected { background-color: #fee2e2; color: #dc2626; }
+
+/* ---- sidebar nav groups & toggle label ---- */
+.admin-sidebar-nav { display: block; margin-bottom: 4px; }
+.admin-toggle-text { flex: 1; }
+
+/* ---- a few svc-* classes referenced in the services list markup ---- */
+.svc-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.svc-list { display: flex; flex-direction: column; }
+.svc-cat-count { font-weight: inherit; }
+.svc-pill-text { white-space: nowrap; }
+
 /* ---- confirmation dialog ---- */
 .svc-modal[hidden] { display: none; }
 .svc-modal { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; }

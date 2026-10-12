@@ -77,27 +77,4 @@
     </div>
 </div>
 
-<style>
-    .admin-status-badge {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    .admin-status-badge.new {
-        background-color: #fef3c7;
-        color: #d97706;
-    }
-    .admin-status-badge.contacted {
-        background-color: #dbeafe;
-        color: #1d4ed8;
-    }
-    .admin-status-badge.closed {
-        background-color: #d1fae5;
-        color: #059669;
-    }
-</style>
-
 <?php require APPROOT . '/views/admin/inc/footer.php'; ?>

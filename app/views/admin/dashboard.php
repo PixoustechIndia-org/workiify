@@ -44,6 +44,24 @@
         </a>
     </div>
 
+    <div class="admin-group-title"><i class="fas fa-layer-group"></i> Modules</div>
+    <div class="admin-link-grid">
+        <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/enquiries">
+            <span class="admin-link-card-icon"><i class="fas fa-envelope-open-text"></i></span>
+            <span>
+                <strong>Enquiries</strong>
+                <span>Review leads from the Home, Contact & popup forms</span>
+            </span>
+        </a>
+        <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/feedback">
+            <span class="admin-link-card-icon"><i class="fas fa-comment-dots"></i></span>
+            <span>
+                <strong>Feedback</strong>
+                <span>Manage customer feedback and testimonials</span>
+            </span>
+        </a>
+    </div>
+
     <div class="admin-group-title"><i class="fas fa-box-archive"></i> Assets</div>
     <div class="admin-link-grid">
         <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/media">
@@ -51,6 +69,13 @@
             <span>
                 <strong>Media Library</strong>
                 <span>Upload once, reuse everywhere</span>
+            </span>
+        </a>
+        <a class="admin-link-card" href="<?php echo URLROOT; ?>/admin/history">
+            <span class="admin-link-card-icon"><i class="fas fa-clock-rotate-left"></i></span>
+            <span>
+                <strong>History</strong>
+                <span>View and restore previous content revisions</span>
             </span>
         </a>
     </div>
