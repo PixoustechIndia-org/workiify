@@ -325,7 +325,19 @@ function premiumHighlight($text) {
                         <span class="contact-icon" style="background: #e0f2fe; color: var(--primary-color); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.2rem; flex-shrink: 0;"><i class="fas fa-envelope"></i></span>
                         <div>
                             <h4 style="font-size:0.85rem; margin:0 0 5px 0; color: var(--text-main); font-weight: 700;">Email</h4>
-                            <p style="margin:0; font-size:0.9rem; color: var(--text-muted);"><a href="mailto:<?php echo htmlspecialchars($data['f']['contact_email']); ?>" style="color: inherit;"><?php echo htmlspecialchars($data['f']['contact_email']); ?></a></p>
+                            <p style="margin:0; font-size:0.9rem; color: var(--text-muted);">
+                                <?php 
+                                    $email1 = !empty($data['f']['contact_email_1']) ? $data['f']['contact_email_1'] : ($data['f']['contact_email'] ?? '');
+                                    $email2 = $data['f']['contact_email_2'] ?? '';
+                                ?>
+                                <?php if (!empty($email1)): ?>
+                                    <a href="mailto:<?php echo htmlspecialchars($email1); ?>" style="color: inherit;"><?php echo htmlspecialchars($email1); ?></a>
+                                <?php endif; ?>
+                                <?php if (!empty($email2)): ?>
+                                    <?php if (!empty($email1)): ?><br><?php endif; ?>
+                                    <a href="mailto:<?php echo htmlspecialchars($email2); ?>" style="color: inherit;"><?php echo htmlspecialchars($email2); ?></a>
+                                <?php endif; ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -340,9 +352,9 @@ function premiumHighlight($text) {
                 <div class="contact-social" style="display: flex; align-items: center; gap: 1.5rem; border-top: none; padding-top: 1.5rem; margin-top: auto;">
                     <span style="font-weight:600; margin:0; font-size: 0.95rem; color: var(--text-main);">Follow us</span>
                     <div class="social-icons" style="display: flex; gap: 10px;">
-                        <a href="#" aria-label="Instagram" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="Facebook" style="background: #1877F2; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="WhatsApp" style="background: #25D366; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/workiifyspaces/" target="_blank" aria-label="Instagram" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61569320400768" target="_blank" aria-label="Facebook" style="background: #1877F2; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://api.whatsapp.com/send/?phone=919655500001&text&type=phone_number&app_absent=0" target="_blank" aria-label="WhatsApp" style="background: #25D366; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
             </div>

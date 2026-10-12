@@ -15,7 +15,7 @@
 <!-- 2. Introducing Workiify -->
 <section class="our-story-section section-padding">
     <div class="container split-layout max-w-1100" style="align-items: center; gap: 4rem; padding-bottom: 2rem;">
-        <div class="split-img" style="flex: 1; max-width: 500px; margin: 0 auto;" data-aos="fade-right" data-aos-duration="900">
+        <div class="split-img premium-img-wrapper" style="flex: 1; max-width: 500px; margin: 0 auto;" data-aos="fade-right" data-aos-duration="900">
             <?php 
             $db_img = isset($data['f']['about_story_image']) ? $data['f']['about_story_image'] : '';
             $about_img = '/images/gallery-open-workstation-area.png';
@@ -26,7 +26,7 @@
                 }
             }
             ?>
-            <img src="<?php echo URLROOT . htmlspecialchars($about_img); ?>" alt="People working in Workiify" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
+            <img src="<?php echo URLROOT . htmlspecialchars($about_img); ?>" alt="People working in Workiify" class="premium-img" style="aspect-ratio: 16/9; max-height: 320px;">
         </div>
         <div class="split-content" style="flex: 1;" data-aos="fade-left" data-aos-duration="900">
             <span class="eyebrow" style="color: var(--primary-color); font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px;"><?php echo htmlspecialchars($data['f']['about_story_eyebrow']); ?></span>
@@ -70,6 +70,7 @@
                 foreach ($data['workspaceTiles'] as $i => $tile): $t = $tile['data'];
             ?>
             <a href="<?php echo URLROOT . htmlspecialchars($t['link']); ?>" class="workspace-tile <?php echo $tileClasses[$i % 4]; ?>" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <span class="workspace-tile-borders"></span>
                 <div class="workspace-tile-icon"><i class="fas <?php echo htmlspecialchars($t['icon']); ?>"></i></div>
                 <h3><?php echo htmlspecialchars($t['title']); ?></h3>
                 <p><?php echo htmlspecialchars($t['description']); ?></p>
@@ -112,8 +113,8 @@
             <h2 class="section-title"><?php echo htmlspecialchars($data['f']['location_heading']); ?></h2>
             <p><?php echo htmlspecialchars($data['f']['location_text']); ?></p>
         </div>
-        <div class="split-img" data-aos="fade-left" data-aos-duration="900">
-            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['location_image']); ?>" alt="Workiify building exterior" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); object-fit: cover; aspect-ratio: 16/9; max-height: 320px;">
+        <div class="split-img premium-img-wrapper" data-aos="fade-left" data-aos-duration="900">
+            <img src="<?php echo URLROOT . htmlspecialchars($data['f']['location_image']); ?>" alt="Workiify building exterior" class="premium-img" style="aspect-ratio: 16/9; max-height: 320px;">
         </div>
     </div>
 </section>
@@ -128,8 +129,12 @@
 
         <div class="photo-strip mt-4">
             <?php foreach ($data['communityPhotos'] as $i => $photo): $p = $photo['data']; ?>
-            <div class="strip-item" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
-                <img src="<?php echo URLROOT . htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['alt']); ?>" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">
+            <div class="strip-item community-gallery-item" data-caption="<?php echo htmlspecialchars($p['alt'] ?? 'Community Event'); ?>" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>">
+                <img src="<?php echo URLROOT . htmlspecialchars($p['image']); ?>" alt="<?php echo htmlspecialchars($p['alt']); ?>" loading="lazy" decoding="async">
+                <div class="strip-item-overlay">
+                    <span class="strip-item-zoom"><i class="fas fa-search-plus"></i></span>
+                    <span class="strip-item-caption"><?php echo htmlspecialchars($p['alt'] ?? 'Community Event'); ?></span>
+                </div>
             </div>
             <?php endforeach; ?>
         </div>
@@ -137,6 +142,15 @@
         <p class="community-note"><?php echo htmlspecialchars($data['f']['community_note']); ?></p>
     </div>
 </section>
+
+<!-- Lightbox Modal for Community Section -->
+<div class="lightbox" id="aboutLightbox">
+    <button class="lightbox-close" aria-label="Close">&times;</button>
+    <button class="lightbox-prev" aria-label="Previous photo"><i class="fas fa-chevron-left"></i></button>
+    <img class="lightbox-img" id="aboutLightboxImg" src="" alt="" loading="lazy" decoding="async">
+    <div class="lightbox-caption" id="aboutLightboxCaption"></div>
+    <button class="lightbox-next" aria-label="Next photo"><i class="fas fa-chevron-right"></i></button>
+</div>
 
 <!-- 9. Testimonials -->
 <section class="testimonials-section section-padding">
@@ -188,6 +202,71 @@
             }, { threshold: 0.3 });
             observer.observe(purposeSection);
         }
+
+        // --- Community Gallery Lightbox ---
+        const lightbox = document.getElementById('aboutLightbox');
+        const lightboxImg = document.getElementById('aboutLightboxImg');
+        const lightboxCaption = document.getElementById('aboutLightboxCaption');
+        const closeBtn = lightbox.querySelector('.lightbox-close');
+        const prevBtn = lightbox.querySelector('.lightbox-prev');
+        const nextBtn = lightbox.querySelector('.lightbox-next');
+        const items = Array.from(document.querySelectorAll('.community-gallery-item'));
+
+        let currentIndex = 0;
+
+        function updateLightbox() {
+            const item = items[currentIndex];
+            if (!item) return;
+            const img = item.querySelector('img');
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt || '';
+            lightboxCaption.textContent = item.dataset.caption || img.alt || '';
+        }
+
+        function openLightbox(index) {
+            currentIndex = index;
+            updateLightbox();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        items.forEach((item, index) => {
+            item.addEventListener('click', () => openLightbox(index));
+        });
+
+        closeBtn.addEventListener('click', closeLightbox);
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % items.length;
+            updateLightbox();
+        });
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            updateLightbox();
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % items.length;
+                updateLightbox();
+            }
+            if (e.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + items.length) % items.length;
+                updateLightbox();
+            }
+        });
     });
 </script>
 

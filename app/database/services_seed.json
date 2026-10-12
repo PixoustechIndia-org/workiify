@@ -1,0 +1,1280 @@
+{
+    "shared-workspace-in-coimbatore": {
+        "fields": {
+            "banner_image": "/images/services_bg.jpg",
+            "banner_heading": "Shared Workspace in Coimbatore",
+            "banner_tagline": "Flexible desks and modern facilities in Saravanampatti, Coimbatore",
+            "intro_show": "1",
+            "intro_text": "Workiify Spaces offers a professional shared workspace in Coimbatore for freelancers, startups, remote professionals, and growing teams. Located in Saravanampatti, it provides flexible desks, modern facilities, and a comfortable environment for focused work, collaboration, and business meetings.",
+            "intro_btn_text": "Enquire About Workspace",
+            "intro_btn_link": "/contact-us#enquiry",
+            "hl1_show": "1",
+            "hl1_style": "slides",
+            "hl1_side": "left",
+            "hl1_eyebrow": "24/7 Access",
+            "hl1_heading": "24/7 Workspace in Coimbatore for Flexible Working",
+            "hl1_text": "Workiify offers a 24/7 Workspace in Coimbatore for professionals, freelancers, entrepreneurs, and teams who need flexible working hours, whether starting early, working late, or handling work beyond regular office timings.",
+            "hl1_image": "/images/gallery-open-workstation-area.png",
+            "hl1_badge_big": "24/7",
+            "hl1_badge_small": "Workspace access",
+            "hl1_btn_text": "",
+            "hl1_btn_link": "",
+            "options_show": "1",
+            "options_eyebrow": "Shared Office Space",
+            "options_heading": "Shared Office Space in Coimbatore for Different Working Needs",
+            "options_subtitle": "Workiify offers Shared Office Space in Coimbatore for professionals, teams, and businesses seeking a ready-to-use workplace with flexible options that suit different work styles, team sizes, and business needs.",
+            "location_show": "1",
+            "location_heading": "Shared Workspace in",
+            "location_highlight": "Saravanampatti, Coimbatore",
+            "location_text": "",
+            "location_address": "AV Info Tech Park, Near KGiSL Campus, Keeranatham Road, Saravanampatti, Coimbatore",
+            "location_image": "/images/user_building_original.png",
+            "location_btn_text": "",
+            "location_btn_link": "",
+            "tabs_show": "1",
+            "tabs_eyebrow": "Amenities",
+            "tabs_heading": "Modern Amenities for a Productive Shared Workspace",
+            "tabs_subtitle": "Workiify offers a Shared Workspace in Coimbatore with practical facilities, comfortable work areas, and spaces to relax or connect, making everyday work more convenient, productive, and enjoyable.",
+            "audience_show": "1",
+            "audience_eyebrow": "Who It's For",
+            "audience_heading": "A Shared Workspace for Freelancers, Entrepreneurs and Growing Businesses",
+            "audience_subtitle": "Workiify’s 24/7 Workspace in Coimbatore suits freelancers, startups, and growing teams, offering a flexible professional environment where people can work independently, connect with others, and choose what works best.",
+            "keypoints_show": "1",
+            "keypoints_eyebrow": "Why Shared",
+            "keypoints_heading": "Why Choose a Shared Workspace for Your Work and Business?",
+            "keypoints_subtitle": "A Shared Workspace in Coimbatore offers flexibility without the commitment of a traditional office. It gives professionals, startups, and growing businesses a practical place to work, connect, and adapt.",
+            "steps_show": "1",
+            "steps_eyebrow": "Buying Guide",
+            "steps_heading": "How to Choose the Right Shared Workspace in Coimbatore",
+            "steps_subtitle": "Choosing a Shared Workspace in Coimbatore means finding a space that suits your work style, daily needs, and future goals, rather than focusing only on appearance or location.",
+            "faq_show": "1",
+            "faq_heading": "Frequently Asked Questions About Shared Workspaces",
+            "faq_text": "Can't find what you need? Message us on WhatsApp and we'll reply shortly.",
+            "faq_btn_text": "Ask a Question",
+            "faq_btn_link": "https://api.whatsapp.com/send/?phone=919655500001&text=Hi%20Workiify,%20I%20have%20a%20question&type=phone_number&app_absent=0",
+            "cta_show": "1",
+            "cta_image": "/images/gallery-front-office-lounge.png",
+            "cta_heading": "Find the Right Shared Workspace in Coimbatore with Workiify",
+            "cta_text": "Workiify offers flexible workspaces, modern facilities, and a professional environment for individuals, teams, and growing businesses in Coimbatore.",
+            "cta_btn_text": "Enquire About Your Workspace",
+            "cta_btn_link": "/contact-us#enquiry",
+            "hl2_show": "0",
+            "related_show": "0"
+        },
+        "items": {
+            "intro_strip": [
+                {
+                    "icon": "fa-clock",
+                    "text": "24/7 access"
+                },
+                {
+                    "icon": "fa-wifi",
+                    "text": "High-speed Wi-Fi"
+                },
+                {
+                    "icon": "fa-users",
+                    "text": "Celebration hall for up to 60"
+                },
+                {
+                    "icon": "fa-location-dot",
+                    "text": "Near KGiSL Campus"
+                }
+            ],
+            "hl1_items": [
+                {
+                    "icon": "fa-clock",
+                    "title": "Work on Your Own Schedule",
+                    "text": "A 24/7 workspace lets professionals choose their working hours freely. Whether you prefer early mornings, late nights, or flexible schedules, you can work comfortably based on your routine and business needs."
+                },
+                {
+                    "icon": "fa-moon",
+                    "title": "A Productive Environment Beyond Office Hours",
+                    "text": "Workiify offers a comfortable and professional place to work beyond regular hours. With reliable internet, well-equipped work areas, and essential facilities, you can stay focused and productive whenever needed."
+                },
+                {
+                    "icon": "fa-globe",
+                    "title": "Flexible Access for Professionals and Businesses",
+                    "text": "Whether you’re handling urgent work, flexible schedules, or different time zones, Workiify offers convenient access and a professional workspace in Saravanampatti, Coimbatore, helping you stay productive anytime."
+                }
+            ],
+            "options": [
+                {
+                    "image": "/images/hot_desk_enhanced_1791353156473.jpg",
+                    "tag": "Most flexible",
+                    "title": "Hot Desk for Flexible Working",
+                    "text": "Hot desks are a convenient choice for freelancers, consultants, remote workers, and entrepreneurs who don’t need a permanent desk but want a professional space with essential facilities when required.",
+                    "chips": "Freelancers, Consultants, Remote workers",
+                    "note": "Pricing on enquiry",
+                    "link_text": "View hot desk",
+                    "link_url": "/services/hot-desk"
+                },
+                {
+                    "image": "/images/dedicated_desk_enhanced_1791353327423.jpg",
+                    "tag": "Consistent work",
+                    "title": "Dedicated Desk for Consistent Work",
+                    "text": "A dedicated desk gives you a regular workspace without the commitment of a traditional office. It’s ideal for freelancers, professionals, and small business owners seeking comfort, consistency, and community.",
+                    "chips": "Your own desk, Professionals, Small business owners",
+                    "note": "Pricing on enquiry",
+                    "link_text": "View dedicated desk",
+                    "link_url": "/services/dedicated-desk"
+                },
+                {
+                    "image": "/images/private_office_enhanced_1791353356099.jpg",
+                    "tag": "For teams",
+                    "title": "Private Workspace for Teams",
+                    "text": "Private workspaces give teams a quiet, comfortable place for focused work, meetings, and daily tasks. Workiify provides privacy while keeping teams connected to shared facilities and a professional environment.",
+                    "chips": "Teams, Privacy, Shared facilities",
+                    "note": "Pricing on enquiry",
+                    "link_text": "View private office",
+                    "link_url": "/services/private-office"
+                }
+            ],
+            "location_points": [
+                {
+                    "icon": "fa-building",
+                    "title": "Strategic IT Hub",
+                    "text": "Surrounded by top tech parks in Saravanampatti"
+                },
+                {
+                    "icon": "fa-map-pin",
+                    "title": "Prime Location",
+                    "text": "Just 5 minutes from KGiSL Campus"
+                },
+                {
+                    "icon": "fa-shield-halved",
+                    "title": "Secure Campus",
+                    "text": "24/7 security with dedicated indoor parking"
+                },
+                {
+                    "icon": "fa-road",
+                    "title": "Excellent Connectivity",
+                    "text": "Easy transit access across Coimbatore"
+                }
+            ],
+            "tabs": [
+                {
+                    "icon": "fa-laptop-code",
+                    "label": "Work-Ready Facilities",
+                    "image": "/images/gallery-reception-workstations.png",
+                    "title": "Work-Ready Facilities for Everyday Productivity",
+                    "text": "Workiify offers high-speed Wi-Fi, comfortable workspaces, meeting facilities, and parking, making it easy to handle focused work, virtual meetings, team discussions, and everyday tasks."
+                },
+                {
+                    "icon": "fa-champagne-glasses",
+                    "label": "Celebration Hall",
+                    "image": "/images/event_spaces.png",
+                    "title": "Celebration Hall for Team Events",
+                    "text": "A celebration hall for up to 60 people, ideal for team events, workshops, networking sessions, meetings, and professional gatherings."
+                },
+                {
+                    "icon": "fa-wifi",
+                    "label": "High-Speed Wi-Fi",
+                    "image": "/images/amenity_wifi_1791615528415.jpg",
+                    "title": "High-Speed Wi-Fi",
+                    "text": "Experience seamless connectivity with our enterprise-grade, ultra-fast fiber Wi-Fi. Secure network guarantees zero interruptions."
+                },
+                {
+                    "icon": "fa-people-group",
+                    "label": "Meeting Facilities",
+                    "image": "/images/amenity_meeting_1791615558877.jpg",
+                    "title": "Meeting Facilities",
+                    "text": "Host impactful presentations in our state-of-the-art, glass-walled boardrooms. Fully equipped with smart screens and HD systems."
+                },
+                {
+                    "icon": "fa-utensils",
+                    "label": "Food Court & Recreation",
+                    "image": "/images/gallery-dining-hall-1.png",
+                    "title": "Food Court and Recreation",
+                    "text": "An on-site food court for meals and refreshments, plus a game area where members can relax, refresh, and return to work."
+                },
+                {
+                    "icon": "fa-gamepad",
+                    "label": "Game Area",
+                    "image": "/images/amenity_game_1791615575008.jpg",
+                    "title": "Game Area",
+                    "text": "Step away from the screen and recharge in our vibrant recreation zone. Featuring a pool table, foosball, and comfortable seating."
+                },
+                {
+                    "icon": "fa-square-parking",
+                    "label": "Parking",
+                    "image": "/images/amenity_parking_1791615589000.jpg",
+                    "title": "Secure Indoor Parking",
+                    "text": "Enjoy the convenience of hassle-free, secure indoor parking right at the building with 24/7 security surveillance."
+                }
+            ],
+            "audience": [
+                {
+                    "image": "/images/gallery-open-desk-area.png",
+                    "title": "Freelancers & Remote Professionals",
+                    "text": "Workiify gives freelancers, consultants, developers, designers, and remote professionals a comfortable alternative to home or cafés, offering reliable connectivity, a structured workday, and opportunities to connect with others."
+                },
+                {
+                    "image": "/images/gallery-shared-workspace-floor.png",
+                    "title": "Startups & Entrepreneurs",
+                    "text": "Workiify gives startups and entrepreneurs a professional place to work, meet clients, collaborate, and grow their businesses, without the cost and commitment of setting up a traditional office."
+                },
+                {
+                    "image": "/images/gallery-boardroom.png",
+                    "title": "Growing Business Teams",
+                    "text": "Workiify’s 24/7 Workspace in Coimbatore supports changing business needs with flexible workspace options, helping individuals and growing teams choose a setup that suits their work today and adapts tomorrow."
+                }
+            ],
+            "keypoints": [
+                {
+                    "title": "Reduce the Complexity of Setting Up an Office",
+                    "text": "Setting up an office can take time, money, and effort. A shared workspace offers a ready-to-use professional environment, letting you focus on your work without worrying about everyday office management."
+                },
+                {
+                    "title": "Build Connections Through a Collaborative Environment",
+                    "text": "A shared workspace brings professionals from different fields together, creating opportunities to network, exchange ideas, share knowledge, and build meaningful connections that can lead to new collaborations and opportunities."
+                },
+                {
+                    "title": "Get Flexibility as Your Requirements Change",
+                    "text": "A Shared Workspace in Coimbatore lets professionals and businesses adjust their setup as needs change. It suits startups, remote workers, and growing teams seeking flexibility without traditional office limitations."
+                }
+            ],
+            "steps": [
+                {
+                    "title": "Consider Location and Daily Convenience",
+                    "text": "A convenient workspace location can save travel time and make meetings easier. Workiify, at AV Info Tech Park on Keeranatham Road near KGiSL Campus, offers a professional setting in Saravanampatti."
+                },
+                {
+                    "title": "Look at the Workspace and Facilities",
+                    "text": "A good workspace should offer more than a desk. Workiify provides flexible work areas, reliable Wi-Fi, meeting facilities, parking, food options, and relaxing spaces to support everyday needs."
+                },
+                {
+                    "title": "Think About Your Future Workspace Requirements",
+                    "text": "As your work grows, your workspace needs may change too. Flexible options make it easier for freelancers, startups, and growing teams to adjust their space without relocating completely."
+                }
+            ],
+            "faq": [
+                {
+                    "question": "What Is a Shared Workspace?",
+                    "answer": "A shared workspace brings freelancers, entrepreneurs, startups, and businesses together in one professional setting. It offers a practical alternative to home or traditional offices, with useful facilities and networking opportunities."
+                },
+                {
+                    "question": "How Much Does a Shared Workspace Cost in Coimbatore?",
+                    "answer": "Shared workspace pricing depends on the workspace type, usage period, facilities, and business needs. Workiify offers different options, so you can contact them to find a suitable plan."
+                },
+                {
+                    "question": "Who Can Use a Shared Workspace?",
+                    "answer": "A 24/7 Workspace in Coimbatore can suit freelancers, remote professionals, consultants, entrepreneurs, startups, and growing teams, offering flexible workspace options that fit different schedules, work styles, and business needs."
+                },
+                {
+                    "question": "Is Workiify Suitable for Startups and Freelancers?",
+                    "answer": "Workiify offers a Shared Workspace in Coimbatore for freelancers and growing businesses, providing a professional setting with flexible options that support focused work, teamwork, and business growth."
+                },
+                {
+                    "question": "Where Is Workiify Located?",
+                    "answer": "Workiify Spaces is located at AV Info Tech Park, Keeranatham Road, near KGiSL Campus, Saravanampatti, Coimbatore. Its location offers convenient access to nearby businesses, technology companies, and professional hubs."
+                }
+            ]
+        }
+    },
+    "flexible-office-space-coimbatore": {
+        "fields": {
+            "banner_image": "/images/services_bg.jpg",
+            "banner_heading": "Flexible Office Space in Coimbatore for Modern Businesses",
+            "banner_tagline": "Workspace options for startups, freelancers, and growing businesses in Saravanampatti",
+            "intro_show": "1",
+            "intro_text": "Find the right flexible office space in Coimbatore for your team, budget, and work style. Workiify offers workspace options for startups, freelancers, and growing businesses, with modern amenities and flexible rental plans to support your daily work.",
+            "intro_btn_text": "Get a Quote",
+            "intro_btn_link": "/contact-us#enquiry",
+            "hl1_show": "1",
+            "hl1_style": "slides",
+            "hl1_side": "left",
+            "hl1_eyebrow": "Why Flexible",
+            "hl1_heading": "Why Choose Flexible Office Space in Coimbatore?",
+            "hl1_text": "Flexible office space in Coimbatore gives businesses the freedom to choose a workspace that suits their needs. Whether you're starting small or expanding your team, enjoy practical workspace options without long-term commitments.",
+            "hl1_image": "/images/gallery-shared-workspace-floor.png",
+            "hl1_badge_big": "Flexible",
+            "hl1_badge_small": "Rental plans",
+            "hl1_btn_text": "",
+            "hl1_btn_link": "",
+            "hl2_show": "1",
+            "hl2_style": "list",
+            "hl2_side": "right",
+            "hl2_eyebrow": "24/7 Access",
+            "hl2_heading": "24/7 Office Accessibility for Flexible Working",
+            "hl2_text": "Businesses with different work schedules need a workspace that fits their daily operations. Flexible office space in Coimbatore offers practical options for teams seeking convenience, accessibility, and a professional working environment.",
+            "hl2_image": "/images/gallery-open-workstation-area.png",
+            "hl2_badge_big": "24/7",
+            "hl2_badge_small": "Round-the-clock access",
+            "hl2_btn_text": "",
+            "hl2_btn_link": "",
+            "options_show": "1",
+            "options_eyebrow": "Office Types",
+            "options_heading": "Types of Flexible Office Spaces in Coimbatore",
+            "options_subtitle": "Every business needs a workspace that fits its budget, team size, and daily activities. Exploring different office options in Coimbatore helps you find a comfortable, professional space that supports your work.",
+            "location_show": "1",
+            "location_heading": "Flexible Office Space in",
+            "location_highlight": "Saravanampatti, Coimbatore",
+            "location_text": "Workiify offers flexible office space in Saravanampatti, Coimbatore, with a professional environment for businesses of different sizes. Choose a workspace that fits your team's needs, daily activities, and budget.",
+            "location_address": "AV Info Tech Park, Near KGiSL Campus, Keeranatham Road, Saravanampatti, Coimbatore",
+            "location_image": "/images/user_building_original.png",
+            "location_btn_text": "",
+            "location_btn_link": "",
+            "tabs_show": "1",
+            "tabs_eyebrow": "Amenities",
+            "tabs_heading": "Essential Features and Amenities of a Flexible Office Space",
+            "tabs_subtitle": "Choosing the right Flexible Office Space in Coimbatore means looking beyond location and price. Consider essential amenities such as internet, meeting rooms, security, and parking to ensure a comfortable and productive working environment.",
+            "audience_show": "1",
+            "audience_eyebrow": "Business Needs",
+            "audience_heading": "Flexible Office Solutions for Different Business Needs",
+            "audience_subtitle": "Every business needs a workspace that suits its budget, team size, and daily activities. Workiify's workspace in Saravanampatti, Coimbatore, offers a professional setting for businesses with different working requirements.",
+            "steps_show": "1",
+            "steps_eyebrow": "Buying Guide",
+            "steps_heading": "How to Choose the Right Flexible Office Space in Coimbatore",
+            "steps_subtitle": "Choosing the right Flexible Office Space in Coimbatore involves more than comparing prices. Consider your team's needs, location, facilities, accessibility, and rental terms to find a workspace that supports your daily operations and future growth.",
+            "faq_show": "1",
+            "faq_heading": "Frequently Asked Questions About Flexible Office Space in Coimbatore",
+            "faq_text": "Can't find what you need? Message us on WhatsApp and we'll reply shortly.",
+            "faq_btn_text": "Ask a Question",
+            "faq_btn_link": "https://api.whatsapp.com/send/?phone=919655500001&text=Hi%20Workiify,%20I%20have%20a%20question&type=phone_number&app_absent=0",
+            "cta_show": "1",
+            "cta_image": "/images/gallery-front-office-lounge.png",
+            "cta_heading": "Find Your Ideal Flexible Office Space in Coimbatore",
+            "cta_text": "Explore Workiify’s Saravanampatti workspace in Coimbatore. Contact us to discuss your needs, availability, and pricing.",
+            "cta_btn_text": "Enquire Now",
+            "cta_btn_link": "/contact-us#enquiry",
+            "keypoints_show": "0",
+            "related_show": "0"
+        },
+        "items": {
+            "intro_strip": [
+                {
+                    "icon": "fa-file-contract",
+                    "text": "Flexible rental plans"
+                },
+                {
+                    "icon": "fa-door-closed",
+                    "text": "Private, managed & shared options"
+                },
+                {
+                    "icon": "fa-up-right-and-down-left-from-center",
+                    "text": "Room to scale"
+                },
+                {
+                    "icon": "fa-location-dot",
+                    "text": "Saravanampatti, Coimbatore"
+                }
+            ],
+            "hl1_items": [
+                {
+                    "icon": "fa-wallet",
+                    "title": "Flexible Rental Options",
+                    "text": "Choose rental plans that fit your budget, team size, and business needs. Flexible terms help you avoid paying for extra office space you don't currently need."
+                },
+                {
+                    "icon": "fa-building",
+                    "title": "Professional Work Environment",
+                    "text": "Work in a professional setting with facilities that support your daily activities. Depending on the workspace, you may have furnished desks, internet access, meeting rooms, and shared areas."
+                },
+                {
+                    "icon": "fa-chart-line",
+                    "title": "Scalability for Growing Businesses",
+                    "text": "As your business grows, your workspace needs may change. Flexible office options let you explore additional seating or larger spaces based on availability and your rental agreement."
+                }
+            ],
+            "hl2_items": [
+                {
+                    "icon": "fa-clock",
+                    "title": "24/7 Accessible Office Space in Coimbatore",
+                    "text": "Round-the-clock office access suits businesses working beyond regular hours. Before booking, confirm availability on weekends and public holidays, along with any building access restrictions or additional charges."
+                },
+                {
+                    "icon": "fa-globe",
+                    "title": "Flexible Office Space with Round-the-Clock Access",
+                    "text": "Teams working across time zones can benefit from flexible office access. Check the building's security, entry procedures, and access policies to ensure they support your team's working schedule."
+                },
+                {
+                    "icon": "fa-moon",
+                    "title": "Office Space for Night Shift Teams in Coimbatore",
+                    "text": "Night-shift teams and businesses handling international clients need convenient access outside regular hours. Consider security arrangements, entry facilities, and workspace comfort when choosing an office for your team."
+                }
+            ],
+            "options": [
+                {
+                    "image": "/images/private_office_enhanced_1791353356099.jpg",
+                    "tag": "Privacy",
+                    "title": "Private Office Space in Coimbatore",
+                    "text": "Private office space in Coimbatore suits businesses that need privacy and a dedicated workspace. It's a practical choice for startups, small businesses, and teams looking for a focused working environment.",
+                    "chips": "Startups, Small businesses, Teams",
+                    "note": "Pricing on enquiry",
+                    "link_text": "View private office",
+                    "link_url": "/services/private-office"
+                },
+                {
+                    "image": "/images/gallery-front-office-lounge.png",
+                    "tag": "Ready to use",
+                    "title": "Managed Office Space in Coimbatore",
+                    "text": "Managed office space in Coimbatore offers a ready-to-use workspace with less day-to-day management. Depending on the plan, facilities may include furnished interiors, internet, housekeeping, and meeting rooms.",
+                    "chips": "Furnished, Internet, Housekeeping",
+                    "note": "Pricing on enquiry",
+                    "link_text": "Enquire now",
+                    "link_url": "/contact-us#enquiry"
+                },
+                {
+                    "image": "/images/gallery-open-desk-area.png",
+                    "tag": "Community",
+                    "title": "Coworking and Shared Office Space in Coimbatore",
+                    "text": "Coworking and shared office spaces in Coimbatore provide a professional environment for freelancers, remote workers, and small teams. Members can access shared desks, collaboration areas, and common facilities based on their plan.",
+                    "chips": "Freelancers, Remote workers, Small teams",
+                    "note": "Pricing on enquiry",
+                    "link_text": "View shared workspace",
+                    "link_url": "/services/shared-workspace-in-coimbatore"
+                }
+            ],
+            "location_points": [
+                {
+                    "icon": "fa-building",
+                    "title": "A Convenient Location for Modern Businesses",
+                    "text": "Saravanampatti offers a business-friendly environment in Coimbatore, with employee commuting, nearby business facilities, and client accessibility in mind."
+                },
+                {
+                    "icon": "fa-sliders",
+                    "title": "Workspace Options for Different Business Needs",
+                    "text": "Choose a workspace that fits your seating needs, budget, and work style. Contact our team to explore available options."
+                },
+                {
+                    "icon": "fa-magnifying-glass-location",
+                    "title": "Find Your Workspace in Saravanampatti",
+                    "text": "Learn about available facilities, location, and rental options, and confirm current availability and pricing with our team."
+                }
+            ],
+            "tabs": [
+                {
+                    "icon": "fa-wifi",
+                    "label": "Internet & Power Backup",
+                    "image": "/images/amenity_wifi_1791615528415.jpg",
+                    "title": "High-Speed Internet and Power Backup",
+                    "text": "Reliable internet and power backup help keep your daily work running smoothly. Check whether the workspace supports video calls, online meetings, and uninterrupted access to essential business applications."
+                },
+                {
+                    "icon": "fa-people-group",
+                    "label": "Meeting Rooms & Collaboration",
+                    "image": "/images/amenity_meeting_1791615558877.jpg",
+                    "title": "Meeting Rooms and Collaboration Areas",
+                    "text": "Meeting rooms and shared spaces make client discussions, team meetings, and interviews more convenient. Check room availability, booking rules, and additional charges before choosing your workspace."
+                },
+                {
+                    "icon": "fa-shield-halved",
+                    "label": "Security, Parking & Comfort",
+                    "image": "/images/amenity_parking_1791615589000.jpg",
+                    "title": "Security, Parking, and Workplace Comfort",
+                    "text": "A comfortable office makes daily work easier for everyone. Look for useful facilities such as secure entry, air conditioning, housekeeping, parking, and pantry access, depending on your business needs."
+                }
+            ],
+            "audience": [
+                {
+                    "image": "/images/gallery-open-desk-area.png",
+                    "title": "Office Space for Startups",
+                    "text": "Startups need a comfortable workspace to build their business and work together. Choosing an office that fits your initial team size helps manage costs while supporting future growth."
+                },
+                {
+                    "image": "/images/gallery-reception-workstations.png",
+                    "title": "Office Space for Small Businesses",
+                    "text": "Small businesses need a practical workspace for daily tasks, teamwork, and client meetings. Consider seating capacity, available facilities, location, and rental terms before choosing an office."
+                },
+                {
+                    "image": "/images/gallery-boardroom.png",
+                    "title": "Office Space for Growing Teams",
+                    "text": "Growing teams may need more space as their business expands. Check available seating, office layouts, meeting facilities, and rental options to find a workspace that suits your changing needs."
+                }
+            ],
+            "steps": [
+                {
+                    "title": "Evaluate Your Workspace Requirements",
+                    "text": "Start by considering your team size, seating needs, and privacy requirements. Decide whether a private office, shared workspace, or meeting facilities would suit your daily business activities."
+                },
+                {
+                    "title": "Compare Facilities and Accessibility",
+                    "text": "Check available facilities such as internet, meeting rooms, parking, security, and power backup. If your team works late, confirm the building's access hours and security arrangements."
+                },
+                {
+                    "title": "Review Rental Terms and Office Suitability",
+                    "text": "Review the rent, security deposit, agreement period, notice terms, and additional charges before booking. Visit the Saravanampatti workspace to check whether it suits your team's everyday needs."
+                }
+            ],
+            "faq": [
+                {
+                    "question": "What Is Flexible Office Space?",
+                    "answer": "Flexible Office Space in Coimbatore gives businesses access to a professional workspace with rental options and facilities suited to their needs. Depending on the provider, options may include private offices, shared desks, and meeting rooms."
+                },
+                {
+                    "question": "Where Can I Find Flexible Office Space in Coimbatore?",
+                    "answer": "Workiify offers workspace options in Saravanampatti, Coimbatore. You can explore the available facilities, location, and rental plans to find an arrangement that suits your business requirements and budget."
+                },
+                {
+                    "question": "Who Can Benefit from Flexible Office Space?",
+                    "answer": "Startups, freelancers, small businesses, and growing teams can benefit from flexible workspaces. These spaces provide a professional environment for daily operations without requiring every business to manage a traditional office independently."
+                },
+                {
+                    "question": "What Facilities Should I Look for in a Flexible Office?",
+                    "answer": "Look for useful facilities such as high-speed internet, furnished workstations, meeting rooms, parking, security, and power backup. Check which amenities are included in your rental plan before making a decision."
+                },
+                {
+                    "question": "Is 24/7 Access Available in Flexible Office Spaces?",
+                    "answer": "Some workspaces offer round-the-clock access, while others follow fixed operating hours. Contact the provider to confirm access availability, security arrangements, and any restrictions that may affect your working schedule."
+                },
+                {
+                    "question": "How Can I Choose the Right Office Space for My Business?",
+                    "answer": "Choosing the right Flexible Office Space in Coimbatore starts with understanding your team's needs and budget. Compare location, facilities, rental terms, seating capacity, and accessibility before selecting a workspace that supports your business goals."
+                }
+            ]
+        }
+    },
+    "virtual-office-in-coimbatore": {
+        "fields": {
+            "banner_image": "/images/gallery-front-office-reception.png",
+            "banner_heading": "Virtual Office in Coimbatore for a Professional Business Presence",
+            "banner_tagline": "Looking for a Virtual Office in Coimbatore?",
+            "intro_show": "1",
+            "intro_text": "Workiify helps startups, freelancers, and growing businesses build a professional presence without the cost of a traditional office. Enjoy flexible workspace solutions, business address facilities, and services that suit your needs and budget.",
+            "intro_btn_text": "Explore Virtual Office Plans",
+            "intro_btn_link": "/contact-us#enquiry",
+            "hl1_show": "1",
+            "hl1_style": "slides",
+            "hl1_side": "left",
+            "hl1_eyebrow": "Why Virtual",
+            "hl1_heading": "Why Choose a Virtual Office in Coimbatore?",
+            "hl1_text": "A Virtual Office in Coimbatore helps businesses maintain a professional image without the expense of renting a traditional office. It offers flexibility for startups, freelancers, and growing companies to manage daily operations, reduce overhead costs, and adapt their workspace needs as they grow.",
+            "hl1_image": "/images/gallery-front-office-lounge.png",
+            "hl1_badge_big": "Virtual",
+            "hl1_badge_small": "Professional presence",
+            "hl1_btn_text": "Find the Right Virtual Office Plan for Your Business",
+            "hl1_btn_link": "/contact-us#enquiry",
+            "hl2_show": "1",
+            "hl2_style": "list",
+            "hl2_side": "right",
+            "hl2_eyebrow": "Company Registration",
+            "hl2_heading": "Virtual Office for Company Registration in Coimbatore",
+            "hl2_text": "A virtual office for company registration in Coimbatore can help entrepreneurs establish a business presence without renting a traditional office. Check the address eligibility, agreement terms, and required documents before choosing a suitable plan.",
+            "hl2_image": "/images/gallery-building-exterior.png",
+            "hl2_badge_big": "Registered",
+            "hl2_badge_small": "Office address",
+            "hl2_btn_text": "",
+            "hl2_btn_link": "",
+            "options_show": "1",
+            "options_eyebrow": "Services",
+            "options_heading": "Virtual Office Services in Coimbatore to Support Your Business",
+            "options_subtitle": "A Virtual Office in Coimbatore gives businesses a simple way to manage their professional needs without renting a physical office. Depending on the plan, services may include a business address, mail handling, documentation support, and meeting room access to suit your budget.",
+            "location_show": "1",
+            "location_heading": "Virtual Office in",
+            "location_highlight": "Saravanampatti, Coimbatore",
+            "location_text": "Saravanampatti is a growing business and technology hub in Coimbatore. A virtual office here helps startups, freelancers, and growing companies maintain a professional business address with flexible services to suit their needs.",
+            "location_address": "AV Info Tech Park, Near KGiSL Campus, Keeranatham Road, Saravanampatti, Coimbatore",
+            "location_image": "/images/user_building_original.png",
+            "location_btn_text": "Explore Saravanampatti Virtual Office Plans",
+            "location_btn_link": "/contact-us#enquiry",
+            "tabs_show": "1",
+            "tabs_eyebrow": "Buying Guide",
+            "tabs_heading": "How to Choose the Best Virtual Office in Coimbatore",
+            "tabs_subtitle": "Choosing the best virtual office in Coimbatore means finding a provider that suits your business needs and budget. Compare the location, available services, pricing, documentation, and support before making your decision.",
+            "audience_show": "1",
+            "audience_eyebrow": "Who It's For",
+            "audience_heading": "Who Can Benefit from a Virtual Office Space in Coimbatore?",
+            "audience_subtitle": "A virtual office space in Coimbatore suits businesses that need a professional address without renting a full-time office. It offers flexibility for startups, freelancers, remote teams, and growing companies looking to manage expenses.",
+            "keypoints_show": "1",
+            "keypoints_eyebrow": "Plans & Pricing",
+            "keypoints_heading": "Affordable Virtual Office in Coimbatore: Plans and Pricing",
+            "keypoints_subtitle": "Choosing an affordable virtual office in Coimbatore depends on your business needs and budget. Compare plans based on address facilities, documentation support, mail handling, and meeting room access to find the right fit.",
+            "steps_show": "1",
+            "steps_eyebrow": "GST Registration",
+            "steps_heading": "Virtual Office for GST Registration in Coimbatore",
+            "steps_subtitle": "A virtual office for GST registration in Coimbatore can suit businesses that operate remotely and need a business address. Check the provider's documents, address eligibility, and applicable GST requirements before choosing a plan.",
+            "faq_show": "1",
+            "faq_heading": "Frequently Asked Questions About Virtual Offices in Coimbatore",
+            "faq_text": "Can't find what you need? Message us on WhatsApp and we'll reply shortly.",
+            "faq_btn_text": "Enquire About Virtual Office Plans",
+            "faq_btn_link": "/contact-us#enquiry",
+            "cta_show": "1",
+            "cta_image": "/images/gallery-front-office-lounge.png",
+            "cta_heading": "Get Started with Your Virtual Office in Coimbatore",
+            "cta_text": "Build your business presence in Saravanampatti, Coimbatore, with flexible virtual office plans that fit your needs and budget.",
+            "cta_btn_text": "Get Your Virtual Office Quote",
+            "cta_btn_link": "/contact-us#enquiry",
+            "related_show": "0"
+        },
+        "items": {
+            "intro_strip": [
+                {
+                    "icon": "fa-location-dot",
+                    "text": "Professional business address"
+                },
+                {
+                    "icon": "fa-envelope-open-text",
+                    "text": "Mail handling"
+                },
+                {
+                    "icon": "fa-file-signature",
+                    "text": "GST & company registration support"
+                },
+                {
+                    "icon": "fa-people-group",
+                    "text": "Meeting room access"
+                }
+            ],
+            "hl1_items": [
+                {
+                    "icon": "fa-piggy-bank",
+                    "title": "Reduce Office Rental and Maintenance Costs",
+                    "text": "An affordable virtual office in Coimbatore helps businesses save on rent, maintenance, and staffing costs while maintaining a professional image. Choose services that fit your needs and budget."
+                },
+                {
+                    "icon": "fa-location-dot",
+                    "title": "Build a Professional Business Address",
+                    "text": "A professional business address in Coimbatore helps build trust and establish a local presence. Before choosing a provider, check the address details, permitted usage, and required documents."
+                },
+                {
+                    "icon": "fa-laptop-house",
+                    "title": "Work Flexibly from Any Location",
+                    "text": "A virtual office space in Coimbatore lets remote teams work from anywhere while maintaining a professional setup. Access business support services and meeting rooms when needed, depending on your plan."
+                }
+            ],
+            "hl2_items": [
+                {
+                    "icon": "fa-location-dot",
+                    "title": "Choose a Suitable Registered Office Address",
+                    "text": "Choosing the right registered office address is an important step when starting a company. Check the location, permitted usage, and provider's authorization to ensure the arrangement suits your registration needs."
+                },
+                {
+                    "icon": "fa-file-circle-check",
+                    "title": "Verify Company Incorporation Documents",
+                    "text": "Company registration may require address proof, an agreement, authorization documents, and other supporting records. Confirm the documents included in your plan and review the latest requirements before applying."
+                },
+                {
+                    "icon": "fa-envelope-open-text",
+                    "title": "Manage Official Correspondence and Ongoing Compliance",
+                    "text": "A registered office address helps businesses receive official letters and important notices. Understand the provider's mail-handling process and keep your company address records updated to meet ongoing compliance requirements."
+                }
+            ],
+            "options": [
+                {
+                    "image": "/images/gallery-front-office-reception.png",
+                    "tag": "Address",
+                    "title": "Professional Business Address and Mail Handling",
+                    "text": "A professional business address helps manage your correspondence smoothly. Depending on your plan, services may include mail receiving, notifications, and forwarding, making daily business communication more convenient.",
+                    "chips": "Mail receiving, Notifications, Forwarding",
+                    "note": "Pricing on enquiry",
+                    "link_text": "Enquire now",
+                    "link_url": "/contact-us#enquiry"
+                },
+                {
+                    "image": "/images/gallery-office-inauguration.png",
+                    "tag": "Registration",
+                    "title": "GST and Company Registration Documentation Support",
+                    "text": "Virtual office providers may offer documentation support for GST and company registration, depending on the plan. Checking eligibility and document requirements helps businesses choose a suitable option for their needs.",
+                    "chips": "GST, Company registration",
+                    "note": "Pricing on enquiry",
+                    "link_text": "Enquire now",
+                    "link_url": "/contact-us#enquiry"
+                },
+                {
+                    "image": "/images/meeting_room_enhanced_1791353342929.jpg",
+                    "tag": "Add-ons",
+                    "title": "Meeting Rooms and Additional Business Facilities",
+                    "text": "Some virtual office plans offer meeting rooms and coworking spaces for client meetings and team discussions. Check whether access is included or requires an additional payment before booking.",
+                    "chips": "Meeting rooms, Coworking",
+                    "note": "Pricing on enquiry",
+                    "link_text": "View meeting room",
+                    "link_url": "/services/meeting-room"
+                }
+            ],
+            "location_points": [
+                {
+                    "icon": "fa-building",
+                    "title": "Establish Your Business Presence in Saravanampatti",
+                    "text": "A business address here helps create a professional local presence. Check the address details, included services, and whether it suits your requirements."
+                },
+                {
+                    "icon": "fa-people-group",
+                    "title": "Connect with Coimbatore's Growing Business Community",
+                    "text": "Saravanampatti's growing IT and business community makes it a practical location for startups, consultants, and service providers."
+                },
+                {
+                    "icon": "fa-list-check",
+                    "title": "Choose Virtual Office Services That Match Your Needs",
+                    "text": "Compare plans based on address usage, mail handling, documentation support, pricing, and workspace access."
+                }
+            ],
+            "tabs": [
+                {
+                    "icon": "fa-location-dot",
+                    "label": "Verify Address & Location",
+                    "image": "/images/gallery-building-exterior.png",
+                    "title": "Verify the Business Address and Location",
+                    "text": "Check the actual business address, permitted usage, and provider's authorization. If you prefer a local presence, consider Saravanampatti and ensure the location suits your business requirements."
+                },
+                {
+                    "icon": "fa-scale-balanced",
+                    "label": "Compare Services & Pricing",
+                    "image": "/images/gallery-front-office-lounge.png",
+                    "title": "Compare Services, Pricing, and Agreement Terms",
+                    "text": "Compare packages based on included services, agreement duration, renewal fees, mail handling, and additional charges. Reviewing the total cost helps you choose a plan that fits your budget."
+                },
+                {
+                    "icon": "fa-headset",
+                    "label": "Documentation & Support",
+                    "image": "/images/gallery-front-office-reception.png",
+                    "title": "Check Documentation and Customer Support",
+                    "text": "Review the required documents for GST registration or company incorporation before booking. Choose a provider that explains the process clearly, offers reliable support, and maintains transparent service terms."
+                }
+            ],
+            "audience": [
+                {
+                    "image": "/images/gallery-open-desk-area.png",
+                    "title": "Startups and Entrepreneurs",
+                    "text": "Startups can build a professional business presence without spending heavily on office rent. This allows entrepreneurs to focus on developing their business, attracting customers, and managing growth."
+                },
+                {
+                    "image": "/images/gallery-shared-workspace-floor.png",
+                    "title": "Freelancers and Independent Professionals",
+                    "text": "Freelancers, consultants, and independent professionals can use a business address to keep work correspondence separate from their personal address. Some plans also include mail handling and administrative support."
+                },
+                {
+                    "image": "/images/gallery-boardroom.png",
+                    "title": "Remote Teams and Growing Companies",
+                    "text": "Remote teams and expanding companies can maintain a business presence in Coimbatore without requiring everyone to work from one location. An affordable virtual office helps keep operations flexible and costs manageable."
+                }
+            ],
+            "keypoints": [
+                {
+                    "title": "Business Address Plans for Startups and Freelancers",
+                    "text": "Business address plans suit startups, freelancers, and small businesses looking for a professional address. Check the included services, mail handling options, and permitted uses before selecting a package."
+                },
+                {
+                    "title": "Virtual Office Plans for Registration Requirements",
+                    "text": "Some virtual office plans include documentation support for GST registration and company incorporation. Review the agreement, required documents, and eligibility conditions, as approval depends on applicable regulations."
+                },
+                {
+                    "title": "Compare Virtual Office Pricing Before Booking",
+                    "text": "Compare virtual office pricing in Coimbatore by checking taxes, renewal fees, documentation charges, and additional service costs. Request a detailed quotation to choose a plan that fits your budget."
+                }
+            ],
+            "steps": [
+                {
+                    "title": "Understand the Documents Required for GST Registration",
+                    "text": "GST registration may require an agreement, consent letter, or proof of business premises, depending on your situation. Check with the provider for the necessary documents before selecting a package."
+                },
+                {
+                    "title": "Verify the Virtual Office Address and Eligibility",
+                    "text": "Before choosing a virtual office in Coimbatore for GST registration, confirm that the address is suitable for your business. Ensure the provider offers valid supporting documents that meet applicable requirements."
+                },
+                {
+                    "title": "Complete Your GST Application with the Right Information",
+                    "text": "Keep your business details, identity proof, address documents, and other required information ready before applying. Review the application carefully and provide any additional documents requested by the GST authorities."
+                }
+            ],
+            "faq": [
+                {
+                    "question": "What is a virtual office in Coimbatore?",
+                    "answer": "A virtual office provides a professional business address without renting a full-time office. Services may include mail handling and meeting room access."
+                },
+                {
+                    "question": "How much does a virtual office in Coimbatore cost?",
+                    "answer": "Pricing depends on the location, package, and included services. Contact the provider for current rates and any additional charges."
+                },
+                {
+                    "question": "Can I use a virtual office for GST registration in Coimbatore?",
+                    "answer": "Yes, if the address arrangement and supporting documents meet applicable GST requirements. Check eligibility and documentation before booking."
+                },
+                {
+                    "question": "Can I use a virtual office for company registration?",
+                    "answer": "A virtual office may be used as a registered office if it meets legal requirements. Verify the address and documents before applying."
+                },
+                {
+                    "question": "Where is your virtual office located in Coimbatore?",
+                    "answer": "Our virtual office is located in Saravanampatti, Coimbatore. Contact our team for available plans, address details, and services."
+                },
+                {
+                    "question": "Does a virtual office include a physical workspace?",
+                    "answer": "Some plans offer only a business address, while others include meeting rooms or coworking facilities. Check the package details before booking."
+                }
+            ]
+        }
+    },
+    "coworking-space-coimbatore": {
+        "fields": {
+            "banner_image": "/images/services_bg.jpg",
+            "banner_heading": "Co Working Space in Coimbatore",
+            "banner_tagline": "A professional, flexible workspace in Saravanampatti, Coimbatore",
+            "intro_show": "1",
+            "intro_text": "Looking for a productive and flexible coworking space in Coimbatore? Workiify Spaces, located in Saravanampatti at AV Info Tech Park near KGiSL Campus, offers a professional environment for startups, freelancers, entrepreneurs, and growing teams. Choose from hot desks, dedicated desks, private offices, and meeting rooms based on your needs. With high-speed Wi-Fi, parking, a food court, game area, and modern amenities, Workiify creates a comfortable workspace where individuals and businesses can collaborate, work efficiently, and grow in one of Coimbatore's leading business hubs.",
+            "intro_btn_text": "Book Your Workspace",
+            "intro_btn_link": "/contact-us#enquiry",
+            "options_show": "1",
+            "options_eyebrow": "Shared Office Space",
+            "options_heading": "Shared Office Space in Coimbatore for Flexible Working",
+            "options_subtitle": "Workiify Spaces offers flexible workspaces in Saravanampatti, Coimbatore, for freelancers, entrepreneurs, startups, professionals, and teams, making it easy to choose a workspace that suits their needs.",
+            "location_show": "1",
+            "location_heading": "Coworking Space in",
+            "location_highlight": "Saravanampatti, Coimbatore",
+            "location_text": "",
+            "location_address": "AV Info Tech Park, Near KGiSL Campus, Keeranatham Road, Saravanampatti, Coimbatore",
+            "location_image": "/images/user_building_original.png",
+            "location_btn_text": "",
+            "location_btn_link": "",
+            "tabs_show": "1",
+            "tabs_eyebrow": "Amenities",
+            "tabs_heading": "Coworking Space with Premium Amenities",
+            "tabs_subtitle": "Workiify Spaces offers a comfortable coworking space with practical amenities for focused work, client meetings, and team collaboration.",
+            "audience_show": "1",
+            "audience_eyebrow": "More Reasons",
+            "audience_heading": "Who Workiify Is Built For",
+            "audience_subtitle": "Startups, freelancers, entrepreneurs and modern businesses all use Workiify differently.",
+            "keypoints_show": "1",
+            "keypoints_eyebrow": "Why Workiify",
+            "keypoints_heading": "Why Choose Workiify as Your Coworking Space in Coimbatore?",
+            "keypoints_subtitle": "Workiify Spaces offers a comfortable and flexible workplace for startups, freelancers, entrepreneurs, and growing businesses. Located in Saravanampatti, it gives you the freedom to choose the workspace that suits you, making it a practical choice for those looking for the best coworking space in Coimbatore.",
+            "faq_show": "1",
+            "faq_heading": "Frequently Asked Questions About Coworking Space in Coimbatore",
+            "faq_text": "Can't find what you need? Message us on WhatsApp and we'll reply shortly.",
+            "faq_btn_text": "Ask a Question",
+            "faq_btn_link": "https://api.whatsapp.com/send/?phone=919655500001&text=Hi%20Workiify,%20I%20have%20a%20question&type=phone_number&app_absent=0",
+            "cta_show": "1",
+            "cta_image": "",
+            "cta_heading": "Find Your Ideal Co Working Space in Coimbatore with Workiify",
+            "cta_text": "Workiify offers flexible coworking spaces in Coimbatore with modern amenities for professionals, startups, freelancers, and businesses.",
+            "cta_btn_text": "Book Your Workspace",
+            "cta_btn_link": "/contact-us#enquiry",
+            "hl1_show": "0",
+            "hl2_show": "0",
+            "steps_show": "0",
+            "related_show": "0"
+        },
+        "items": {
+            "intro_strip": [],
+            "options": [
+                {
+                    "image": "/images/hot_desk_enhanced_1791353156473.jpg",
+                    "tag": "",
+                    "title": "Hot Desk in Coimbatore",
+                    "text": "A hot desk in Coimbatore gives freelancers, remote workers, and consultants the flexibility to work from a professional environment without a fixed desk. Simply choose an available space and get started.",
+                    "chips": "",
+                    "note": "",
+                    "link_text": "Explore Hot Desk",
+                    "link_url": "/services/hot-desk"
+                },
+                {
+                    "image": "/images/dedicated_desk_enhanced_1791353327423.jpg",
+                    "tag": "",
+                    "title": "Dedicated Desk in Coimbatore",
+                    "text": "A dedicated desk in Coimbatore gives freelancers, professionals, and entrepreneurs their own regular workspace. It offers the comfort of a consistent desk while keeping the flexibility of a professional office environment.",
+                    "chips": "",
+                    "note": "",
+                    "link_text": "Explore Dedicated Desk",
+                    "link_url": "/services/dedicated-desk"
+                },
+                {
+                    "image": "/images/private_office_enhanced_1791353356099.jpg",
+                    "tag": "",
+                    "title": "Private Office Space in Coimbatore",
+                    "text": "A private office space in Coimbatore gives startups, small businesses, and growing teams a dedicated place for focused work, collaboration, and daily operations without the hassle of setting up an office.",
+                    "chips": "",
+                    "note": "",
+                    "link_text": "Explore Private Office",
+                    "link_url": "/services/private-office"
+                },
+                {
+                    "image": "/images/meeting_room_enhanced_1791353342929.jpg",
+                    "tag": "",
+                    "title": "Meeting Room in Coimbatore",
+                    "text": "Need a professional place for client meetings, interviews, or team discussions? Workiify offers a meeting room in Coimbatore where you can conduct important conversations comfortably and professionally.",
+                    "chips": "",
+                    "note": "",
+                    "link_text": "Explore Meeting Room",
+                    "link_url": "/services/meeting-room"
+                }
+            ],
+            "location_points": [
+                {
+                    "icon": "fa-building",
+                    "title": "Strategic IT Hub",
+                    "text": "Surrounded by top tech parks in Saravanampatti"
+                },
+                {
+                    "icon": "fa-map-pin",
+                    "title": "Prime Location",
+                    "text": "Just 5 minutes from KGiSL Campus"
+                },
+                {
+                    "icon": "fa-shield-halved",
+                    "title": "Secure Campus",
+                    "text": "24/7 security with dedicated indoor parking"
+                },
+                {
+                    "icon": "fa-road",
+                    "title": "Excellent Connectivity",
+                    "text": "Easy transit access across Coimbatore"
+                }
+            ],
+            "tabs": [
+                {
+                    "icon": "fa-wifi",
+                    "label": "High-Speed Wi-Fi",
+                    "image": "/images/amenity_wifi_1791615528415.jpg",
+                    "title": "High-Speed Wi-Fi",
+                    "text": "Workiify offers high-speed Wi-Fi and essential workplace facilities, creating a distraction-free environment for professionals to stay connected and focus."
+                },
+                {
+                    "icon": "fa-people-group",
+                    "label": "Meeting Rooms",
+                    "image": "/images/amenity_meeting_1791615558877.jpg",
+                    "title": "Meeting Rooms",
+                    "text": "Professional and private spaces for client meetings, team discussions, interviews, and important business conversations."
+                },
+                {
+                    "icon": "fa-square-parking",
+                    "label": "Parking & Access",
+                    "image": "/images/amenity_parking_1791615589000.jpg",
+                    "title": "Parking & Convenience",
+                    "text": "Convenient parking and essential everyday facilities, making it easier for members and visitors to access the workspace."
+                },
+                {
+                    "icon": "fa-utensils",
+                    "label": "Food Court",
+                    "image": "/images/gallery-dining-hall-1.png",
+                    "title": "Food Court",
+                    "text": "An on-site food court where members can enjoy meals and refreshments conveniently without leaving the premises."
+                },
+                {
+                    "icon": "fa-gamepad",
+                    "label": "Game Area",
+                    "image": "/images/amenity_game_1791615575008.jpg",
+                    "title": "Game Area",
+                    "text": "A dedicated game area gives members a relaxing space to unwind, recharge, and enjoy some fun during breaks."
+                }
+            ],
+            "audience": [
+                {
+                    "image": "/images/gallery-open-desk-area.png",
+                    "title": "Freelancers & Remote Workers",
+                    "text": "Workiify offers freelancers and independent professionals a comfortable workspace with reliable connectivity and a professional atmosphere."
+                },
+                {
+                    "image": "/images/gallery-shared-workspace-floor.png",
+                    "title": "Startups & Entrepreneurs",
+                    "text": "Workiify gives startups a professional place to work, meet clients, and grow their businesses without the cost of setting up a traditional office."
+                },
+                {
+                    "image": "/images/gallery-boardroom.png",
+                    "title": "Modern Growing Businesses",
+                    "text": "Flexible workspace options that grow with your needs, whether you're building a team or expanding your business operations."
+                }
+            ],
+            "keypoints": [
+                {
+                    "title": "A Professional and Productive Work Environment",
+                    "text": "Workiify provides comfortable workspaces with high-speed Wi-Fi, meeting rooms, parking, and essential amenities. Everything is designed to make your daily work easier, more comfortable, and productive."
+                },
+                {
+                    "title": "Flexible Workspaces for Different Business Needs",
+                    "text": "Workiify offers hot desks, dedicated desks, private offices, and meeting rooms to suit different work needs. Whether you're working alone or with a team, choose a workspace in Saravanampatti that fits you."
+                },
+                {
+                    "title": "More Than Just a Workplace",
+                    "text": "Workiify offers more than just workspaces, with a food court, game area, and celebration hall for up to 60 people. It's a comfortable place to work, relax, connect, and grow."
+                }
+            ],
+            "faq": [
+                {
+                    "question": "How much does a coworking space cost in Coimbatore?",
+                    "answer": "Coworking space costs depend on the workspace type, facilities, duration, and needs. Workiify offers flexible options, including hot desks, dedicated desks, private offices, and meeting rooms, to suit different requirements."
+                },
+                {
+                    "question": "Which is the best coworking space in Coimbatore?",
+                    "answer": "Workiify Spaces in Saravanampatti is a best coworking space in Coimbatore, offering flexible desks, private offices, meeting rooms, Wi-Fi, parking, food, recreation, and event facilities for professionals and businesses."
+                },
+                {
+                    "question": "Is there a coworking space in Saravanampatti?",
+                    "answer": "Workiify Spaces is located at AV Info Tech Park, Keeranatham Road, near KGiSL Campus, Saravanampatti, Coimbatore – 641035, offering flexible workspaces for professionals, startups, freelancers, and businesses."
+                },
+                {
+                    "question": "Can startups and small businesses use coworking spaces?",
+                    "answer": "Coworking spaces offer startups and small businesses a professional workplace without the high costs of setting up a traditional office. Workiify supports both individuals and growing teams."
+                },
+                {
+                    "question": "Is Workiify suitable for freelancers and remote professionals?",
+                    "answer": "Workiify provides freelancers, consultants, remote workers, and independent professionals with a professional alternative to home or cafe work, offering flexible spaces, reliable connectivity, meeting facilities, and essential amenities."
+                },
+                {
+                    "question": "What facilities are available at Workiify?",
+                    "answer": "Workiify offers hot desks, dedicated desks, and private offices, along with Wi-Fi, parking, meeting rooms, food court, game area, and a celebration hall for up to 60 people."
+                }
+            ]
+        }
+    },
+    "private-office-in-coimbatore": {
+        "fields": {
+            "banner_image": "/images/private_office_enhanced_1791353356099.jpg",
+            "banner_heading": "Private Office in Coimbatore for Your Growing Business",
+            "banner_tagline": "Workiify offers a Private Office in Coimbatore designed for businesses that value privacy, comfort, and flexibility. With modern facilities and convenient 24/7 access, teams can work on their own schedule in a professional environment that supports productivity and business growth.",
+            "intro_show": "1",
+            "intro_text": "Workiify offers a Private Office space in Coimbatore for businesses looking for a comfortable and professional work environment. Whether you're starting a new business or growing your team, find a space that suits your needs and makes everyday work easier.",
+            "intro_btn_text": "Call Now",
+            "intro_btn_link": "tel:+919655500001",
+            "hl1_show": "1",
+            "hl1_style": "slides",
+            "hl1_side": "left",
+            "hl1_eyebrow": "Ideal Workspaces",
+            "hl1_heading": "Find Your Ideal Private Office Space in Coimbatore",
+            "hl1_text": "Workiify offers a Private Office space in Coimbatore for businesses looking for a comfortable and professional work environment. Whether you're starting a new business or growing your team, find a space that suits your needs and makes everyday work easier.",
+            "hl1_image": "/images/coworking_private_1791350889843.jpg",
+            "hl1_badge_big": "24/7",
+            "hl1_badge_small": "Office access",
+            "hl1_btn_text": "WhatsApp Enquiry",
+            "hl1_btn_link": "https://api.whatsapp.com/send/?phone=919655500001&text=Hi%20Workiify,%20I%20am%20interested%20in%20a%20Private%20Office%20in%20Coimbatore&type=phone_number&app_absent=0",
+            "options_show": "1",
+            "options_eyebrow": "Office Spaces",
+            "options_heading": "Private Office Spaces for Different Business Needs",
+            "options_subtitle": "Workiify offers Private Office spaces in Coimbatore for businesses looking for a comfortable and professional work environment. Whether you're starting a new venture or growing your team, find a workspace that suits your needs and supports your business goals.",
+            "location_show": "1",
+            "location_heading": "Private Office Space in",
+            "location_highlight": "Saravanampatti, Coimbatore",
+            "location_text": "Located at AV Info Tech Park near KGiSL Campus, our private offices offer unmatched accessibility, secure parking, and round-the-clock convenience for teams in Coimbatore.",
+            "location_address": "AV Info Tech Park, Keeranatham Road, Near KGiSL Campus, Saravanampatti, Coimbatore, Tamil Nadu 641035",
+            "location_image": "/images/user_building_original.png",
+            "location_btn_text": "Book Your Office Visit",
+            "location_btn_link": "/contact-us#enquiry",
+            "tabs_show": "1",
+            "tabs_eyebrow": "Specifications",
+            "tabs_heading": "Private Office Specifications in Coimbatore: Space, Features and Flexibility",
+            "tabs_subtitle": "Workiify offers a Private office in Coimbatore with workspace options to suit your needs. Find a comfortable office with suitable seating, essential facilities, and convenient access for everyday business activities.",
+            "audience_show": "1",
+            "audience_eyebrow": "Why Choose",
+            "audience_heading": "Why Choose a Private Office in Coimbatore?",
+            "audience_subtitle": "Workiify offers a Private Office in Coimbatore where your team can work comfortably, collaborate easily, and welcome clients in a professional setting. With essential facilities and convenient access, you can focus on daily tasks and grow your business with confidence.",
+            "keypoints_show": "1",
+            "keypoints_eyebrow": "Affordable Plans",
+            "keypoints_heading": "Affordable Office Space in Coimbatore for Every Team",
+            "keypoints_subtitle": "Workiify offers Office space in Coimbatore to suit different business needs and budgets. Whether you’re running a small team or growing your company, find a comfortable workspace with practical facilities that make everyday work easier.",
+            "steps_show": "1",
+            "steps_eyebrow": "Buyer Guide",
+            "steps_heading": "How to Choose the Best Private Office in Coimbatore for Your Team",
+            "steps_subtitle": "Workiify helps you find the Best Private office in Coimbatore to suit your team’s needs. Enjoy a comfortable, practical workspace that supports daily activities, teamwork, and future business growth.",
+            "hl2_show": "1",
+            "hl2_style": "list",
+            "hl2_side": "right",
+            "hl2_eyebrow": "Modern Businesses",
+            "hl2_heading": "Flexible Workspace Solutions in Coimbatore for Modern Businesses",
+            "hl2_text": "Workiify offers Work Space Solutions in Coimbatore for startups, professionals, and growing businesses. With flexible workspace options to suit different team sizes and working styles, you can find a comfortable environment that makes everyday work easier.",
+            "hl2_image": "/images/gallery-shared-workspace-floor.png",
+            "hl2_badge_big": "Flexible",
+            "hl2_badge_small": "Team solutions",
+            "hl2_btn_text": "Book Your Office Visit",
+            "hl2_btn_link": "/contact-us#enquiry",
+            "faq_show": "1",
+            "faq_heading": "Frequently Asked Questions About Private Offices in Coimbatore",
+            "faq_text": "Can't find the answer you need? Contact our team on WhatsApp or phone for immediate assistance.",
+            "faq_btn_text": "WhatsApp Enquiry",
+            "faq_btn_link": "https://api.whatsapp.com/send/?phone=919655500001&text=Hi%20Workiify,%20I%20have%20a%20question%20about%20Private%20Offices%20in%20Coimbatore&type=phone_number&app_absent=0",
+            "cta_show": "1",
+            "cta_image": "/images/gallery-front-office-lounge.png",
+            "cta_heading": "Find Your Perfect Private Office in Coimbatore with Workiify",
+            "cta_text": "Find the right workspace with Workiify. Share your location, team size, and needs, and our team will help you explore suitable options. Your next workspace starts here. Connect with Workiify today!",
+            "cta_btn_text": "Call Now",
+            "cta_btn_link": "tel:+919655500001",
+            "related_show": "1",
+            "related_heading": "Explore Other Workspace Options",
+            "related_btn_text": "View All Services"
+        },
+        "items": {
+            "intro_strip": [
+                {
+                    "icon": "fa-lock",
+                    "text": "Dedicated lockable offices"
+                },
+                {
+                    "icon": "fa-clock",
+                    "text": "Convenient 24/7 access"
+                },
+                {
+                    "icon": "fa-users",
+                    "text": "Startups to growing teams"
+                },
+                {
+                    "icon": "fa-location-dot",
+                    "text": "Saravanampatti, Coimbatore"
+                }
+            ],
+            "hl1_items": [
+                {
+                    "icon": "fa-laptop-code",
+                    "title": "Dedicated Workspaces for Better Productivity",
+                    "text": "A dedicated workspace gives your team the freedom to focus, collaborate, and get things done without unnecessary distractions. Work comfortably, manage daily tasks, and create a professional atmosphere where your team can work together and stay productive throughout the day."
+                },
+                {
+                    "icon": "fa-sliders",
+                    "title": "Flexible Workspace for Different Business Needs",
+                    "text": "Every team works differently, and the right office should fit your needs. Whether you're running a small business or expanding your team, choose a workspace that matches your budget, seating requirements, and daily work routine."
+                },
+                {
+                    "icon": "fa-clock",
+                    "title": "Convenient 24/7 Office Access",
+                    "text": "Work on your own schedule with round-the-clock office access. Whether you prefer early mornings or late evenings, enjoy the flexibility to manage your tasks, meet deadlines, and keep your business running smoothly without being limited to regular office hours."
+                }
+            ],
+            "options": [
+                {
+                    "image": "/images/private_office_enhanced_1791353356099.jpg",
+                    "tag": "Startups & Small Teams",
+                    "title": "Private Cabins for Startups and Small Teams",
+                    "text": "A private cabin gives startups and small teams a comfortable space to work, plan projects, and share ideas. Enjoy a focused environment for daily tasks and business discussions.",
+                    "chips": "Private cabin, Focused work, 2-10 seats",
+                    "note": "Flexible rental terms",
+                    "link_text": "Enquire about cabins",
+                    "link_url": "/contact-us#enquiry"
+                },
+                {
+                    "image": "/images/gallery-open-desk-area.png",
+                    "tag": "Growing Companies",
+                    "title": "Dedicated Office Spaces for Growing Companies",
+                    "text": "As your business grows, your workspace should grow with you. A dedicated office gives your team room to collaborate, manage projects, and handle daily tasks comfortably.",
+                    "chips": "Dedicated office, Scalable setup, Teams",
+                    "note": "Custom arrangements available",
+                    "link_text": "Book a visit",
+                    "link_url": "/contact-us#enquiry"
+                },
+                {
+                    "image": "/images/gallery-front-office-reception.png",
+                    "tag": "Established Businesses",
+                    "title": "Managed Office Solutions for Established Businesses",
+                    "text": "Workiify offers Private Office spaces in Coimbatore with facilities to support your daily work. Depending on your plan, enjoy furnished offices, internet access, meeting rooms, and maintenance services to keep your business running smoothly.",
+                    "chips": "Furnished offices, Meeting rooms, Full maintenance",
+                    "note": "Enterprise ready",
+                    "link_text": "Contact our team",
+                    "link_url": "/contact-us#enquiry"
+                }
+            ],
+            "location_points": [
+                {
+                    "icon": "fa-building",
+                    "title": "Prime IT Corridor",
+                    "text": "Situated in Saravanampatti, Coimbatore's foremost tech & business district."
+                },
+                {
+                    "icon": "fa-location-dot",
+                    "title": "5 Mins from KGiSL",
+                    "text": "Easily accessible on Keeranatham Road with immediate public transport access."
+                },
+                {
+                    "icon": "fa-shield-halved",
+                    "title": "24/7 Security & Access",
+                    "text": "Secure gated entry, CCTV surveillance, and reserved indoor parking facilities."
+                }
+            ],
+            "tabs": [
+                {
+                    "icon": "fa-arrows-left-right-to-line",
+                    "label": "Size & Seating",
+                    "image": "/images/gallery-shared-workspace-floor.png",
+                    "title": "Office Size and Seating Capacity",
+                    "text": "Choose an office with enough space for your team, workstations, and daily activities. Consider your current needs, storage requirements, and future growth to ensure everyone works comfortably."
+                },
+                {
+                    "icon": "fa-network-wired",
+                    "label": "Infrastructure",
+                    "image": "/images/amenity_wifi_1791615528415.jpg",
+                    "title": "Workspace Infrastructure and Included Amenities",
+                    "text": "Check the facilities available before choosing an office. Look for furnished workstations, reliable internet, air conditioning, power supply, meeting rooms, and maintenance services that support your team’s daily work."
+                },
+                {
+                    "icon": "fa-key",
+                    "label": "Access & Security",
+                    "image": "/images/gallery-building-exterior.png",
+                    "title": "Access, Security and Working Arrangements",
+                    "text": "Choose a Private office in Coimbatore that suits your working hours and security needs. Workiify offers 24/7 access, giving your team more flexibility to manage daily tasks and projects."
+                }
+            ],
+            "audience": [
+                {
+                    "image": "/images/gallery-boardroom.png",
+                    "title": "Enjoy Privacy and a Professional Environment",
+                    "text": "Enjoy a dedicated workspace where your team can focus, hold private discussions, and attend meetings comfortably. Work with fewer distractions in a professional environment that welcomes employees, clients, and business partners."
+                },
+                {
+                    "image": "/images/gallery-open-workstation-area.png",
+                    "title": "Improve Team Productivity and Collaboration",
+                    "text": "Give your team a dedicated space to share ideas, manage projects, and handle daily tasks together. A comfortable office helps build better work routines and makes teamwork easier."
+                },
+                {
+                    "image": "/images/gallery-front-office-lounge.png",
+                    "title": "Work on Your Schedule with 24/7 Access",
+                    "text": "Work on your schedule with a Private Office in Coimbatore offering 24/7 access. Manage urgent tasks, attend to clients, and keep your business running smoothly beyond regular office hours."
+                }
+            ],
+            "keypoints": [
+                {
+                    "title": "Choose an Office That Fits Your Budget",
+                    "text": "Compare office rentals, seating options, facilities, and contract terms before making a decision. Understanding the costs upfront helps you choose a workspace that fits your budget and business needs."
+                },
+                {
+                    "title": "Enjoy a Comfortable and Productive Work Environment",
+                    "text": "Choose an office that makes everyday work comfortable and productive. A well-designed layout, proper furniture, reliable internet, good lighting, and essential facilities help your team work efficiently."
+                },
+                {
+                    "title": "Get More Flexibility with 24/7 Office Access",
+                    "text": "Work on your schedule with an Office space in Coimbatore that offers 24/7 access. Manage projects, meet deadlines, and coordinate with clients without worrying about regular office hours."
+                }
+            ],
+            "steps": [
+                {
+                    "title": "Identify Your Team Size and Workspace Requirements",
+                    "text": "Consider your team size, workstations, storage, and meeting needs before choosing an office. Understanding these requirements helps you find a comfortable workspace that suits your daily business activities."
+                },
+                {
+                    "title": "Evaluate Office Facilities and Accessibility",
+                    "text": "Look for essential facilities such as internet, furniture, power supply, parking, and transport access. Check the available amenities and office timings to ensure they suit your team’s daily needs."
+                },
+                {
+                    "title": "Compare Workspace Options Before Making a Decision",
+                    "text": "Find the Best Private Office in Coimbatore by comparing location, space, facilities, and rental costs. Visit shortlisted offices to check the environment and choose a workspace that suits your business needs."
+                }
+            ],
+            "hl2_items": [
+                {
+                    "icon": "fa-building-shield",
+                    "title": "A Dedicated Space to Build Your Business",
+                    "text": "A dedicated workspace gives your team room to share ideas, manage projects, and handle daily tasks comfortably. It also creates a professional environment for focused work and business discussions."
+                },
+                {
+                    "icon": "fa-arrows-split-up-and-left",
+                    "title": "Workspace Options That Adapt to Your Team",
+                    "text": "Choose an office that suits your current team size and future growth plans. Consider seating capacity, rental costs, facilities, and accessibility to find a workspace that fits your business needs."
+                },
+                {
+                    "icon": "fa-chart-line",
+                    "title": "A Workspace That Supports Your Business Growth",
+                    "text": "Work in a professional environment that supports teamwork, productivity, and business growth. From managing daily tasks to meeting clients, choose a workspace that makes your team feel comfortable and focused."
+                }
+            ],
+            "faq": [
+                {
+                    "question": "What Facilities Should I Look for in a Private Office?",
+                    "answer": "Choose an office with comfortable workstations, reliable internet, power supply, air conditioning, and meeting areas to support your team’s daily work."
+                },
+                {
+                    "question": "Is a Private Office Suitable for Startups and Small Businesses?",
+                    "answer": "A private office gives startups space to work, collaborate, and meet clients comfortably. Choose one that fits your budget, team size, and growth plans."
+                },
+                {
+                    "question": "Can I Access My Workiify Office Outside Regular Business Hours?",
+                    "answer": "Workiify offers 24/7 office access, giving teams flexibility to work anytime. Follow the facility's access procedures and security guidelines."
+                },
+                {
+                    "question": "How Much Does It Cost to Rent a Private Office in Coimbatore?",
+                    "answer": "Office rent varies by size, location, and facilities. Contact Workiify for current pricing, security deposits, maintenance charges, and available rental options."
+                },
+                {
+                    "question": "How Do I Choose the Right Private Office for My Team?",
+                    "answer": "Choose an office based on your team size, budget, location, and daily needs. Consider facilities, accessibility, and future growth."
+                },
+                {
+                    "question": "Can I Visit a Private Office Before Making a Booking?",
+                    "answer": "Visit the Workiify office to check the workspace, facilities, and accessibility in person. Contact the team to confirm availability and schedule a convenient visit."
+                }
+            ]
+        }
+    }
+}

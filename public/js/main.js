@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.querySelectorAll('.enquiry-form').forEach(initEnquiryForm);
 
-    // --- Enquiry Popup: shown once per browser session on first page view ---
+    // --- Enquiry Popup: shown once per browser session, 20s after the visitor arrives ---
     const enquiryPopup = document.getElementById('enquiryPopup');
     if (enquiryPopup) {
         const popupForm = enquiryPopup.querySelector('.enquiry-form');
@@ -414,13 +414,95 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (!sessionStorage.getItem('workiifyEnquiryPopupShown')) {
-            sessionStorage.setItem('workiifyEnquiryPopupShown', '1');
-            setTimeout(() => {
-                enquiryPopup.classList.add('active');
-                armAutoDismiss();
-            }, 1500);
-        }
+        // Show once per browser session, POPUP_DELAY_MS after the visitor first
+        // arrived on the site. The arrival time is kept in sessionStorage, so
+        // browsing between pages doesn't restart the countdown, and the
+        // "shown" flag is only set when the popup really appears (a visitor who
+        // leaves before the delay hasn't "used up" their popup).
+        const POPUP_DELAY_MS = 20000;
+        try {
+            if (!sessionStorage.getItem('workiifyEnquiryPopupShown')) {
+                let arrival = parseInt(sessionStorage.getItem('workiifyArrivalTime'), 10);
+                if (!arrival) {
+                    arrival = Date.now();
+                    sessionStorage.setItem('workiifyArrivalTime', String(arrival));
+                }
+                const wait = Math.max(0, POPUP_DELAY_MS - (Date.now() - arrival));
+                setTimeout(() => {
+                    if (sessionStorage.getItem('workiifyEnquiryPopupShown')) return;
+                    sessionStorage.setItem('workiifyEnquiryPopupShown', '1');
+                    enquiryPopup.classList.add('active');
+                    armAutoDismiss();
+                }, wait);
+            }
+        } catch (e) { /* storage blocked (private mode): skip the popup rather than nag on every page */ }
+
+        // Keep the chat button out of the way while the popup is open.
+        new MutationObserver(() => {
+            document.body.classList.toggle('enquiry-popup-open', enquiryPopup.classList.contains('active'));
+        }).observe(enquiryPopup, { attributes: true, attributeFilter: ['class'] });
     }
+
+    // --- Chat button: fade while scrolling on small screens so it never sits on top of text being read ---
+    (function () {
+        const fab = document.querySelector('.chatbot-fab');
+        if (!fab) return;
+        let t = null;
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth > 767) return;
+            fab.classList.add('is-scrolling');
+            clearTimeout(t);
+            t = setTimeout(() => fab.classList.remove('is-scrolling'), 800);
+        }, { passive: true });
+    })();
+
+    // --- Shared widgets used by the Coimbatore service pages ---
+    // Carousel (prev / next scroll the snap track)
+    document.querySelectorAll('.sw-carousel-container').forEach(box => {
+        const track = box.querySelector('.sw-carousel-track');
+        const prev = box.querySelector('.sw-prev');
+        const next = box.querySelector('.sw-next');
+        if (!track) return;
+        if (prev) prev.addEventListener('click', () => track.scrollBy({ left: -track.offsetWidth, behavior: 'smooth' }));
+        if (next) next.addEventListener('click', () => track.scrollBy({ left: track.offsetWidth, behavior: 'smooth' }));
+    });
+
+    // Location ticker (rotating highlights)
+    document.querySelectorAll('.sw-location-ticker').forEach(wrap => {
+        const items = wrap.querySelectorAll('.sw-ticker-item');
+        if (items.length < 2) return;
+        let i = 0;
+        setInterval(() => {
+            items[i].classList.remove('active');
+            i = (i + 1) % items.length;
+            items[i].classList.add('active');
+        }, 4000);
+    });
+
+    // Tabs (each .sw-amenities-tabs widget is independent)
+    document.querySelectorAll('.sw-amenities-tabs').forEach(widget => {
+        const tabs = widget.querySelectorAll('.sw-tab-btn');
+        const panes = widget.querySelectorAll('.sw-tab-pane');
+        tabs.forEach(tab => tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            panes.forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            const pane = widget.querySelector('#' + tab.getAttribute('data-target'));
+            if (pane) pane.classList.add('active');
+        }));
+    });
+
+    // Audience accordion: hover on desktop, tap on touch screens
+    document.querySelectorAll('.sw-audience-accordion').forEach(acc => {
+        const cards = acc.querySelectorAll('.sw-aud-card');
+        const activate = card => {
+            cards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        };
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => activate(card));
+            card.addEventListener('click', () => activate(card));
+        });
+    });
 
 });

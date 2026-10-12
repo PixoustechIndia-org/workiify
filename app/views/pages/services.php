@@ -1,4 +1,55 @@
-﻿<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php
+$e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
+$groups = $data['groups'] ?? [];
+$mainGroups = array_values(array_filter($groups, function ($g) { return $g['key'] !== 'guides'; }));
+$guideGroups = array_values(array_filter($groups, function ($g) { return $g['key'] === 'guides'; }));
+
+// One category section: eyebrow, heading and a card per service (all driven by Admin > Services).
+$renderGroup = function (array $group, $alt) use ($e) {
+    ob_start(); ?>
+<section class="services-showcase-section section-padding<?php echo $alt ? ' bg-alt' : ''; ?>" id="<?php echo $e($group['key'] === 'guides' ? 'coimbatore-guides' : $group['key']); ?>">
+    <div class="container text-center">
+        <span class="category-eyebrow"><?php echo $e($group['eyebrow']); ?></span>
+        <h2 class="section-title"><?php echo $e($group['heading']); ?></h2>
+        <p class="section-subtitle"><?php echo $e($group['subtitle']); ?></p>
+
+        <?php
+            // keep the last row tidy: 5-6 cards sit in 3 columns, 8 in 4
+            $n = count($group['items']);
+            $gridCls = $n <= 4 ? '' : (($n % 4 === 0) ? ' sfg-4' : ' sfg-3');
+        ?>
+        <div class="service-feature-grid<?php echo $gridCls; ?>">
+            <?php foreach ($group['items'] as $i => $svc):
+                $photo = $svc['card_image'] ?: ($svc['banner_image'] ?: $svc['detail_image']);
+                $cta = $svc['card_cta'] !== '' ? $svc['card_cta'] : 'Enquire about ' . $svc['title'];
+            ?>
+            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="<?php echo ($i % 4) * 100; ?>">
+                <?php if ($photo !== ''): ?>
+                <div class="sfc-photo"><img src="<?php echo $e(URLROOT . $photo); ?>" alt="<?php echo $e($svc['title']); ?>" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
+                <?php endif; ?>
+                <div class="sfc-body">
+                    <?php if ($svc['card_badge'] !== ''): ?><span class="plan-badge"><?php echo $e($svc['card_badge']); ?></span><?php endif; ?>
+                    <h3><?php echo $e($svc['title']); ?></h3>
+                    <?php if ($svc['card_summary'] !== ''): ?><p><?php echo $e($svc['card_summary']); ?></p><?php endif; ?>
+                    <?php if (!empty($svc['card_features'])): ?>
+                    <ul class="feature-list">
+                        <?php foreach ($svc['card_features'] as $feature): ?>
+                        <li><i class="fas fa-check-circle"></i> <?php echo $e($feature); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+                    <a href="<?php echo URLROOT; ?>/services/<?php echo $e($svc['slug']); ?>" class="sfc-cta"><?php echo $e($cta); ?> <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php
+    return ob_get_clean();
+};
+?>
 <!-- Preload the main banner image to improve LCP / UX -->
 <link rel="preload" as="image" href="<?php echo URLROOT; ?>/images/services_bg.jpg">
 
@@ -17,151 +68,22 @@
 <!-- Category Jump Nav -->
 <nav class="services-subnav">
     <div class="container">
-        <a href="#workspaces">Workspaces</a>
-        <a href="#meetings-events">Meetings &amp; Events</a>
-        <a href="#virtual-day-pass">Virtual &amp; Day Pass</a>
+        <?php foreach ($mainGroups as $g): ?>
+        <a href="#<?php echo $e($g['key']); ?>"><?php echo $e($g['label']); ?></a>
+        <?php endforeach; ?>
         <a href="#whats-included">What's Included</a>
+        <?php foreach ($guideGroups as $g): ?>
+        <a href="#coimbatore-guides"><?php echo $e($g['label']); ?></a>
+        <?php endforeach; ?>
         <a href="#faq">FAQ</a>
     </div>
 </nav>
 
-<!-- 2. Workspaces -->
-<section class="services-showcase-section section-padding" id="workspaces">
-    <div class="container text-center">
-        <span class="category-eyebrow">Workspaces</span>
-        <h2 class="section-title">A Desk, or a Whole Office, on Your Terms</h2>
-        <p class="section-subtitle">From a single desk to a fully private office, find the plan that fits how you work.</p>
-
-        <div class="service-feature-grid">
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/hot_desk_enhanced_1791353156473.jpg" alt="Hot Desk" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Plan: Weekly</span>
-                    <h3>Hot Desk</h3>
-                    <p>Perfect for freelancers and remote workers who need a vibrant and flexible workspace every day.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Any open desk</li>
-                        <li><i class="fas fa-check-circle"></i> High-speed Wi-Fi</li>
-                        <li><i class="fas fa-check-circle"></i> 24/7 access</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/hot-desk" class="sfc-cta">Enquire about Hot Desk <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/dedicated_desk_enhanced_1791353327423.jpg" alt="Dedicated Desk" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Plan: Yearly</span>
-                    <h3>Dedicated Desk</h3>
-                    <p>Your own reserved workstation in a collaborative environment with professional amenities.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Reserved desk and locker</li>
-                        <li><i class="fas fa-check-circle"></i> 24/7 access and Wi-Fi</li>
-                        <li><i class="fas fa-check-circle"></i> 2 hours free boardroom use per month</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/dedicated-desk" class="sfc-cta">Enquire about Dedicated Desk <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/private_office_enhanced_1791353356099.jpg" alt="Private Office" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Plan: Yearly</span>
-                    <h3>Private Office</h3>
-                    <p>Secure and fully furnished office spaces ideal for startups, teams, and established businesses.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Furnished lockable office</li>
-                        <li><i class="fas fa-check-circle"></i> 6 hours free boardroom use per month</li>
-                        <li><i class="fas fa-check-circle"></i> Reception services and business address</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/private-office" class="sfc-cta">Enquire about Private Office <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 3. Meetings & Events -->
-<section class="services-showcase-section section-padding bg-alt" id="meetings-events">
-    <div class="container text-center">
-        <span class="category-eyebrow">Meetings &amp; Events</span>
-        <h2 class="section-title">Spaces to Host, Present and Celebrate</h2>
-        <p class="section-subtitle">Polished, well-equipped rooms for everything from a client call to a full workshop.</p>
-
-        <div class="service-feature-grid">
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/meeting_room_enhanced_1791353342929.jpg" alt="Meeting Room" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Booking: Hourly (max 2 hrs)</span>
-                    <h3>Meeting Room</h3>
-                    <p>Host client meetings, team discussions, and presentations in a polished and well-equipped setting.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Audio-visual equipment and Wi-Fi</li>
-                        <li><i class="fas fa-check-circle"></i> AC and refreshment service</li>
-                        <li><i class="fas fa-check-circle"></i> Minimum 1 hour, maximum 2 hours</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/meeting-room" class="sfc-cta">Check availability <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/event_spaces.png" alt="Event Spaces" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Custom setup</span>
-                    <h3>Event Spaces</h3>
-                    <p>Space for workshops, seminars, training sessions and meetups, customisable to your event.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Workshops and seminars</li>
-                        <li><i class="fas fa-check-circle"></i> Training sessions and meetups</li>
-                        <li><i class="fas fa-check-circle"></i> Flexible, customisable layout</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/event-spaces" class="sfc-cta">Plan an event <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 4. Virtual & Day Pass -->
-<section class="services-showcase-section section-padding" id="virtual-day-pass">
-    <div class="container text-center">
-        <span class="category-eyebrow">Virtual &amp; Day Pass</span>
-        <h2 class="section-title">Not Ready for a Full Commitment?</h2>
-        <p class="section-subtitle">A professional address or a one-off visit, without signing up for a plan.</p>
-
-        <div class="service-feature-grid">
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="0">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-front-office-reception.png" alt="Virtual Office" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Business address</span>
-                    <h3>Virtual Office</h3>
-                    <p>A virtual office lets you work remotely while presenting your business from a well-established, professional business address.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> Business address for GST / company registration</li>
-                        <li><i class="fas fa-check-circle"></i> Dedicated phone number</li>
-                        <li><i class="fas fa-check-circle"></i> Calls answered in your company's name</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/virtual-office" class="sfc-cta">Get a business address <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="service-feature-card" data-aos="fade-up" data-aos-delay="150">
-                <div class="sfc-photo"><img src="<?php echo URLROOT; ?>/images/gallery-boardroom.png" alt="Day Pass - Conference Hall" loading="lazy" decoding="async" style="width:100%; height:200px; object-fit:cover; display:block;"></div>
-                <div class="sfc-body">
-                    <span class="plan-badge">Conference hall only</span>
-                    <h3>Day Pass</h3>
-                    <p>Use Workiify for a single day without a monthly plan – ideal for freelancers, travellers, or anyone trying the space before joining.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> No monthly commitment</li>
-                        <li><i class="fas fa-check-circle"></i> Try the space before you join</li>
-                        <li><i class="fas fa-check-circle"></i> Available in the conference hall</li>
-                    </ul>
-                    <a href="<?php echo URLROOT; ?>/services/day-pass" class="sfc-cta">Book a day pass <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- 2. Service categories (managed in Admin > Services) -->
+<?php foreach ($mainGroups as $gi => $group) { echo $renderGroup($group, $gi % 2 === 1); } ?>
+<?php if (empty($groups)): ?>
+<section class="section-padding text-center"><div class="container"><p class="section-subtitle">Our services are being updated. Please check back shortly, or <a href="<?php echo URLROOT; ?>/contact-us#enquiry">get in touch</a>.</p></div></section>
+<?php endif; ?>
 
 <!-- 5. What's Included -->
 <section class="rental-includes-section section-padding bg-alt" id="whats-included">
@@ -213,13 +135,8 @@
     </div>
 </section>
 
-<!-- 6. Coimbatore guide cross-link -->
-<section class="section-padding text-center">
-    <div class="container max-w-1100">
-        <h2 class="section-title">New to Coworking?</h2>
-        <p class="section-subtitle">Read our full guide to choosing and using a <a href="<?php echo URLROOT; ?>/services/coworking-space-coimbatore">co working space</a>.</p>
-    </div>
-</section>
+<!-- 6. Coimbatore guides (a category in Admin > Services) -->
+<?php foreach ($guideGroups as $group) { echo $renderGroup($group, false); } ?>
 
 <!-- 7. FAQ -->
 <section class="faq-section section-padding bg-alt" id="faq">
@@ -280,7 +197,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p>Yes. Meeting rooms are booked hourly – minimum 1 hour, maximum 2 hours per booking.</p>
+                        <p>Yes. Meeting rooms are booked hourly – maximum 2 hours per booking.</p>
                     </div>
                 </div>
                 <div class="faq-item" data-category="plans">

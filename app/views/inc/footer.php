@@ -60,8 +60,8 @@
         </div>
     </footer>
 
-    <!-- Enquiry Popup: shown once per browser session, shortly after the
-         visitor's first page view. Stays open indefinitely once they start
+    <!-- Enquiry Popup: shown once per browser session, 20 seconds after the
+         visitor first arrives on the site. Stays open indefinitely once they start
          filling it in; otherwise auto-dismisses after 15s. Always closable. -->
     <div class="enquiry-popup" id="enquiryPopup" role="dialog" aria-label="Quick enquiry" aria-hidden="true">
         <div class="enquiry-popup-backdrop"></div>

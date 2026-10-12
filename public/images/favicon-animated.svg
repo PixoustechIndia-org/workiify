@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="favBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+
+    <!-- Center Apex Gradient -->
+    <linearGradient id="favApex" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+
+    <!-- Left Wing Gradient -->
+    <linearGradient id="favWingL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a5b4fc"/>
+    </linearGradient>
+
+    <!-- Right Wing Gradient -->
+    <linearGradient id="favWingR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+
+    <!-- Amber Dot Gradient -->
+    <linearGradient id="favAmber" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+
+    <!-- Shine Sweep Gradient -->
+    <linearGradient id="favShine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <clipPath id="favSquircle">
+      <rect width="120" height="120" rx="30" ry="30"/>
+    </clipPath>
+
+    <!-- Left wing bars -->
+    <g id="favWingBars">
+      <path d="M26,34 L50,45 L49,51 L26,40.5 Z"/>
+      <path d="M29,49 L48,58 L47,64 L29,55 Z"/>
+      <path d="M33,63 L44,69 L43.5,75 L33,68.5 Z"/>
+    </g>
+  </defs>
+
+  <style>
+    @keyframes favBreathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes favFlapL {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-3deg); }
+    }
+    @keyframes favFlapR {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(3deg); }
+    }
+    @keyframes favSweep {
+      0% { transform: translateX(-100px) skewX(-20deg); }
+      30%, 100% { transform: translateX(180px) skewX(-20deg); }
+    }
+    @keyframes favPulseRing {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.02); }
+    }
+    @keyframes favDotGlow {
+      0%, 100% { opacity: 0.8; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .fav-root { transform-origin: 60px 60px; animation: favBreathe 4s ease-in-out infinite; }
+    .fav-ring { transform-origin: 60px 60px; animation: favPulseRing 3s ease-in-out infinite; }
+    .fav-wing-l { transform-origin: 50px 60px; animation: favFlapL 3.5s ease-in-out infinite; }
+    .fav-wing-r { transform-origin: 70px 60px; animation: favFlapR 3.5s ease-in-out infinite; }
+    .fav-sweep-bar { animation: favSweep 4.5s ease-in-out infinite; }
+    .fav-dot { transform-origin: 60px 76px; animation: favDotGlow 2.5s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+
+  <!-- Squircle Base -->
+  <g clip-path="url(#favSquircle)">
+    <rect width="120" height="120" fill="url(#favBg)"/>
+
+    <!-- Subtle Outer Glow Border -->
+    <rect class="fav-ring" x="2" y="2" width="116" height="116" rx="28" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-opacity="0.5"/>
+
+    <!-- Workiify Animated Logomark -->
+    <g class="fav-root">
+      <!-- Left Wing (Indigo-Slate) -->
+      <g class="fav-wing-l">
+        <use href="#favWingBars" fill="url(#favWingL)"/>
+      </g>
+
+      <!-- Right Wing (Teal-Mint, mirrored at x=120) -->
+      <g class="fav-wing-r">
+        <use href="#favWingBars" fill="url(#favWingR)" transform="translate(120, 0) scale(-1, 1)"/>
+      </g>
+
+      <!-- Center Apex "A" -->
+      <path d="M60,22 Q62.5,22 63.5,25.5 L80,89 L71,89 L60,49 L49,89 L40,89 L56.5,25.5 Q57.5,22 60,22 Z" fill="url(#favApex)"/>
+
+      <!-- Amber Accent Dot -->
+      <circle class="fav-dot" cx="60" cy="76" r="3.2" fill="url(#favAmber)"/>
+    </g>
+
+    <!-- Shine Sweep Animation across badge -->
+    <rect class="fav-sweep-bar" x="0" y="0" width="30" height="130" fill="url(#favShine)"/>
+  </g>
+</svg>
