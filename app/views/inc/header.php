@@ -28,6 +28,14 @@
 </head>
 <body>
     <header class="site-header">
+        <?php
+            $current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $urlroot_path = parse_url(URLROOT, PHP_URL_PATH);
+            // Get the path relative to the app root
+            $rel_path = str_replace($urlroot_path, '', $current_path);
+            $rel_path = rtrim($rel_path, '/');
+            if ($rel_path == '' || $rel_path == '/index.php') $rel_path = '/';
+        ?>
         <div class="container header-container">
             <a href="<?php echo URLROOT; ?>/" class="brand-logo">
                 <div class="brand-icon">
@@ -40,20 +48,19 @@
                 </div>
             </a>
             
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
+            <!-- Mobile Actions (Download Brochure + Menu Toggle) -->
+            <div class="mobile-nav-actions">
+                <a href="<?php echo URLROOT; ?>/Workiify_Brochure.pdf" download="Workiify_Brochure.pdf" class="btn btn-brochure btn-mobile-header" target="_blank" title="Download Brochure">
+                    <i class="fas fa-file-arrow-down"></i>
+                    <span>Brochure</span>
+                </a>
+
+                <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
             
             <nav class="main-nav">
-                <?php
-                    $current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                    $urlroot_path = parse_url(URLROOT, PHP_URL_PATH);
-                    // Get the path relative to the app root
-                    $rel_path = str_replace($urlroot_path, '', $current_path);
-                    $rel_path = rtrim($rel_path, '/');
-                    if ($rel_path == '' || $rel_path == '/index.php') $rel_path = '/';
-                ?>
                 <ul class="nav-links">
                     <li><a href="<?php echo URLROOT; ?>/" class="<?php echo ($rel_path == '/') ? 'active' : ''; ?>"><i class="fas fa-house nav-icon"></i>Home</a></li>
                     <li><a href="<?php echo URLROOT; ?>/about-us" class="<?php echo ($rel_path == '/about-us') ? 'active' : ''; ?>"><i class="fas fa-circle-info nav-icon"></i>About Us</a></li>
@@ -75,8 +82,10 @@
                                     foreach ($navServices as $navSvc):
                                         $navLabel = $navSvc['nav_label'] !== '' ? $navSvc['nav_label'] : $navSvc['title'];
                                         $navIcon = $navSvc['nav_icon'] !== '' ? $navSvc['nav_icon'] : 'fa-briefcase';
+                                        $svcPath = '/services/' . $navSvc['slug'];
+                                        $isSvcActive = ($rel_path === $svcPath);
                                 ?>
-                                <li><a href="<?php echo URLROOT; ?>/services/<?php echo htmlspecialchars($navSvc['slug']); ?>"><span class="dd-icon"><i class="fas <?php echo htmlspecialchars($navIcon); ?>"></i></span><span class="dd-text"><strong><?php echo htmlspecialchars($navLabel); ?></strong><?php if ($navSvc['nav_blurb'] !== ''): ?><small><?php echo htmlspecialchars($navSvc['nav_blurb']); ?></small><?php endif; ?></span></a></li>
+                                <li class="<?php echo $isSvcActive ? 'active' : ''; ?>"><a href="<?php echo URLROOT; ?><?php echo $svcPath; ?>" class="<?php echo $isSvcActive ? 'active' : ''; ?>"><span class="dd-icon"><i class="fas <?php echo htmlspecialchars($navIcon); ?>"></i></span><span class="dd-text"><strong><?php echo htmlspecialchars($navLabel); ?></strong><?php if ($navSvc['nav_blurb'] !== ''): ?><small><?php echo htmlspecialchars($navSvc['nav_blurb']); ?></small><?php endif; ?></span></a></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
@@ -86,7 +95,10 @@
                 </ul>
                 
                 <div class="header-actions">
-                    <a href="<?php echo URLROOT; ?>/contact-us#enquiry" class="btn btn-primary">Enquire Now</a>
+                    <a href="<?php echo URLROOT; ?>/Workiify_Brochure.pdf" download="Workiify_Brochure.pdf" class="btn btn-brochure" target="_blank" title="Download Brochure">
+                        <i class="fas fa-file-arrow-down"></i>
+                        <span>Download Brochure</span>
+                    </a>
                 </div>
             </nav>
             <div class="nav-backdrop"></div>
