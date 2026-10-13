@@ -7,15 +7,12 @@
  * section is currently empty, and the admin user is only created if missing.
  */
 
-// Database login comes from the same place as the website's: app/config/config.local.php
-// (never committed) or the DB_* environment variables. Nothing is hardcoded here.
-if (is_file(__DIR__ . '/../config/config.local.php')) {
-    require __DIR__ . '/../config/config.local.php';
-}
-$host = defined('DB_HOST') ? DB_HOST : (getenv('DB_HOST') ?: 'localhost');
-$user = defined('DB_USER') ? DB_USER : (getenv('DB_USER') ?: 'root');
-$pass = defined('DB_PASS') ? DB_PASS : (string)getenv('DB_PASS');
-$dbname = defined('DB_NAME') ? DB_NAME : (getenv('DB_NAME') ?: 'workiify');
+// Database login comes from the DB_* environment variables, falling back to the local
+// XAMPP defaults (localhost / root / no password / workiify). Nothing secret is hardcoded here.
+$host = getenv('DB_HOST') ?: 'localhost';
+$user = getenv('DB_USER') ?: 'root';
+$pass = (string)getenv('DB_PASS');
+$dbname = getenv('DB_NAME') ?: 'workiify';
 
 $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
