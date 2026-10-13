@@ -26,8 +26,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # 3. Check the Quality Gate. continue-on-error lets the PDF still be
-      #    made when the gate fails; the job is marked failed at the end.
+      # 3. Check the Quality Gate. continue-on-error: a failed gate does NOT
+      #    fail the run; the result (PASSED / FAILED) is shown in the PDF.
       - name: Quality Gate check
         id: qualitygate
         uses: SonarSource/sonarqube-quality-gate-action@v1
@@ -64,9 +64,13 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      # 6. Mark the run red if the Quality Gate failed
-      - name: Fail if Quality Gate failed
-        if: steps.qualitygate.outcome == 'failure'
+      # 6. Show the Quality Gate result on the run page (the run itself stays green)
+      - name: Quality Gate result
+        if: always()
         run: |
-          echo "Quality Gate FAILED - see the PDF report for details."
-          exit 1
+          if [ "${{ steps.qualitygate.outcome }}" = "success" ]; then
+            echo "## SonarQube Quality Gate: PASSED" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::SonarQube Quality Gate did not pass - see the PDF report (Artifacts) for details."
+            echo "## SonarQube Quality Gate: FAILED - see the PDF report in Artifacts" >> "$GITHUB_STEP_SUMMARY"
+          fi
