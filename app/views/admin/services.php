@@ -147,7 +147,7 @@ foreach ($services as $svc) {
     <!-- Category Groups & Service Lists -->
     <div id="svcGroupsContainer">
         <?php foreach ($cats as $key => $meta):
-            if (empty($groups[$key])) continue;
+            if (empty($groups[$key])) { continue; }
             $items = $groups[$key];
         ?>
             <div class="admin-card svc-card svc-category-card" data-category-group="<?php echo $e($key); ?>">

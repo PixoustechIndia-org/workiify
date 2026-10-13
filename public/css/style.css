@@ -211,7 +211,7 @@ img {
 
 .btn-primary::after,
 .btn-whatsapp::after {
-    font-family: 'Font Awesome 6 Free';
+    font-family: 'Font Awesome 6 Free', sans-serif;
     font-weight: 900;
     content: '\f061'; /* fa-arrow-right */
     position: absolute;
@@ -2869,7 +2869,6 @@ img {
     overflow: hidden;
     padding: 120px 0;
     color: #fff;
-    background-color: #0B1F3A; /* Fallback color for faster UX */
     background: var(--banner-img) center/cover no-repeat;
 }
 
@@ -5002,7 +5001,7 @@ body.header-hidden .services-subnav {
 .sw-address i { color: #93c5fd; margin-top: 0.25rem; }
 .sw-loc-points { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.9rem; }
 .sw-loc-points li { color: #e2e8f0; font-size: 0.95rem; padding-left: 1.4rem; position: relative; }
-.sw-loc-points li::before { content: "\f3c5"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; left: 0; color: #93c5fd; font-size: 0.8rem; top: 0.15rem; }
+.sw-loc-points li::before { content: "\f3c5"; font-family: "Font Awesome 6 Free", sans-serif; font-weight: 900; position: absolute; left: 0; color: #93c5fd; font-size: 0.8rem; top: 0.15rem; }
 .sw-loc-points strong { color: #fff; display: block; }
 
 /* Bento amenities */
@@ -5259,7 +5258,7 @@ body.header-hidden .services-subnav {
 .sw-loc-points li { font-size: 13px; color: #475569; line-height: 1.5; padding-left: 1.75rem; position: relative; margin: 0; }
 .sw-loc-points li::before {
     content: "\f041";
-    font-family: "Font Awesome 6 Free";
+    font-family: "Font Awesome 6 Free", sans-serif;
     font-weight: 900;
     position: absolute;
     left: 0;

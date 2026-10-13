@@ -7,13 +7,13 @@ if (is_file(__DIR__ . '/config.local.php')) {
 }
 
 // DB Params: defaults are for local XAMPP only
-if (!defined('DB_HOST')) define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-if (!defined('DB_USER')) define('DB_USER', getenv('DB_USER') ?: 'root');
-if (!defined('DB_PASS')) define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
-if (!defined('DB_NAME')) define('DB_NAME', getenv('DB_NAME') ?: 'workiify');
+if (!defined('DB_HOST')) { define('DB_HOST', getenv('DB_HOST') ?: 'localhost'); }
+if (!defined('DB_USER')) { define('DB_USER', getenv('DB_USER') ?: 'root'); }
+if (!defined('DB_PASS')) { define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : ''); }
+if (!defined('DB_NAME')) { define('DB_NAME', getenv('DB_NAME') ?: 'workiify'); }
 
 // Show PHP error details in the browser? Keep false on the live server.
-if (!defined('APP_DEBUG')) define('APP_DEBUG', getenv('APP_DEBUG') === '1');
+if (!defined('APP_DEBUG')) { define('APP_DEBUG', getenv('APP_DEBUG') === '1'); }
 
 // App Root
 define('APPROOT', dirname(dirname(__FILE__)));
@@ -33,5 +33,5 @@ define('SITENAME', 'Workiify');
 // Outgoing mail sender for enquiry notifications. Set MAIL_FROM in config.local.php to a REAL mailbox
 // on your own domain (e.g. no-reply@workiify.com, created in cPanel > Email Accounts). Never a Gmail
 // address: mail sent from this server "as gmail.com" is treated as forged and lands in spam.
-if (!defined('MAIL_FROM')) define('MAIL_FROM', getenv('MAIL_FROM') ?: 'no-reply@' . preg_replace('/:\d+$/', '', $domain));
-if (!defined('MAIL_FROM_NAME')) define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?: 'Workiify Website');
+if (!defined('MAIL_FROM')) { define('MAIL_FROM', getenv('MAIL_FROM') ?: 'no-reply@' . preg_replace('/:\d+$/', '', $domain)); }
+if (!defined('MAIL_FROM_NAME')) { define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?: 'Workiify Website'); }

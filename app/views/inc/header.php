@@ -34,7 +34,7 @@
             // Get the path relative to the app root
             $rel_path = str_replace($urlroot_path, '', $current_path);
             $rel_path = rtrim($rel_path, '/');
-            if ($rel_path == '' || $rel_path == '/index.php') $rel_path = '/';
+            if ($rel_path == '' || $rel_path == '/index.php') { $rel_path = '/'; }
         ?>
         <div class="container header-container">
             <?php $logoBust = base_convert((string)(int)(microtime(true) * 1000), 10, 36); // fresh logo per page view: the animated SVG starts blank, a cached copy can stay on that frame ?>

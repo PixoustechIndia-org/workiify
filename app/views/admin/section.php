@@ -75,7 +75,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         $shownCount = count(array_filter($pageSections, function ($s) { return empty($s['off']); }));
         $currentSec = $allSections[$currentIndex] ?? null;
         $statusOf = function ($s) use ($svcMode) {
-            if (!$svcMode || !empty($s['settings'])) return ['setup', 'fa-gear', ''];
+            if (!$svcMode || !empty($s['settings'])) { return ['setup', 'fa-gear', '']; }
             return empty($s['off']) ? ['on', 'fa-eye', 'Visible'] : ['off', 'fa-eye-slash', 'Hidden'];
         };
     ?>
@@ -169,7 +169,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                 </div>
 
                 <nav class="svc-steps-list">
-                    <?php foreach ($grouped as $gKey => $items): if (!$items) continue; ?>
+                    <?php foreach ($grouped as $gKey => $items): if (!$items) { continue; } ?>
                         <div class="svc-steps-group">
                             <div class="svc-steps-group-title"><?php echo $secGroups[$gKey]['title']; ?> <small><?php echo $secGroups[$gKey]['hint']; ?></small></div>
                             <?php foreach ($items as $sItem):
@@ -204,7 +204,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                     <a href="<?php echo $prevSec ? $secUrl($prevSec['key']) : '#'; ?>" class="svc-tab-item svc-secnav-step<?php echo $prevSec ? '' : ' is-disabled'; ?>" aria-label="Previous section"<?php echo $prevSec ? '' : ' aria-disabled="true" tabindex="-1"'; ?>><i class="fas fa-chevron-left"></i></a>
                     <label for="svcSectionSelect" class="sr-only">Go to section</label>
                     <select id="svcSectionSelect" class="admin-select">
-                        <?php foreach ($grouped as $gKey => $items): if (!$items) continue; ?>
+                        <?php foreach ($grouped as $gKey => $items): if (!$items) { continue; } ?>
                             <optgroup label="<?php echo htmlspecialchars($secGroups[$gKey]['title'] ?: $data['pageLabel']); ?>">
                                 <?php foreach ($items as $sItem): [, , $stText] = $statusOf($sItem); ?>
                                     <option value="<?php echo htmlspecialchars($secUrl($sItem['key'])); ?>"<?php echo $sItem['key'] === $data['navKey'] ? ' selected' : ''; ?>>

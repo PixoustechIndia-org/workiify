@@ -31,7 +31,7 @@ $testimonialsSectionExtraClass = $testimonialsSectionExtraClass ?? '';
                 $hasAvatar = !empty($photoName) && file_exists(APPROOT . '/../public/uploads/testimonials/' . $photoName);
                 $avatarUrl = $hasAvatar ? (URLROOT . '/uploads/testimonials/' . htmlspecialchars($photoName)) : '';
                 $roleCompany = htmlspecialchars($t->designation ?? '');
-                if (!empty($t->designation) && !empty($t->company)) $roleCompany .= ' &middot; ';
+                if (!empty($t->designation) && !empty($t->company)) { $roleCompany .= ' &middot; '; }
                 $roleCompany .= htmlspecialchars($t->company ?? '');
                 $feedbackLen = mb_strlen(trim($t->feedback));
                 $isLong = ($feedbackLen > 180);
@@ -82,7 +82,7 @@ $testimonialsSectionExtraClass = $testimonialsSectionExtraClass ?? '';
                                 <?php if (!empty($t->designation) || !empty($t->company)) : ?>
                                     <p class="client-role">
                                         <?php echo htmlspecialchars($t->designation); ?>
-                                        <?php if (!empty($t->designation) && !empty($t->company)) echo ' &middot; '; ?>
+                                        <?php if (!empty($t->designation) && !empty($t->company)) { echo ' &middot; '; } ?>
                                         <?php echo htmlspecialchars($t->company); ?>
                                     </p>
                                 <?php endif; ?>

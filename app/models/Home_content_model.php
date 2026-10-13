@@ -38,20 +38,20 @@ class Home_content_model {
     // inferred from its key/type so every page (and every service) gets it without listing each
     // field. Empty values always pass -- these are format checks, not "required" checks.
     public static function fieldRule(array $f) {
-        if (!empty($f['rule'])) return $f['rule'];
+        if (!empty($f['rule'])) { return $f['rule']; }
         $k = $f['key'];
-        if ($f['type'] === 'icon') return 'icon';
-        if (!in_array($f['type'], ['text', 'textarea'], true)) return null;
-        if (strpos($k, 'email') !== false) return 'email';
-        if (preg_match('/phone_link$/', $k)) return 'phone';
-        if (preg_match('/(^|_)(link|url)$/', $k)) return 'link';
+        if ($f['type'] === 'icon') { return 'icon'; }
+        if (!in_array($f['type'], ['text', 'textarea'], true)) { return null; }
+        if (strpos($k, 'email') !== false) { return 'email'; }
+        if (preg_match('/phone_link$/', $k)) { return 'phone'; }
+        if (preg_match('/(^|_)(link|url)$/', $k)) { return 'link'; }
         return null;
     }
 
     // Returns an error message, or null when the value is acceptable for the rule.
     public static function checkRule($rule, $value) {
         $value = trim((string)$value);
-        if ($value === '' || $rule === null) return null;
+        if ($value === '' || $rule === null) { return null; }
         switch ($rule) {
             case 'email':
                 return filter_var($value, FILTER_VALIDATE_EMAIL) ? null : 'enter a valid email address (e.g. info@workiify.com).';
@@ -65,8 +65,9 @@ class Home_content_model {
                 return (preg_match('/^[0-5](\.[0-9])?$/', $value) && (float)$value <= 5) ? null : 'enter a rating from 0 to 5 (e.g. 4.8).';
             case 'icon':
                 return preg_match('/^fa-[a-z0-9-]+$/', $value) ? null : 'pick an icon, or type a Font Awesome name such as fa-wifi.';
+            default:
+                return null;
         }
-        return null;
     }
 
     // Every CMS-managed page, for the admin sidebar.
@@ -487,14 +488,14 @@ class Home_content_model {
 
     // True for the static CMS pages and for any service that exists and is not in the Trash.
     public static function pageExists($page) {
-        if (isset(self::pages()[$page])) return true;
-        if (!self::isServicePage($page)) return false;
+        if (isset(self::pages()[$page])) { return true; }
+        if (!self::isServicePage($page)) { return false; }
         $svc = self::serviceRow($page);
         return $svc && !$svc['deleted_at'];
     }
 
     public static function pageLabel($page) {
-        if (isset(self::pages()[$page])) return self::pages()[$page];
+        if (isset(self::pages()[$page])) { return self::pages()[$page]; }
         if (self::isServicePage($page)) {
             $svc = self::serviceRow($page);
             return $svc ? $svc['title'] : 'Service #' . self::servicePageId($page);
@@ -505,23 +506,23 @@ class Home_content_model {
     // Public URL of a CMS page (for "View page" links), or null.
     public static function pagePublicUrl($page) {
         $map = ['home' => '/', 'about' => '/about-us', 'contact' => '/contact-us', 'gallery' => '/gallery'];
-        if (isset($map[$page])) return $map[$page];
+        if (isset($map[$page])) { return $map[$page]; }
         $svc = self::isServicePage($page) ? self::serviceRow($page) : null;
         return $svc ? '/services/' . $svc['slug'] : null;
     }
 
     public static function fieldGroups($page = 'home') {
-        if (self::isServicePage($page)) return Service_schema::fieldGroups();
+        if (self::isServicePage($page)) { return Service_schema::fieldGroups(); }
         return self::allFieldGroups()[$page] ?? [];
     }
 
     public static function itemSchemas($page = 'home') {
-        if (self::isServicePage($page)) return Service_schema::itemSchemas();
+        if (self::isServicePage($page)) { return Service_schema::itemSchemas(); }
         return self::allItemSchemas()[$page] ?? [];
     }
 
     public static function navSections($page = 'home') {
-        if (self::isServicePage($page)) return self::serviceNavSections($page);
+        if (self::isServicePage($page)) { return self::serviceNavSections($page); }
         return self::allNavSections()[$page] ?? [];
     }
 
@@ -531,7 +532,7 @@ class Home_content_model {
         $db->query("SELECT field_key, field_value FROM home_fields WHERE page = :p AND field_key LIKE '%\\_show'");
         $db->bind(':p', $page);
         $show = [];
-        foreach ($db->resultSet() as $r) $show[$r->field_key] = $r->field_value;
+        foreach ($db->resultSet() as $r) { $show[$r->field_key] = $r->field_value; }
 
         $out = [Service_schema::settingsSection()];
         foreach (Service_schema::contentSections() as $s) {
@@ -602,7 +603,7 @@ class Home_content_model {
         $this->db->query('SELECT * FROM home_items WHERE id = :id');
         $this->db->bind(':id', $id);
         $row = $this->db->single();
-        if (!$row) return null;
+        if (!$row) { return null; }
         return [
             'id' => $row->id,
             'page' => $row->page,
@@ -645,7 +646,7 @@ class Home_content_model {
         $this->db->query('SELECT field_key, field_value FROM home_fields WHERE page = :p');
         $this->db->bind(':p', $this->page);
         $out = [];
-        foreach ($this->db->resultSet() as $r) $out[$r->field_key] = (string)$r->field_value;
+        foreach ($this->db->resultSet() as $r) { $out[$r->field_key] = (string)$r->field_value; }
         return $out;
     }
 
@@ -653,7 +654,7 @@ class Home_content_model {
         $this->db->query('SELECT section_key, data FROM home_items WHERE page = :p ORDER BY sort_order ASC, id ASC');
         $this->db->bind(':p', $this->page);
         $out = [];
-        foreach ($this->db->resultSet() as $r) $out[$r->section_key][] = json_decode($r->data, true) ?: [];
+        foreach ($this->db->resultSet() as $r) { $out[$r->section_key][] = json_decode($r->data, true) ?: []; }
         return $out;
     }
 
@@ -674,14 +675,14 @@ class Home_content_model {
     // Moves one item up or down within its section (swaps positions with its neighbour).
     public function moveItem($id, $direction) {
         $item = $this->getItem((int)$id);
-        if (!$item) return false;
+        if (!$item) { return false; }
         $this->db->query('SELECT id FROM home_items WHERE page = :p AND section_key = :s ORDER BY sort_order ASC, id ASC');
         $this->db->bind(':p', $item['page']);
         $this->db->bind(':s', $item['section_key']);
         $ids = array_map(function ($r) { return (int)$r->id; }, $this->db->resultSet());
         $pos = array_search((int)$id, $ids, true);
         $to = $direction === 'up' ? $pos - 1 : $pos + 1;
-        if ($pos === false || $to < 0 || $to >= count($ids)) return false;
+        if ($pos === false || $to < 0 || $to >= count($ids)) { return false; }
         [$ids[$pos], $ids[$to]] = [$ids[$to], $ids[$pos]];
         foreach ($ids as $order => $iid) {   // renumber so ties can never block a move
             $this->db->query('UPDATE home_items SET sort_order = :o WHERE id = :id');
@@ -722,7 +723,7 @@ class Home_content_model {
     public static function getRecentRevisions($limit = 50, $offset = 0, $page = '') {
         $db = new Database();
         $db->query('SELECT * FROM content_revisions' . ($page !== '' ? ' WHERE page = :p' : '') . ' ORDER BY created_at DESC, id DESC LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset);
-        if ($page !== '') $db->bind(':p', $page);
+        if ($page !== '') { $db->bind(':p', $page); }
         $rows = $db->resultSet();
         $out = [];
         foreach ($rows as $row) {
@@ -742,7 +743,7 @@ class Home_content_model {
     public static function countRevisions($page = '') {
         $db = new Database();
         $db->query('SELECT COUNT(*) AS c FROM content_revisions' . ($page !== '' ? ' WHERE page = :p' : ''));
-        if ($page !== '') $db->bind(':p', $page);
+        if ($page !== '') { $db->bind(':p', $page); }
         return (int)$db->single()->c;
     }
 
@@ -758,7 +759,7 @@ class Home_content_model {
         $db->query('SELECT * FROM content_revisions WHERE id = :id');
         $db->bind(':id', $id);
         $row = $db->single();
-        if (!$row) return null;
+        if (!$row) { return null; }
         return [
             'id' => $row->id,
             'page' => $row->page,

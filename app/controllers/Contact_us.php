@@ -41,18 +41,18 @@ class Contact_us extends Controller {
         $reqValue = trim($_POST['reqValue'] ?? '');
         $additional = trim($_POST['additional'] ?? '');
         $source = trim($_POST['source'] ?? 'contact');
-        if (!in_array($source, ['home', 'contact', 'popup'], true)) $source = 'contact';
+        if (!in_array($source, ['home', 'contact', 'popup'], true)) { $source = 'contact'; }
 
         $errors = [];
-        if ($companyName === '') $errors[] = 'Company name is required.';
-        if (mb_strlen($companyName) > 150) $errors[] = 'Company name is too long.';
-        if ($companyAddress === '') $errors[] = 'Company address is required.';
-        if (mb_strlen($companyAddress) > 250) $errors[] = 'Company address is too long.';
-        if (!preg_match('/^[6-9][0-9]{9}$/', $contactNo)) $errors[] = 'Enter a valid 10-digit contact number.';
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Enter a valid email address.';
-        if (!in_array($reqType, ['space', 'seats'], true)) $errors[] = 'Select a requirement type.';
-        if (!ctype_digit((string) $reqValue) || (int) $reqValue < 1) $errors[] = 'Enter a valid requirement value.';
-        if (mb_strlen($additional) > 1000) $errors[] = 'Additional requirements text is too long.';
+        if ($companyName === '') { $errors[] = 'Company name is required.'; }
+        if (mb_strlen($companyName) > 150) { $errors[] = 'Company name is too long.'; }
+        if ($companyAddress === '') { $errors[] = 'Company address is required.'; }
+        if (mb_strlen($companyAddress) > 250) { $errors[] = 'Company address is too long.'; }
+        if (!preg_match('/^[6-9][0-9]{9}$/', $contactNo)) { $errors[] = 'Enter a valid 10-digit contact number.'; }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { $errors[] = 'Enter a valid email address.'; }
+        if (!in_array($reqType, ['space', 'seats'], true)) { $errors[] = 'Select a requirement type.'; }
+        if (!ctype_digit((string) $reqValue) || (int) $reqValue < 1) { $errors[] = 'Enter a valid requirement value.'; }
+        if (mb_strlen($additional) > 1000) { $errors[] = 'Additional requirements text is too long.'; }
 
         if (!empty($errors)) {
             echo json_encode(['success' => false, 'message' => $errors[0]]);

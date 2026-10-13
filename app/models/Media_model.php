@@ -11,17 +11,17 @@ class Media_model {
     // so pre-existing site images show up alongside admin-uploaded ones automatically.
     public function syncFromDisk() {
         $dir = APPROOT . '/../public/images';
-        if (!is_dir($dir)) return;
+        if (!is_dir($dir)) { return; }
 
         $this->db->query('SELECT path FROM media_assets');
         $existing = array_flip(array_map(function ($r) { return $r->path; }, $this->db->resultSet()));
 
         foreach (scandir($dir) as $file) {
-            if ($file === '.' || $file === '..') continue;
+            if ($file === '.' || $file === '..') { continue; }
             $full = $dir . '/' . $file;
-            if (!is_file($full)) continue;
+            if (!is_file($full)) { continue; }
             $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (!in_array($ext, self::$allowedExt, true)) continue;
+            if (!in_array($ext, self::$allowedExt, true)) { continue; }
 
             $path = '/images/' . $file;
             if (!isset($existing[$path])) {
@@ -145,17 +145,17 @@ class Media_model {
         $where = [];
         $this->db->query('SELECT page, field_key FROM home_fields WHERE field_value = :p');
         $this->db->bind(':p', $path);
-        foreach ($this->db->resultSet() as $r) $where[] = Home_content_model::pageLabel($r->page) . ' / ' . $r->field_key;
+        foreach ($this->db->resultSet() as $r) { $where[] = Home_content_model::pageLabel($r->page) . ' / ' . $r->field_key; }
 
         $this->db->query('SELECT page, section_key FROM home_items WHERE INSTR(data, :p1) > 0 OR INSTR(data, :p2) > 0');
         // match whole JSON string values only, so "/a.png" never matches "/a.png.bak"
         $this->db->bind(':p1', json_encode($path));
         $this->db->bind(':p2', '"' . $path . '"');
-        foreach ($this->db->resultSet() as $r) $where[] = Home_content_model::pageLabel($r->page) . ' / ' . $r->section_key;
+        foreach ($this->db->resultSet() as $r) { $where[] = Home_content_model::pageLabel($r->page) . ' / ' . $r->section_key; }
 
         $this->db->query('SELECT title FROM services WHERE card_image = :p');
         $this->db->bind(':p', $path);
-        foreach ($this->db->resultSet() as $r) $where[] = 'Service card / ' . $r->title;
+        foreach ($this->db->resultSet() as $r) { $where[] = 'Service card / ' . $r->title; }
 
         return array_values(array_unique($where));
     }

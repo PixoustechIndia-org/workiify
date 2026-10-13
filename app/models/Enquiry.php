@@ -98,7 +98,7 @@ class Enquiry {
         $params = [];
         if ($f['q'] !== '') {
             $where[] = '(company_name LIKE :q1 OR email LIKE :q2 OR contact_no LIKE :q3 OR company_address LIKE :q4)';
-            foreach (['q1', 'q2', 'q3', 'q4'] as $p) $params[':' . $p] = '%' . $f['q'] . '%';
+            foreach (['q1', 'q2', 'q3', 'q4'] as $p) { $params[':' . $p] = '%' . $f['q'] . '%'; }
         }
         if ($f['status'] !== '') { $where[] = 'status = :status'; $params[':status'] = $f['status']; }
         if ($f['source'] !== '') { $where[] = 'source = :source'; $params[':source'] = $f['source']; }
@@ -107,13 +107,13 @@ class Enquiry {
         $sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
 
         $this->db->query('SELECT COUNT(*) AS c FROM enquiries' . $sql);
-        foreach ($params as $k => $v) $this->db->bind($k, $v);
+        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
         $total = (int)$this->db->single()->c;
 
         $col = self::$sortable[$sort] ?? 'created_at';
         $dir = $dir === 'asc' ? 'ASC' : 'DESC';
         $this->db->query('SELECT * FROM enquiries' . $sql . " ORDER BY $col $dir, id $dir LIMIT " . (int)$perPage . ' OFFSET ' . (int)(($page - 1) * $perPage));
-        foreach ($params as $k => $v) $this->db->bind($k, $v);
+        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
         return [$this->db->resultSet(), $total];
     }
 
@@ -124,7 +124,7 @@ class Enquiry {
     public function statusCounts() {
         $this->db->query('SELECT status, COUNT(*) AS c FROM enquiries GROUP BY status');
         $out = ['all' => 0];
-        foreach (self::statuses() as $s) $out[$s] = 0;
+        foreach (self::statuses() as $s) { $out[$s] = 0; }
         foreach ($this->db->resultSet() as $r) {
             $out[$r->status] = (int)$r->c;
             $out['all'] += (int)$r->c;

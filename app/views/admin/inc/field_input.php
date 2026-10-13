@@ -12,7 +12,7 @@ $flimit = !empty($f['maxlength']) ? ' maxlength="' . (int)$f['maxlength'] . '"' 
 $frule = Home_content_model::fieldRule($f);
 $fattrs = ' data-label="' . htmlspecialchars($f['label']) . '"' . ($frule ? ' data-rule="' . $frule . '"' : '');
 $ferror = $data['errors'][$fid] ?? null;
-if ($ferror) $fattrs .= ' class="is-invalid" aria-invalid="true" data-server-error="1"';
+if ($ferror) { $fattrs .= ' class="is-invalid" aria-invalid="true" data-server-error="1"'; }
 ?>
 <?php if ($f['type'] === 'heading'): ?>
     <div class="admin-field-heading"><?php echo htmlspecialchars($f['label']); ?></div>

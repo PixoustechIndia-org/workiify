@@ -21,9 +21,9 @@ $icon = function ($c) use ($e) { return preg_match('/^fa-[a-z0-9-]+$/', (string)
 // site-relative, http(s), #anchor, mailto: and tel: links only
 $href = function ($u) use ($e) {
     $u = trim((string)$u);
-    if ($u === '') return '#';
-    if ($u[0] === '/' && substr($u, 0, 2) !== '//') return $e(URLROOT . $u);
-    if (preg_match('#^(https?://|mailto:|tel:|\#)#i', $u)) return $e($u);
+    if ($u === '') { return '#'; }
+    if ($u[0] === '/' && substr($u, 0, 2) !== '//') { return $e(URLROOT . $u); }
+    if (preg_match('#^(https?://|mailto:|tel:|\#)#i', $u)) { return $e($u); }
     return '#';
 };
 $on = function ($key) use ($f) { return ($f[$key . '_show'] ?? '0') === '1'; };
@@ -52,7 +52,7 @@ $jump = [
     'highlight-2' => $val('hl2_eyebrow', 'More'), 'faq' => 'FAQ',
 ];
 $jumpItems = [];
-foreach ($jump as $key => $label) { if (!empty($vis[$key])) $jumpItems[$key] = $label; }
+foreach ($jump as $key => $label) { if (!empty($vis[$key])) { $jumpItems[$key] = $label; } }
 
 $alt = false;          // alternates section backgrounds as they are printed
 $bg = function () use (&$alt) { $alt = !$alt; return $alt ? '' : ' bg-alt'; };
@@ -127,9 +127,9 @@ $highlight = function ($p, $secKey) use ($f, $e, $para, $img, $icon, $href, $val
 // eyebrow + heading + subtitle block shared by several sections
 $head = function ($p) use ($e, $para, $val) {
     $o = '';
-    if ($val($p . '_eyebrow') !== '') $o .= '<span class="category-eyebrow">' . $e($val($p . '_eyebrow')) . '</span>';
-    if ($val($p . '_heading') !== '') $o .= '<h2 class="section-title">' . $e($val($p . '_heading')) . '</h2>';
-    if ($val($p . '_subtitle') !== '') $o .= '<p class="section-subtitle">' . $para($val($p . '_subtitle')) . '</p>';
+    if ($val($p . '_eyebrow') !== '') { $o .= '<span class="category-eyebrow">' . $e($val($p . '_eyebrow')) . '</span>'; }
+    if ($val($p . '_heading') !== '') { $o .= '<h2 class="section-title">' . $e($val($p . '_heading')) . '</h2>'; }
+    if ($val($p . '_subtitle') !== '') { $o .= '<p class="section-subtitle">' . $para($val($p . '_subtitle')) . '</p>'; }
     return $o;
 };
 ?>
@@ -198,9 +198,9 @@ $head = function ($p) use ($e, $para, $val) {
             <div class="sw-intro-highlights">
                 <?php foreach ($displayStrip as $r):
                     $ic = $icon($r['icon'] ?? '');
-                    if (!$ic) $ic = 'fa-check-circle';
+                    if (!$ic) { $ic = 'fa-check-circle'; }
                     $tx = $e($r['text'] ?? '');
-                    if ($tx === '') continue;
+                    if ($tx === '') { continue; }
                 ?>
                 <div class="sw-intro-pill">
                     <div class="sw-intro-pill-icon"><i class="fas <?php echo $ic; ?>"></i></div>
@@ -227,7 +227,7 @@ $head = function ($p) use ($e, $para, $val) {
 </section>
 <?php endif; ?>
 
-<?php if ($vis['highlight-1']) echo $highlight('hl1', 'highlight-1'); ?>
+<?php if ($vis['highlight-1']) { echo $highlight('hl1', 'highlight-1'); } ?>
 
 <?php if ($vis['options']): $cards = $list('options'); $n = count($cards); ?>
 <!-- Options -->
@@ -384,7 +384,7 @@ $head = function ($p) use ($e, $para, $val) {
 </section>
 <?php endif; ?>
 
-<?php if ($vis['highlight-2']) echo $highlight('hl2', 'highlight-2'); ?>
+<?php if ($vis['highlight-2']) { echo $highlight('hl2', 'highlight-2'); } ?>
 
 <?php if ($vis['faq']): $qs = $list('faq'); ?>
 <!-- FAQ -->

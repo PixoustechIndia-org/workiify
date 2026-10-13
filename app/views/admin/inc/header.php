@@ -15,8 +15,8 @@
             return $icons[$pageKey] ?? 'fa-file-lines';
         }
         function admin_section_icon($section) {
-            if (!empty($section['items']) && empty($section['fields'])) return 'fa-layer-group';
-            if (($section['key'] ?? '') === 'banner') return 'fa-image';
+            if (!empty($section['items']) && empty($section['fields'])) { return 'fa-layer-group'; }
+            if (($section['key'] ?? '') === 'banner') { return 'fa-image'; }
             return 'fa-pen-to-square';
         }
         // Turns "fa-map-marker-alt" into "Map Marker Alt" for a picker tile's tooltip.
@@ -35,7 +35,7 @@
             $params = $_GET;
             unset($params['url']);
             foreach ($changes as $k => $v) {
-                if ($v === null || $v === '') unset($params[$k]); else $params[$k] = $v;
+                if ($v === null || $v === '') { unset($params[$k]); } else { $params[$k] = $v; }
             }
             $path = strtok(admin_current_path(), '?');
             return htmlspecialchars(URLROOT . $path . ($params ? '?' . http_build_query($params) : ''));

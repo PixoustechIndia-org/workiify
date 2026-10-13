@@ -55,7 +55,7 @@ class Testimonial {
         $params = [];
         if ($f['q'] !== '') {
             $where[] = '(full_name LIKE :q1 OR email LIKE :q2 OR company LIKE :q3 OR feedback LIKE :q4)';
-            foreach (['q1', 'q2', 'q3', 'q4'] as $p) $params[':' . $p] = '%' . $f['q'] . '%';
+            foreach (['q1', 'q2', 'q3', 'q4'] as $p) { $params[':' . $p] = '%' . $f['q'] . '%'; }
         }
         if ($f['status'] !== '') { $where[] = 'status = :status'; $params[':status'] = $f['status']; }
         if ($f['rating'] !== '') { $where[] = 'rating = :rating'; $params[':rating'] = (int)$f['rating']; }
@@ -63,13 +63,13 @@ class Testimonial {
         $sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
 
         $this->db->query('SELECT COUNT(*) AS c FROM testimonials' . $sql);
-        foreach ($params as $k => $v) $this->db->bind($k, $v);
+        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
         $total = (int)$this->db->single()->c;
 
         $col = self::$sortable[$sort] ?? 'created_at';
         $dir = $dir === 'asc' ? 'ASC' : 'DESC';
         $this->db->query('SELECT * FROM testimonials' . $sql . " ORDER BY $col $dir, id $dir LIMIT " . (int)$perPage . ' OFFSET ' . (int)(($page - 1) * $perPage));
-        foreach ($params as $k => $v) $this->db->bind($k, $v);
+        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
         return [$this->db->resultSet(), $total];
     }
 
@@ -80,7 +80,7 @@ class Testimonial {
     public function statusCounts() {
         $this->db->query('SELECT status, COUNT(*) AS c FROM testimonials GROUP BY status');
         $out = ['all' => 0];
-        foreach (self::statuses() as $s) $out[$s] = 0;
+        foreach (self::statuses() as $s) { $out[$s] = 0; }
         foreach ($this->db->resultSet() as $r) {
             $out[$r->status] = (int)$r->c;
             $out['all'] += (int)$r->c;

@@ -39,7 +39,7 @@ class Service_schema {
 
     private static function f($key, $label, $type = 'text', $max = 0, array $extra = []) {
         $f = ['key' => $key, 'label' => $label, 'type' => $type];
-        if ($max) $f['maxlength'] = $max;
+        if ($max) { $f['maxlength'] = $max; }
         return $extra + $f;
     }
 
@@ -50,7 +50,7 @@ class Service_schema {
     // eyebrow + heading + subtitle: shared by most sections
     private static function heading($p, $eyebrow = true) {
         $out = [];
-        if ($eyebrow) $out[] = self::f($p . '_eyebrow', 'Small label above the heading (also used in the jump menu)', 'text', 40);
+        if ($eyebrow) { $out[] = self::f($p . '_eyebrow', 'Small label above the heading (also used in the jump menu)', 'text', 40); }
         $out[] = self::f($p . '_heading', 'Heading', 'text', 140);
         $out[] = self::f($p . '_subtitle', 'Text under the heading', 'textarea', 600);
         return $out;
@@ -77,7 +77,7 @@ class Service_schema {
 
     public static function fieldGroups() {
         $cats = [];
-        foreach (Service_model::categories() as $k => $c) $cats[$k] = $c['label'];
+        foreach (Service_model::categories() as $k => $c) { $cats[$k] = $c['label']; }
 
         return [
             'svc_settings' => [
@@ -222,7 +222,7 @@ class Service_schema {
         $keys = [];
         foreach (self::contentSections() as $s) {
             foreach ($groups[$s['fields']]['fields'] as $f) {
-                if ($f['type'] !== 'heading') $keys[] = $f['key'];
+                if ($f['type'] !== 'heading') { $keys[] = $f['key']; }
             }
         }
         return $keys;
@@ -232,8 +232,8 @@ class Service_schema {
     // everything else is switched off until the admin fills it in.
     public static function newServiceFields($title) {
         $f = [];
-        foreach (self::contentFieldKeys() as $k) $f[$k] = '';
-        foreach (self::contentFieldKeys() as $k) if (substr($k, -5) === '_show') $f[$k] = '0';
+        foreach (self::contentFieldKeys() as $k) { $f[$k] = ''; }
+        foreach (self::contentFieldKeys() as $k) { if (substr($k, -5) === '_show') { $f[$k] = '0'; } }
         $f['intro_show'] = '1';
         $f['cta_show'] = '1';
         $f['related_show'] = '1';

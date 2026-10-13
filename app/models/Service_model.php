@@ -49,13 +49,13 @@ class Service_model {
     // Installation / seeding (runs once, then a single marker lookup per request)
     // ------------------------------------------------------------------
     private function install() {
-        if (self::$ready) return;
+        if (self::$ready) { return; }
         self::$ready = true;
         try {
             $this->db->query('SELECT 1 FROM home_fields WHERE page = :p AND field_key = :k');
             $this->db->bind(':p', self::SEED_MARKER_PAGE);
             $this->db->bind(':k', self::SEED_MARKER_KEY);
-            if ($this->db->single()) return;
+            if ($this->db->single()) { return; }
 
             $this->db->query("CREATE TABLE IF NOT EXISTS services (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -169,7 +169,7 @@ class Service_model {
         $page = self::pageKey($row['id']);
         $this->db->query("SELECT 1 FROM home_fields WHERE page = :p AND field_key = '_seeded'");
         $this->db->bind(':p', $page);
-        if ($this->db->single()) return;
+        if ($this->db->single()) { return; }
 
         $json = self::seedJson();
         if (isset($json[$row['slug']])) {
@@ -204,7 +204,7 @@ class Service_model {
         $content->setPage($page);
         $content->deletePage();
         foreach ($fields as $k => $v) {
-            if ($v === null) continue;
+            if ($v === null) { continue; }
             $content->setField($k, (string)$v);
         }
         foreach ($items as $section => $rows) {
@@ -271,7 +271,7 @@ class Service_model {
     // Public (front-end) reads
     // ------------------------------------------------------------------
     public function findBySlug($slug, $includeDrafts = false) {
-        if (self::$offline) return null;
+        if (self::$offline) { return null; }
         $sql = 'SELECT * FROM services WHERE slug = :s AND deleted_at IS NULL' . ($includeDrafts ? '' : " AND status = 'published'");
         $this->db->query($sql);
         $this->db->bind(':s', $slug);
@@ -281,11 +281,11 @@ class Service_model {
 
     // A published service whose slug was changed: returns its current record.
     public function findByOldSlug($slug) {
-        if (self::$offline) return null;
+        if (self::$offline) { return null; }
         $this->db->query("SELECT * FROM services WHERE old_slugs LIKE :l AND deleted_at IS NULL AND status = 'published' LIMIT 1");
         $this->db->bind(':l', '%"' . str_replace(['%', '_'], ['\\%', '\\_'], $slug) . '"%');
         $row = $this->db->single();
-        if (!$row) return null;
+        if (!$row) { return null; }
         $svc = $this->hydrate((array)$row);
         return in_array($slug, $svc['old_slugs'], true) ? $svc : null;
     }
@@ -294,7 +294,7 @@ class Service_model {
         if (self::$offline) {
             $rows = [];
             foreach (self::defaults() as $i => $row) {
-                if (($row['status'] ?? 'draft') !== 'published') continue;
+                if (($row['status'] ?? 'draft') !== 'published') { continue; }
                 $rows[] = $this->hydrate($row + ['id' => $i + 1]);
             }
             return $rows;
@@ -310,7 +310,7 @@ class Service_model {
             $groups[$key] = $meta + ['key' => $key, 'items' => []];
         }
         foreach ($this->publishedRows() as $svc) {
-            if (!$svc['show_on_listing'] || !isset($groups[$svc['category']])) continue;
+            if (!$svc['show_on_listing'] || !isset($groups[$svc['category']])) { continue; }
             $groups[$svc['category']]['items'][] = $svc;
         }
         return array_values(array_filter($groups, function ($g) { return !empty($g['items']); }));
@@ -324,9 +324,9 @@ class Service_model {
     public function related($excludeId, $limit = 6) {
         $out = [];
         foreach ($this->publishedRows() as $svc) {
-            if ($svc['id'] == $excludeId || !$svc['show_on_listing']) continue;
+            if ($svc['id'] == $excludeId || !$svc['show_on_listing']) { continue; }
             $out[] = $svc;
-            if (count($out) >= $limit) break;
+            if (count($out) >= $limit) { break; }
         }
         return $out;
     }
@@ -346,7 +346,7 @@ class Service_model {
     // ------------------------------------------------------------------
     public function counts() {
         $c = ['all' => 0, 'published' => 0, 'draft' => 0, 'trash' => 0];
-        if (self::$offline) return $c;
+        if (self::$offline) { return $c; }
         $this->db->query("SELECT
             SUM(deleted_at IS NULL) AS live,
             SUM(deleted_at IS NULL AND status = 'published') AS pub,
@@ -361,7 +361,7 @@ class Service_model {
     }
 
     public function adminList($trash = false) {
-        if (self::$offline) return [];
+        if (self::$offline) { return []; }
         $this->db->query('SELECT * FROM services WHERE deleted_at IS ' . ($trash ? 'NOT NULL ORDER BY deleted_at DESC' : 'NULL ORDER BY sort_order ASC, id ASC'));
         return array_map(function ($r) { return $this->hydrate((array)$r); }, $this->db->resultSet());
     }
@@ -377,7 +377,7 @@ class Service_model {
     }
 
     public function get($id) {
-        if (self::$offline) return null;
+        if (self::$offline) { return null; }
         $this->db->query('SELECT * FROM services WHERE id = :id');
         $this->db->bind(':id', (int)$id);
         $row = $this->db->single();
@@ -391,7 +391,7 @@ class Service_model {
         $text = strtolower(trim($text));
         if (function_exists('iconv')) {
             $t = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
-            if ($t !== false) $text = strtolower($t);
+            if ($t !== false) { $text = strtolower($t); }
         }
         $text = preg_replace('/[^a-z0-9]+/', '-', $text);
         return trim(substr(trim($text, '-'), 0, 80), '-');
@@ -399,7 +399,7 @@ class Service_model {
 
     private static function text($value, $max, $label, array &$errors, $required = false) {
         $value = trim((string)$value);
-        if ($required && $value === '') $errors[] = "$label is required.";
+        if ($required && $value === '') { $errors[] = "$label is required."; }
         if (mb_strlen($value) > $max) {
             $errors[] = "$label can be at most $max characters.";
             $value = mb_substr($value, 0, $max);
@@ -409,7 +409,7 @@ class Service_model {
 
     private static function imagePath($value, $label, array &$errors) {
         $value = trim((string)$value);
-        if ($value === '') return '';
+        if ($value === '') { return ''; }
         if (!preg_match('#^/images/[A-Za-z0-9_./ -]+$#', $value) || strpos($value, '..') !== false) {
             $errors[] = "$label: invalid image.";
             return '';
@@ -419,7 +419,7 @@ class Service_model {
 
     private static function iconClass($value, $label, array &$errors) {
         $value = trim((string)$value);
-        if ($value === '') return '';
+        if ($value === '') { return ''; }
         if (!preg_match('/^fa-[a-z0-9-]{1,40}$/', $value)) {
             $errors[] = "$label: use a Font Awesome class such as fa-wifi.";
             return '';
@@ -431,7 +431,7 @@ class Service_model {
     public function validateIdentity($title, $slugInput, $category, $ignoreId, array &$errors) {
         $title = self::text($title, 150, 'Service name', $errors, true);
         $slug = self::slugify((string)$slugInput);
-        if ($slug === '') $slug = self::slugify($title);
+        if ($slug === '') { $slug = self::slugify($title); }
         if (strlen($slug) < 2) {
             $errors[] = 'Page address: enter letters, numbers or hyphens (at least 2 characters).';
         } elseif (in_array($slug, self::RESERVED_SLUGS, true)) {
@@ -462,7 +462,7 @@ class Service_model {
         $features = [];
         foreach (preg_split('/\r\n|\r|\n/', (string)($in['card_features'] ?? '')) as $line) {
             $line = trim($line);
-            if ($line !== '') $features[] = mb_substr($line, 0, 120);
+            if ($line !== '') { $features[] = mb_substr($line, 0, 120); }
         }
         if (count($features) > 6) {
             $errors[] = 'Highlights: at most 6 lines are allowed.';
@@ -475,7 +475,7 @@ class Service_model {
         $d['meta_title'] = self::text($in['meta_title'] ?? '', 120, 'Google title', $errors);
         $d['meta_description'] = self::text($in['meta_description'] ?? '', 255, 'Google description', $errors);
 
-        if ($d['show_in_nav'] && $d['nav_icon'] === '') $d['nav_icon'] = 'fa-briefcase';
+        if ($d['show_in_nav'] && $d['nav_icon'] === '') { $d['nav_icon'] = 'fa-briefcase'; }
         if ($d['status'] === 'published' && $d['show_on_listing'] && $d['card_summary'] === '') {
             $errors[] = 'A service shown on the Services page needs a short description (or switch that option off).';
         }
@@ -486,7 +486,7 @@ class Service_model {
     }
 
     public function slugAvailable($slug, $ignoreId = 0) {
-        if (self::$offline) return true;
+        if (self::$offline) { return true; }
         $this->db->query('SELECT id FROM services WHERE slug = :s AND id <> :id');
         $this->db->bind(':s', $slug);
         $this->db->bind(':id', (int)$ignoreId);
@@ -516,7 +516,7 @@ class Service_model {
         $this->db->query(($ignoreDuplicate ? 'INSERT IGNORE' : 'INSERT') . ' INTO services (' . implode(',', $cols) . ') VALUES (' . implode(',', array_map(function ($c) { return ':' . $c; }, $cols)) . ')');
         foreach ($cols as $c) {
             $v = $row[$c];
-            if (in_array($c, self::$jsonColumns, true)) $v = json_encode(array_values((array)$v), JSON_UNESCAPED_UNICODE);
+            if (in_array($c, self::$jsonColumns, true)) { $v = json_encode(array_values((array)$v), JSON_UNESCAPED_UNICODE); }
             $this->db->bind(':' . $c, $v);
         }
         $this->db->execute();
@@ -525,7 +525,7 @@ class Service_model {
 
     // Creates a draft service with the shared template: blank, or a copy of another service's page.
     public function create($title, $slug, $category, $copyFromId = 0) {
-        if (self::$offline) throw new RuntimeException('Database unavailable');
+        if (self::$offline) { throw new RuntimeException('Database unavailable'); }
         $this->db->query('SELECT COALESCE(MAX(sort_order), 0) + 10 AS n FROM services');
         $order = (int)$this->db->single()->n;
 
@@ -542,7 +542,7 @@ class Service_model {
             $src->setPage(self::pageKey($copy['id']));
             $fields = $src->getAllFields();
             $items = [];
-            foreach ($src->getAllItems() as $section => $rows) $items[$section] = $rows;
+            foreach ($src->getAllItems() as $section => $rows) { $items[$section] = $rows; }
             unset($fields['_seeded']);
             $fields['banner_heading'] = $title;
             $this->writeContent($page, $fields, $items);
@@ -553,20 +553,20 @@ class Service_model {
     }
 
     public function saveSettings($id, array $d) {
-        if (self::$offline) throw new RuntimeException('Database unavailable');
+        if (self::$offline) { throw new RuntimeException('Database unavailable'); }
         $existing = $this->get($id);
-        if (!$existing) throw new RuntimeException('Service not found');
+        if (!$existing) { throw new RuntimeException('Service not found'); }
 
         // keep old URLs alive: remember the previous slug as a redirect
         $old = $existing['old_slugs'];
-        if ($existing['slug'] !== $d['slug']) $old[] = $existing['slug'];
+        if ($existing['slug'] !== $d['slug']) { $old[] = $existing['slug']; }
         $d['old_slugs'] = array_values(array_diff(array_unique($old), [$d['slug']]));
 
         $cols = array_values(array_diff(self::$columns, ['sort_order']));
         $this->db->query('UPDATE services SET ' . implode(', ', array_map(function ($c) { return "$c = :$c"; }, $cols)) . ' WHERE id = :id');
         foreach ($cols as $c) {
             $v = $d[$c];
-            if (in_array($c, self::$jsonColumns, true)) $v = json_encode(array_values((array)$v), JSON_UNESCAPED_UNICODE);
+            if (in_array($c, self::$jsonColumns, true)) { $v = json_encode(array_values((array)$v), JSON_UNESCAPED_UNICODE); }
             $this->db->bind(':' . $c, $v);
         }
         $this->db->bind(':id', (int)$id);
@@ -576,7 +576,7 @@ class Service_model {
     // Allow-listed single-flag updates used by the list screen.
     public function setFlag($id, $field, $value) {
         $allowed = ['status' => ['published', 'draft'], 'show_in_nav' => [0, 1], 'show_on_listing' => [0, 1]];
-        if (!isset($allowed[$field]) || !in_array($value, $allowed[$field], true)) return false;
+        if (!isset($allowed[$field]) || !in_array($value, $allowed[$field], true)) { return false; }
         $this->db->query("UPDATE services SET $field = :v WHERE id = :id AND deleted_at IS NULL");
         $this->db->bind(':v', $value);
         $this->db->bind(':id', (int)$id);
@@ -601,7 +601,7 @@ class Service_model {
         $this->db->query('DELETE FROM services WHERE id = :id AND deleted_at IS NOT NULL');
         $this->db->bind(':id', (int)$id);
         $this->db->execute();
-        if ($this->db->rowCount() < 1) return false;
+        if ($this->db->rowCount() < 1) { return false; }
 
         $content = new Home_content_model();
         $content->setPage(self::pageKey($id));
@@ -613,7 +613,7 @@ class Service_model {
     // sort values (and so the menu order across categories) consistent.
     public function move($id, $direction) {
         $svc = $this->get($id);
-        if (!$svc || $svc['deleted_at']) return false;
+        if (!$svc || $svc['deleted_at']) { return false; }
 
         $this->db->query('SELECT id, sort_order FROM services WHERE category = :c AND deleted_at IS NULL ORDER BY sort_order ASC, id ASC');
         $this->db->bind(':c', $svc['category']);
@@ -623,12 +623,12 @@ class Service_model {
         sort($slots);
         if (count(array_unique($slots)) !== count($slots)) {
             $base = $slots ? min($slots) : 0;
-            foreach ($slots as $i => $_) $slots[$i] = $base + $i;
+            foreach ($slots as $i => $_) { $slots[$i] = $base + $i; }
         }
 
         $pos = array_search((int)$id, $ids, true);
         $to = $direction === 'up' ? $pos - 1 : $pos + 1;
-        if ($pos === false || $to < 0 || $to >= count($ids)) return false;
+        if ($pos === false || $to < 0 || $to >= count($ids)) { return false; }
         [$ids[$pos], $ids[$to]] = [$ids[$to], $ids[$pos]];
 
         $this->db->beginTransaction();
@@ -653,10 +653,10 @@ class Service_model {
     private function hydrate(array $r) {
         foreach (self::$jsonColumns as $c) {
             $v = $r[$c] ?? [];
-            if (is_string($v)) $v = json_decode($v, true);
+            if (is_string($v)) { $v = json_decode($v, true); }
             $r[$c] = is_array($v) ? array_values($v) : [];
         }
-        if (!isset(self::categories()[$r['category'] ?? ''])) $r['category'] = 'workspaces';
+        if (!isset(self::categories()[$r['category'] ?? ''])) { $r['category'] = 'workspaces'; }
         $r['id'] = (int)($r['id'] ?? 0);
         $r['show_on_listing'] = (int)($r['show_on_listing'] ?? 1);
         $r['show_in_nav'] = (int)($r['show_in_nav'] ?? 0);

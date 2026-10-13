@@ -93,7 +93,7 @@ class Admin extends Controller {
 
     private function queryParam($key, array $allowed = null) {
         $v = trim((string)($_GET[$key] ?? ''));
-        if ($allowed !== null && !in_array($v, $allowed, true)) return '';
+        if ($allowed !== null && !in_array($v, $allowed, true)) { return ''; }
         return mb_substr($v, 0, 100);
     }
 
@@ -111,7 +111,7 @@ class Admin extends Controller {
     // Where to go back to after an action on a list row: the same filtered/paged list.
     private function listReturn($base) {
         $r = (string)($_POST['return'] ?? '');
-        if ($r !== '' && strpos($r, $base) === 0 && !preg_match('/[\r\n]/', $r)) return $r;
+        if ($r !== '' && strpos($r, $base) === 0 && !preg_match('/[\r\n]/', $r)) { return $r; }
         return $base;
     }
 
@@ -262,10 +262,10 @@ class Admin extends Controller {
                 return null;
             case 'image':
                 $uploaded = $this->uploadImage($f['key'], $f['label'], $errors);
-                if ($uploaded) return $uploaded;
+                if ($uploaded) { return $uploaded; }
                 $existing = isset($_POST[$f['key'] . '_existing']) ? (string)$_POST[$f['key'] . '_existing'] : null;
                 // Only library paths may be stored, never an arbitrary URL typed into the hidden input.
-                if ($existing !== null && $existing !== '' && strpos($existing, '/images/') !== 0) return null;
+                if ($existing !== null && $existing !== '' && strpos($existing, '/images/') !== 0) { return null; }
                 return $existing;
             case 'toggle':
                 return isset($_POST[$f['key']]) ? '1' : '0';
@@ -275,7 +275,7 @@ class Admin extends Controller {
             default:
                 $value = $this->clamp(trim((string)($_POST[$f['key']] ?? '')), $f);
                 $err = Home_content_model::checkRule(Home_content_model::fieldRule($f), $value);
-                if ($err !== null) $errors[$f['key']] = $f['label'] . ': ' . $err;
+                if ($err !== null) { $errors[$f['key']] = $f['label'] . ': ' . $err; }
                 return $value;
         }
     }
@@ -285,7 +285,7 @@ class Admin extends Controller {
         $out = [];
         foreach ($fields as $f) {
             $k = $f['key'];
-            if ($f['type'] === 'heading') continue;
+            if ($f['type'] === 'heading') { continue; }
             if ($k === 'card_features') { $out[$k] = implode("\n", $svc['card_features']); continue; }
             if ($f['type'] === 'toggle') { $out[$k] = !empty($svc[$k]) ? '1' : '0'; continue; }
             $out[$k] = (string)($svc[$k] ?? '');
@@ -366,13 +366,13 @@ class Admin extends Controller {
                     if (empty($errors)) {
                         $this->contentModel->saveRevision('fields', $section['key'], $section['label'], $before);
                         foreach ($submitted as $k => $value) {
-                            if ($value !== null) $this->contentModel->setField($k, $value);
+                            if ($value !== null) { $this->contentModel->setField($k, $value); }
                         }
                         $this->setFlash('"' . $section['label'] . '" saved. The website now shows these changes.', 'success');
                         $this->redirect('/admin/section/' . $page . '/' . $targetSec);
                     }
                     $values = [];
-                    foreach ($submitted as $k => $value) $values[$k] = $value ?? $before[$k];
+                    foreach ($submitted as $k => $value) { $values[$k] = $value ?? $before[$k]; }
                 }
             }
 
@@ -671,14 +671,14 @@ class Admin extends Controller {
         $dir = $this->queryParam('dir', ['asc', 'desc']) ?: ($sort === 'name' ? 'asc' : 'desc');
 
         $rows = array_values(array_filter($all, function ($a) use ($filters) {
-            if ($filters['q'] !== '' && stripos($a['name'] . ' ' . $a['path'], $filters['q']) === false) return false;
+            if ($filters['q'] !== '' && stripos($a['name'] . ' ' . $a['path'], $filters['q']) === false) { return false; }
             switch ($filters['kind']) {
                 case 'upload': return $a['isUpload'];
                 case 'builtin': return !$a['isUpload'];
                 case 'used': return (bool)$a['usage'];
                 case 'unused': return !$a['usage'];
+                default: return true;
             }
-            return true;
         }));
         usort($rows, function ($x, $y) use ($sort, $dir) {
             switch ($sort) {
@@ -721,9 +721,9 @@ class Admin extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $form['name'] = trim((string)($_POST['name'] ?? ''));
-            if ($form['name'] === '') $errors['name'] = 'Name is required.';
-            elseif (mb_strlen($form['name']) > 150) $errors['name'] = 'Name must be 150 characters or fewer.';
-            elseif (preg_match('/[<>"\\\\]/', $form['name'])) $errors['name'] = 'Name cannot contain < > " or \\ characters.';
+            if ($form['name'] === '') { $errors['name'] = 'Name is required.'; }
+            elseif (mb_strlen($form['name']) > 150) { $errors['name'] = 'Name must be 150 characters or fewer.'; }
+            elseif (preg_match('/[<>"\\\\]/', $form['name'])) { $errors['name'] = 'Name cannot contain < > " or \\ characters.'; }
 
             $newPath = empty($errors) ? $this->uploadImage('replace_file', 'Replacement image', $errors) : null;
             if (isset($errors['replace_file'])) {
@@ -740,12 +740,12 @@ class Admin extends Controller {
                     if ($ok) {
                         if ($asset['isUpload']) {
                             $oldFull = APPROOT . '/../public' . $asset['path'];
-                            if (is_file($oldFull)) unlink($oldFull);
+                            if (is_file($oldFull)) { unlink($oldFull); }
                         }
                         $msg = 'Image replaced' . ($usedIn ? ' and updated on ' . $usedIn . ' place' . ($usedIn === 1 ? '' : 's') . ' across the website.' : '.');
                     } else {
                         $full = APPROOT . '/../public' . $newPath;
-                        if (is_file($full)) unlink($full);
+                        if (is_file($full)) { unlink($full); }
                         $this->mediaModel->delete((int)($this->mediaIdForPath($newPath) ?? 0));
                     }
                 }
@@ -769,7 +769,7 @@ class Admin extends Controller {
 
     private function mediaIdForPath($path) {
         foreach ($this->mediaModel->getAll() as $a) {
-            if ($a['path'] === $path) return $a['id'];
+            if ($a['path'] === $path) { return $a['id']; }
         }
         return null;
     }
@@ -809,7 +809,7 @@ class Admin extends Controller {
 
         $pageLabels = Home_content_model::pages();
         foreach (Home_content_model::revisionPages() as $p) {
-            if (!isset($pageLabels[$p])) $pageLabels[$p] = Home_content_model::pageLabel($p);
+            if (!isset($pageLabels[$p])) { $pageLabels[$p] = Home_content_model::pageLabel($p); }
         }
 
         foreach ($revisions as &$rev) {
@@ -1057,16 +1057,16 @@ class Admin extends Controller {
             'show_on_home' => isset($in['show_on_home']) ? 1 : 0,
         ];
         $e = [];
-        if ($d['full_name'] === '') $e['full_name'] = 'Full name is required.';
-        elseif (mb_strlen($d['full_name']) > 100) $e['full_name'] = 'Full name must be 100 characters or fewer.';
-        if (mb_strlen($d['company']) > 150) $e['company'] = 'Company must be 150 characters or fewer.';
-        if (mb_strlen($d['designation']) > 100) $e['designation'] = 'Designation must be 100 characters or fewer.';
-        if ($d['email'] !== '' && (!filter_var($d['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($d['email']) > 255)) $e['email'] = 'Enter a valid email address.';
-        if (!in_array($d['rating'], ['1', '2', '3', '4', '5'], true)) $e['rating'] = 'Choose a rating from 1 to 5 stars.';
+        if ($d['full_name'] === '') { $e['full_name'] = 'Full name is required.'; }
+        elseif (mb_strlen($d['full_name']) > 100) { $e['full_name'] = 'Full name must be 100 characters or fewer.'; }
+        if (mb_strlen($d['company']) > 150) { $e['company'] = 'Company must be 150 characters or fewer.'; }
+        if (mb_strlen($d['designation']) > 100) { $e['designation'] = 'Designation must be 100 characters or fewer.'; }
+        if ($d['email'] !== '' && (!filter_var($d['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($d['email']) > 255)) { $e['email'] = 'Enter a valid email address.'; }
+        if (!in_array($d['rating'], ['1', '2', '3', '4', '5'], true)) { $e['rating'] = 'Choose a rating from 1 to 5 stars.'; }
         $len = mb_strlen($d['feedback']);
-        if ($len === 0) $e['feedback'] = 'Feedback text is required.';
-        elseif ($len < 20 || $len > 1000) $e['feedback'] = 'Feedback must be between 20 and 1000 characters (currently ' . $len . ').';
-        if (!in_array($d['status'], Testimonial::statuses(), true)) $e['status'] = 'Choose a valid status.';
+        if ($len === 0) { $e['feedback'] = 'Feedback text is required.'; }
+        elseif ($len < 20 || $len > 1000) { $e['feedback'] = 'Feedback must be between 20 and 1000 characters (currently ' . $len . ').'; }
+        if (!in_array($d['status'], Testimonial::statuses(), true)) { $e['status'] = 'Choose a valid status.'; }
         return [$d, $e];
     }
 
@@ -1074,7 +1074,7 @@ class Admin extends Controller {
     // /uploads/testimonials). Returns the new file name, or null when nothing was uploaded.
     private function feedbackPhotoUpload(array &$errors) {
         $file = $_FILES['photo'] ?? null;
-        if (!$file || $file['error'] === UPLOAD_ERR_NO_FILE) return null;
+        if (!$file || $file['error'] === UPLOAD_ERR_NO_FILE) { return null; }
         if ($file['error'] !== UPLOAD_ERR_OK) { $errors['photo'] = 'The photo upload failed. Please try again.'; return null; }
         if ($file['size'] > self::MAX_UPLOAD_BYTES) { $errors['photo'] = 'The photo must be smaller than 5 MB.'; return null; }
         $allowed = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
@@ -1084,7 +1084,7 @@ class Admin extends Controller {
         finfo_close($finfo);
         if (!isset($allowed[$ext]) || $mime !== $allowed[$ext]) { $errors['photo'] = 'The photo must be a JPG, PNG or WebP image.'; return null; }
         $dir = APPROOT . '/../public/uploads/testimonials/';
-        if (!is_dir($dir)) mkdir($dir, 0755, true);
+        if (!is_dir($dir)) { mkdir($dir, 0755, true); }
         $name = 'avatar_' . bin2hex(random_bytes(6)) . '.' . $ext;
         if (!move_uploaded_file($file['tmp_name'], $dir . $name)) { $errors['photo'] = 'The photo could not be saved.'; return null; }
         return $name;
@@ -1092,9 +1092,9 @@ class Admin extends Controller {
 
     // Removes a testimonial photo file once no testimonial refers to it any more.
     private function removeFeedbackPhotoIfUnused($photo) {
-        if (!$photo || $this->testimonialModel->countPhotoUsage($photo) > 0) return;
+        if (!$photo || $this->testimonialModel->countPhotoUsage($photo) > 0) { return; }
         $full = APPROOT . '/../public/uploads/testimonials/' . basename($photo);
-        if (is_file($full)) unlink($full);
+        if (is_file($full)) { unlink($full); }
     }
 
     // Add (/admin/feedback-edit/new) or review/edit (/admin/feedback-edit/5) a testimonial.
@@ -1124,8 +1124,8 @@ class Admin extends Controller {
             $clean['photo'] = (string)$oldPhoto;
             if (empty($errors)) {
                 $newPhoto = $this->feedbackPhotoUpload($errors);
-                if ($newPhoto) $clean['photo'] = $newPhoto;
-                elseif (!empty($_POST['remove_photo'])) $clean['photo'] = '';
+                if ($newPhoto) { $clean['photo'] = $newPhoto; }
+                elseif (!empty($_POST['remove_photo'])) { $clean['photo'] = ''; }
             }
 
             if (empty($errors)) {
@@ -1136,7 +1136,7 @@ class Admin extends Controller {
                     $ok = $this->testimonialModel->updateTestimonial($clean);
                 }
                 if ($ok) {
-                    if ($oldPhoto && $clean['photo'] !== $oldPhoto) $this->removeFeedbackPhotoIfUnused($oldPhoto);
+                    if ($oldPhoto && $clean['photo'] !== $oldPhoto) { $this->removeFeedbackPhotoIfUnused($oldPhoto); }
                     $note = ($clean['show_on_home'] && $clean['status'] !== 'Approved') ? ' It is marked as featured, but only Approved feedback appears on the website.' : '';
                     $this->setFlash(($isNew ? 'Testimonial from ' . $clean['full_name'] . ' added.' : 'Feedback from ' . $clean['full_name'] . ' updated.') . $note, 'success');
                     $this->redirect($this->listReturn('/admin/feedback'));
@@ -1279,17 +1279,17 @@ class Admin extends Controller {
             'status' => (string)($in['status'] ?? ''),
         ];
         $e = [];
-        if ($d['company_name'] === '') $e['company_name'] = 'Company name is required.';
-        elseif (mb_strlen($d['company_name']) > 150) $e['company_name'] = 'Company name must be 150 characters or fewer.';
-        if ($d['company_address'] === '') $e['company_address'] = 'Company address is required.';
-        elseif (mb_strlen($d['company_address']) > 250) $e['company_address'] = 'Company address must be 250 characters or fewer.';
-        if (!preg_match('/^[6-9][0-9]{9}$/', $d['contact_no'])) $e['contact_no'] = 'Enter a valid 10-digit mobile number (starting with 6-9).';
-        if (!filter_var($d['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($d['email']) > 150) $e['email'] = 'Enter a valid email address.';
-        if (!in_array($d['req_type'], ['space', 'seats'], true)) $e['req_type'] = 'Choose a requirement type.';
-        if (!ctype_digit($d['req_value']) || (int)$d['req_value'] < 1 || (int)$d['req_value'] > 1000000) $e['req_value'] = 'Enter a whole number greater than 0.';
-        if (mb_strlen($d['additional']) > 1000) $e['additional'] = 'Additional requirements must be 1000 characters or fewer.';
-        if (!array_key_exists($d['source'], Enquiry::sources())) $e['source'] = 'Choose where this enquiry came from.';
-        if (!in_array($d['status'], Enquiry::statuses(), true)) $e['status'] = 'Choose a valid status.';
+        if ($d['company_name'] === '') { $e['company_name'] = 'Company name is required.'; }
+        elseif (mb_strlen($d['company_name']) > 150) { $e['company_name'] = 'Company name must be 150 characters or fewer.'; }
+        if ($d['company_address'] === '') { $e['company_address'] = 'Company address is required.'; }
+        elseif (mb_strlen($d['company_address']) > 250) { $e['company_address'] = 'Company address must be 250 characters or fewer.'; }
+        if (!preg_match('/^[6-9][0-9]{9}$/', $d['contact_no'])) { $e['contact_no'] = 'Enter a valid 10-digit mobile number (starting with 6-9).'; }
+        if (!filter_var($d['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($d['email']) > 150) { $e['email'] = 'Enter a valid email address.'; }
+        if (!in_array($d['req_type'], ['space', 'seats'], true)) { $e['req_type'] = 'Choose a requirement type.'; }
+        if (!ctype_digit($d['req_value']) || (int)$d['req_value'] < 1 || (int)$d['req_value'] > 1000000) { $e['req_value'] = 'Enter a whole number greater than 0.'; }
+        if (mb_strlen($d['additional']) > 1000) { $e['additional'] = 'Additional requirements must be 1000 characters or fewer.'; }
+        if (!array_key_exists($d['source'], Enquiry::sources())) { $e['source'] = 'Choose where this enquiry came from.'; }
+        if (!in_array($d['status'], Enquiry::statuses(), true)) { $e['status'] = 'Choose a valid status.'; }
         return [$d, $e];
     }
 

@@ -34,7 +34,7 @@
                     $hasAvatar0 = !empty($photoName0) && file_exists(APPROOT . '/../public/uploads/testimonials/' . $photoName0);
                     $avatarUrl0 = $hasAvatar0 ? (URLROOT . '/uploads/testimonials/' . htmlspecialchars($photoName0)) : '';
                     $roleCompany0 = htmlspecialchars($testimonial->designation ?? '');
-                    if (!empty($testimonial->designation) && !empty($testimonial->company)) $roleCompany0 .= ' &middot; ';
+                    if (!empty($testimonial->designation) && !empty($testimonial->company)) { $roleCompany0 .= ' &middot; '; }
                     $roleCompany0 .= htmlspecialchars($testimonial->company ?? '');
                 ?>
                     <div class="testimonial-card"
@@ -79,7 +79,7 @@
                                 <?php if (!empty($testimonial->designation) || !empty($testimonial->company)) : ?>
                                     <p class="client-role">
                                         <?php echo htmlspecialchars($testimonial->designation); ?>
-                                        <?php if (!empty($testimonial->designation) && !empty($testimonial->company)) echo ' &middot; '; ?>
+                                        <?php if (!empty($testimonial->designation) && !empty($testimonial->company)) { echo ' &middot; '; } ?>
                                         <?php echo htmlspecialchars($testimonial->company); ?>
                                     </p>
                                 <?php endif; ?>

@@ -19,7 +19,7 @@ $to = min($pg['total'], $pg['page'] * $pg['perPage']);
             <?php
             $shown = [];
             foreach ([1, $pg['page'] - 1, $pg['page'], $pg['page'] + 1, $pg['pages']] as $n) {
-                if ($n >= 1 && $n <= $pg['pages']) $shown[$n] = true;
+                if ($n >= 1 && $n <= $pg['pages']) { $shown[$n] = true; }
             }
             ksort($shown);
             $prev = 0;

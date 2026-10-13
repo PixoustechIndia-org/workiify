@@ -92,7 +92,7 @@ $csrf = htmlspecialchars($data['csrfToken']);
                                         </span>
                                     </div>
                                 </td>
-                                <td data-label="Rating"><span class="admin-stars" title="<?php echo (int)$item->rating; ?> out of 5"><?php for ($i = 1; $i <= 5; $i++) echo '<i class="fa' . ($i <= $item->rating ? 's' : 'r') . ' fa-star"></i>'; ?></span></td>
+                                <td data-label="Rating"><span class="admin-stars" title="<?php echo (int)$item->rating; ?> out of 5"><?php for ($i = 1; $i <= 5; $i++) { echo '<i class="fa' . ($i <= $item->rating ? 's' : 'r') . ' fa-star"></i>'; } ?></span></td>
                                 <td data-label="Feedback"><span class="admin-clamp" title="<?php echo htmlspecialchars($item->feedback); ?>"><?php echo htmlspecialchars($item->feedback); ?></span></td>
                                 <td data-label="Status"><span class="admin-status-badge <?php echo strtolower(htmlspecialchars($item->status)); ?>"><?php echo htmlspecialchars($item->status); ?></span></td>
                                 <td data-label="Featured">
@@ -106,7 +106,7 @@ $csrf = htmlspecialchars($data['csrfToken']);
                                 <td class="admin-col-actions">
                                     <div class="admin-row-actions">
                                         <?php foreach (['Approved' => ['fa-check', 'Approve', 'is-success'], 'Rejected' => ['fa-ban', 'Reject', 'is-warn']] as $st => $cfg):
-                                            if ($item->status === $st) continue; ?>
+                                            if ($item->status === $st) { continue; } ?>
                                             <form method="POST" action="<?php echo URLROOT; ?>/admin/feedback-status/<?php echo (int)$item->id; ?>/<?php echo $st; ?>">
                                                 <input type="hidden" name="csrf_token" value="<?php echo $csrf; ?>">
                                                 <input type="hidden" name="return" value="<?php echo htmlspecialchars($returnTo); ?>">

@@ -1,5 +1,7 @@
 <?php
 class Testimonials extends Controller {
+    private $testimonialModel;
+
     public function __construct() {
         $this->testimonialModel = $this->model('Testimonial');
     }

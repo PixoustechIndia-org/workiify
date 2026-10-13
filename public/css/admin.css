@@ -537,7 +537,7 @@ h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; color: var(--admin-text)
 .admin-error { background: var(--admin-danger-soft); color: var(--admin-danger-dark); border-color: var(--admin-danger-border); }
 .admin-message::before,
 .admin-error::before {
-    font-family: "Font Awesome 6 Free";
+    font-family: "Font Awesome 6 Free", sans-serif;
     font-weight: 900;
     flex-shrink: 0;
     margin-top: 1px;
@@ -597,7 +597,7 @@ h1, h2, h3 { font-weight: 700; letter-spacing: -0.01em; color: var(--admin-text)
 }
 .admin-empty::before {
     content: "\f574";
-    font-family: "Font Awesome 6 Free";
+    font-family: "Font Awesome 6 Free", sans-serif;
     font-weight: 400;
     display: block;
     font-size: 1.4rem;
