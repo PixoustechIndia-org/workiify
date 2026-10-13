@@ -3,7 +3,7 @@
 <div class="svc-modal" id="svcModal" hidden>
     <div class="svc-modal-backdrop" data-close></div>
     <div class="svc-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="svcModalTitle" aria-describedby="svcModalText">
-        <div class="svc-modal-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        <div class="svc-modal-icon" id="svcModalIcon"><i class="fas fa-triangle-exclamation"></i></div>
         <h3 id="svcModalTitle"></h3>
         <p id="svcModalText"></p>
         <div class="svc-modal-actions">
@@ -26,6 +26,11 @@
         document.getElementById('svcModalText').textContent = form.dataset.confirmText || '';
         var btn = document.getElementById('svcModalConfirm');
         btn.textContent = form.dataset.confirmButton || 'Confirm';
+        var safe = form.dataset.confirmTone === 'primary';
+        btn.className = 'admin-btn ' + (safe ? '' : 'admin-btn-danger');
+        btn.disabled = false;
+        document.getElementById('svcModalIcon').className = 'svc-modal-icon' + (safe ? ' is-primary' : '');
+        document.getElementById('svcModalIcon').innerHTML = '<i class="fas ' + (safe ? 'fa-circle-question' : 'fa-triangle-exclamation') + '"></i>';
         modal.hidden = false;
         btn.focus();
     }

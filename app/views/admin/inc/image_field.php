@@ -35,5 +35,6 @@
     </div>
 
     <label style="font-weight:400; font-size:0.8rem; color:var(--admin-muted); margin-top:12px;">Or upload a new image (added to the library automatically):</label>
-    <input type="file" id="upload_<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml">
+    <input type="file" id="upload_<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" accept="image/png,image/jpeg,image/webp,image/gif" data-types="JPG, PNG, WebP or GIF">
+    <p class="admin-help-text">JPG, PNG, WebP or GIF, up to 5 MB.</p>
 </div>

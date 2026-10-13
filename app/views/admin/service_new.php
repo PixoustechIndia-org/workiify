@@ -23,12 +23,7 @@ $form = $data['form'];
             </div>
         </div>
 
-        <?php if (!empty($data['errors'])): ?>
-            <div class="admin-error" role="alert">
-                <strong><i class="fas fa-circle-exclamation"></i> Please fix the following:</strong>
-                <ul style="margin:8px 0 0 18px; padding:0;"><?php foreach ($data['errors'] as $err): ?><li><?php echo $e($err); ?></li><?php endforeach; ?></ul>
-            </div>
-        <?php endif; ?>
+        <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
 
         <form method="POST" class="admin-form" id="newServiceForm" novalidate>
             <input type="hidden" name="csrf_token" value="<?php echo $e($data['csrfToken']); ?>">

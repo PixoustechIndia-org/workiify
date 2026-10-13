@@ -41,7 +41,7 @@ foreach ($services as $svc) {
 }
 ?>
 
-<div class="admin-wrap svc-wrap">
+<div class="admin-wrap admin-wrap-wide svc-wrap">
     <!-- Header -->
     <div class="admin-page-header svc-page-header">
         <div>
@@ -58,12 +58,7 @@ foreach ($services as $svc) {
         </div>
     </div>
 
-    <?php if (!empty($data['flash'])): ?>
-        <div class="admin-<?php echo $data['flash']['type'] === 'error' ? 'error' : 'message'; ?> svc-flash">
-            <i class="fas <?php echo $data['flash']['type'] === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check'; ?>"></i>
-            <span><?php echo $e($data['flash']['message']); ?></span>
-        </div>
-    <?php endif; ?>
+    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <?php if (!empty($data['offline'])): ?>
         <div class="admin-error">
@@ -201,11 +196,13 @@ foreach ($services as $svc) {
                                         <button type="button" class="svc-copy-btn" data-url="<?php echo $e($fullUrl); ?>" title="Copy link to clipboard">
                                             <i class="fas fa-copy"></i>
                                         </button>
+                                    </div>
+                                    <div class="svc-tags-row">
                                         <?php if (!empty($svc['show_in_nav'])): ?>
                                             <span class="svc-tag is-nav" title="Visible in site navigation dropdown"><i class="fas fa-compass"></i> In Menu</span>
                                         <?php endif; ?>
                                         <?php if (!empty($svc['show_on_listing'])): ?>
-                                            <span class="svc-tag is-listing" title="Visible on Services overview page"><i class="fas fa-grid-2"></i> On Listing</span>
+                                            <span class="svc-tag is-listing" title="Visible on Services overview page"><i class="fas fa-table-cells-large"></i> On Listing</span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -232,10 +229,10 @@ foreach ($services as $svc) {
                             <!-- Actions Toolbar -->
                             <div class="svc-cell svc-actions">
                                 <a class="admin-btn admin-btn-sm svc-edit-btn" href="<?php echo URLROOT; ?>/admin/section/<?php echo $pageKey; ?>/banner" title="Edit content sections">
-                                    <i class="fas fa-pen-to-square"></i> Edit Content
+                                    <i class="fas fa-pen-to-square"></i> <span class="svc-lbl-full">Edit Content</span><span class="svc-lbl-short">Edit</span>
                                 </a>
                                 <a class="admin-btn admin-btn-sm admin-btn-secondary svc-settings-btn" href="<?php echo URLROOT; ?>/admin/section/<?php echo $pageKey; ?>/settings" title="Edit name, card, menu, and SEO">
-                                    <i class="fas fa-gear"></i> Settings &amp; SEO
+                                    <i class="fas fa-gear"></i> <span class="svc-lbl-full">Settings &amp; SEO</span><span class="svc-lbl-short">Settings</span>
                                 </a>
                                 <a class="svc-icon-btn" href="<?php echo URLROOT; ?>/services/<?php echo $e($svc['slug']); ?>" target="_blank" rel="noopener" title="<?php echo $published ? 'View live page' : 'Preview draft (admins only)'; ?>">
                                     <i class="fas fa-arrow-up-right-from-square"></i>
@@ -440,5 +437,4 @@ foreach ($services as $svc) {
 })();
 </script>
 
-<?php require APPROOT . '/views/admin/inc/confirm_modal.php'; ?>
 <?php require APPROOT . '/views/admin/inc/footer.php'; ?>

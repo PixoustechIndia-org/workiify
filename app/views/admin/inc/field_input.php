@@ -1,14 +1,18 @@
 <?php
 /**
  * One form field of the CMS, whatever its type. Expects in scope: $f (field definition with
- * 'key', 'label', 'type' and optionally 'maxlength' / 'options'), $val (current value) and
- * $data['mediaAssets'] (for image fields).
+ * 'key', 'label', 'type' and optionally 'maxlength' / 'options' / 'rule'), $val (current value),
+ * $data['mediaAssets'] (for image fields) and optionally $data['errors'] (keyed by field).
  *
  * Types: text, textarea, image, icon, select, toggle (an on/off switch), heading (a divider
  * label that groups the fields below it).
  */
 $fid = $f['key'];
 $flimit = !empty($f['maxlength']) ? ' maxlength="' . (int)$f['maxlength'] . '"' : '';
+$frule = Home_content_model::fieldRule($f);
+$fattrs = ' data-label="' . htmlspecialchars($f['label']) . '"' . ($frule ? ' data-rule="' . $frule . '"' : '');
+$ferror = $data['errors'][$fid] ?? null;
+if ($ferror) $fattrs .= ' class="is-invalid" aria-invalid="true" data-server-error="1"';
 ?>
 <?php if ($f['type'] === 'heading'): ?>
     <div class="admin-field-heading"><?php echo htmlspecialchars($f['label']); ?></div>
@@ -21,14 +25,14 @@ $flimit = !empty($f['maxlength']) ? ' maxlength="' . (int)$f['maxlength'] . '"' 
     </label>
 
 <?php else: ?>
-    <label for="<?php echo $fid; ?>">
+    <label for="<?php echo $f['type'] === 'image' ? 'upload_' . $fid : $fid; ?>">
         <?php echo htmlspecialchars($f['label']); ?>
         <?php if (!empty($f['maxlength']) && $f['type'] !== 'icon'): ?>
             <span class="admin-field-limit"><span class="admin-char-count" data-for="<?php echo $fid; ?>"><?php echo mb_strlen((string)$val); ?></span> / <?php echo (int)$f['maxlength']; ?> characters</span>
         <?php endif; ?>
     </label>
     <?php if ($f['type'] === 'textarea'): ?>
-        <textarea id="<?php echo $fid; ?>" name="<?php echo $fid; ?>"<?php echo $flimit; ?>><?php echo htmlspecialchars((string)$val); ?></textarea>
+        <textarea id="<?php echo $fid; ?>" name="<?php echo $fid; ?>"<?php echo $flimit . $fattrs; ?>><?php echo htmlspecialchars((string)$val); ?></textarea>
     <?php elseif ($f['type'] === 'image'): ?>
         <?php require APPROOT . '/views/admin/inc/image_field.php'; ?>
     <?php elseif ($f['type'] === 'icon'): ?>
@@ -40,6 +44,9 @@ $flimit = !empty($f['maxlength']) ? ' maxlength="' . (int)$f['maxlength'] . '"' 
             <?php endforeach; ?>
         </select>
     <?php else: ?>
-        <input type="text" id="<?php echo $fid; ?>" name="<?php echo $fid; ?>" value="<?php echo htmlspecialchars((string)$val); ?>"<?php echo $flimit; ?>>
+        <input type="text" id="<?php echo $fid; ?>" name="<?php echo $fid; ?>" value="<?php echo htmlspecialchars((string)$val); ?>"<?php echo $flimit . $fattrs; ?><?php echo $frule === 'link' ? ' placeholder="/contact-us or https://…"' : ($frule === 'email' ? ' placeholder="name@example.com" inputmode="email"' : ''); ?>>
+    <?php endif; ?>
+    <?php if ($ferror): ?>
+        <div class="admin-field-error" data-for="<?php echo $fid; ?>"><i class="fas fa-circle-exclamation"></i> <?php echo htmlspecialchars(ucfirst(preg_replace('/^' . preg_quote($f['label'], '/') . ': /', '', $ferror))); ?></div>
     <?php endif; ?>
 <?php endif; ?>

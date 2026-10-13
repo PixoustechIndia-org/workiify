@@ -8185,3 +8185,29 @@ body.header-hidden .services-subnav {
 
 
 
+
+/* ==========================================================================
+   Compact footer on phones (only applies at 560px and below; desktop/tablet unchanged)
+   ========================================================================== */
+@media (max-width: 560px) {
+    .site-footer-mini { padding-top: 26px; }
+    .footer-columns { row-gap: 1.1rem; column-gap: 0.75rem; padding-bottom: 0; }
+    .footer-mini-logo .brand-icon { width: 30px; height: 30px; }
+    .footer-mini-logo .brand-name { font-size: 1rem; }
+    .footer-mini-logo .tagline { font-size: 0.6rem; }
+    .footer-col-desc { font-size: 0.76rem; margin: 6px auto 10px; }
+    .footer-mini-socials { gap: 0.6rem; }
+    .footer-mini-socials a { width: 28px; height: 28px; font-size: 0.75rem; }
+    .footer-col-title { font-size: 0.7rem; margin-bottom: 8px; }
+    .footer-col-links { gap: 5px; }
+    .footer-col-links a { font-size: 0.8rem; }
+    .footer-address { font-size: 0.74rem; line-height: 1.45; max-width: 300px; gap: 4px; }
+    .footer-mini-bottom { margin-top: 16px; padding: 12px 0; }
+    .footer-mini-copy { font-size: 0.68rem; white-space: normal; }
+}
+@media (max-width: 360px) {
+    .site-footer-mini { padding-top: 20px; }
+    .footer-columns { row-gap: 0.9rem; }
+    .footer-col-links a { font-size: 0.76rem; }
+    .footer-address { font-size: 0.7rem; }
+}

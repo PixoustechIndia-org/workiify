@@ -7,7 +7,7 @@
 <div class="admin-icon-field">
     <div class="admin-icon-preview-row">
         <span class="admin-icon-preview-box"><i class="fas <?php echo htmlspecialchars($val ?: 'fa-icons'); ?>" id="iconPreview_<?php echo $f['key']; ?>"></i></span>
-        <input type="text" id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" value="<?php echo htmlspecialchars($val); ?>" placeholder="e.g. fa-wifi" oninput="adminUpdateIconPreview('<?php echo $f['key']; ?>')">
+        <input type="text" id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" value="<?php echo htmlspecialchars($val); ?>" placeholder="e.g. fa-wifi"<?php echo $fattrs ?? ""; ?> oninput="adminUpdateIconPreview('<?php echo $f['key']; ?>')">
     </div>
 
     <button type="button" class="admin-btn admin-btn-sm admin-btn-secondary admin-toggle-library" data-target="iconlib_<?php echo $f['key']; ?>">

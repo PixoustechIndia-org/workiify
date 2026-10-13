@@ -2,13 +2,25 @@
 class Testimonial {
     private $db;
 
+    public static function statuses() {
+        return ['Pending', 'Approved', 'Rejected'];
+    }
+
+    // Columns the admin list can be sorted by (request value => SQL column).
+    private static $sortable = [
+        'date' => 'created_at',
+        'name' => 'full_name',
+        'rating' => 'rating',
+        'status' => 'status',
+    ];
+
     public function __construct() {
         $this->db = new Database;
     }
 
     public function addFeedback($data) {
         $this->db->query('INSERT INTO testimonials (full_name, company, designation, email, rating, feedback, photo, consent, ip_address) VALUES (:full_name, :company, :designation, :email, :rating, :feedback, :photo, :consent, :ip_address)');
-        
+
         $this->db->bind(':full_name', $data['full_name']);
         $this->db->bind(':company', $data['company']);
         $this->db->bind(':designation', $data['designation']);
@@ -37,25 +49,93 @@ class Testimonial {
         return $this->db->resultSet();
     }
 
+    // Filtered, sorted, paginated list for the admin. Returns [rows, total].
+    public function search(array $f, $sort, $dir, $page, $perPage) {
+        $where = [];
+        $params = [];
+        if ($f['q'] !== '') {
+            $where[] = '(full_name LIKE :q1 OR email LIKE :q2 OR company LIKE :q3 OR feedback LIKE :q4)';
+            foreach (['q1', 'q2', 'q3', 'q4'] as $p) $params[':' . $p] = '%' . $f['q'] . '%';
+        }
+        if ($f['status'] !== '') { $where[] = 'status = :status'; $params[':status'] = $f['status']; }
+        if ($f['rating'] !== '') { $where[] = 'rating = :rating'; $params[':rating'] = (int)$f['rating']; }
+        if ($f['featured'] !== '') { $where[] = 'show_on_home = :featured'; $params[':featured'] = (int)$f['featured']; }
+        $sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
+
+        $this->db->query('SELECT COUNT(*) AS c FROM testimonials' . $sql);
+        foreach ($params as $k => $v) $this->db->bind($k, $v);
+        $total = (int)$this->db->single()->c;
+
+        $col = self::$sortable[$sort] ?? 'created_at';
+        $dir = $dir === 'asc' ? 'ASC' : 'DESC';
+        $this->db->query('SELECT * FROM testimonials' . $sql . " ORDER BY $col $dir, id $dir LIMIT " . (int)$perPage . ' OFFSET ' . (int)(($page - 1) * $perPage));
+        foreach ($params as $k => $v) $this->db->bind($k, $v);
+        return [$this->db->resultSet(), $total];
+    }
+
+    public static function sortKeys() {
+        return array_keys(self::$sortable);
+    }
+
+    public function statusCounts() {
+        $this->db->query('SELECT status, COUNT(*) AS c FROM testimonials GROUP BY status');
+        $out = ['all' => 0];
+        foreach (self::statuses() as $s) $out[$s] = 0;
+        foreach ($this->db->resultSet() as $r) {
+            $out[$r->status] = (int)$r->c;
+            $out['all'] += (int)$r->c;
+        }
+        return $out;
+    }
+
     public function getTestimonialById($id) {
         $this->db->query("SELECT * FROM testimonials WHERE id = :id");
-        $this->db->bind(':id', $id);
+        $this->db->bind(':id', (int)$id);
         return $this->db->single();
     }
 
-    public function updateTestimonial($data) {
-        $this->db->query('UPDATE testimonials SET full_name = :full_name, company = :company, designation = :designation, rating = :rating, feedback = :feedback, status = :status, show_on_home = :show_on_home WHERE id = :id');
-        
-        $this->db->bind(':full_name', $data['full_name']);
-        $this->db->bind(':company', $data['company']);
-        $this->db->bind(':designation', $data['designation']);
-        $this->db->bind(':rating', $data['rating']);
-        $this->db->bind(':feedback', $data['feedback']);
-        $this->db->bind(':status', $data['status']);
-        $this->db->bind(':show_on_home', $data['show_on_home']);
-        $this->db->bind(':id', $data['id']);
+    // Admin-entered testimonial (e.g. copied from a Google review); returns the new id or false.
+    public function create(array $data) {
+        $this->db->query('INSERT INTO testimonials (full_name, company, designation, email, rating, feedback, photo, consent, status, show_on_home) VALUES (:full_name, :company, :designation, :email, :rating, :feedback, :photo, 1, :status, :show_on_home)');
+        $this->bindEditable($data);
+        return $this->db->execute() ? (int)$this->db->lastInsertId() : false;
+    }
 
+    public function updateTestimonial($data) {
+        $this->db->query('UPDATE testimonials SET full_name = :full_name, company = :company, designation = :designation, email = :email, rating = :rating, feedback = :feedback, photo = :photo, status = :status, show_on_home = :show_on_home WHERE id = :id');
+        $this->bindEditable($data);
+        $this->db->bind(':id', (int)$data['id']);
         return $this->db->execute();
+    }
+
+    private function bindEditable(array $data) {
+        foreach (['full_name', 'company', 'designation', 'email', 'feedback', 'status'] as $k) {
+            $this->db->bind(':' . $k, (string)$data[$k]);
+        }
+        $this->db->bind(':rating', (int)$data['rating']);
+        $this->db->bind(':photo', $data['photo'] !== '' ? $data['photo'] : null);
+        $this->db->bind(':show_on_home', (int)$data['show_on_home']);
+    }
+
+    public function setStatus($id, $status) {
+        $this->db->query('UPDATE testimonials SET status = :status WHERE id = :id');
+        $this->db->bind(':status', $status);
+        $this->db->bind(':id', (int)$id);
+        return $this->db->execute();
+    }
+
+    public function delete($id) {
+        $this->db->query('DELETE FROM testimonials WHERE id = :id');
+        $this->db->bind(':id', (int)$id);
+        return $this->db->execute();
+    }
+
+    // How many testimonials point at a photo file (seeded rows share avatars, so a file is
+    // only removed from disk once nothing uses it any more).
+    public function countPhotoUsage($photo) {
+        $this->db->query('SELECT COUNT(*) AS c FROM testimonials WHERE photo = :p');
+        $this->db->bind(':p', $photo);
+        return (int)$this->db->single()->c;
     }
 
     public function getSubmissionsCountByIp($ip) {

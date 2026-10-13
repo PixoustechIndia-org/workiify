@@ -48,138 +48,213 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
 ?>
 
 <div class="admin-wrap svc-editor-wrap">
-    <?php if ($isService && $svc): ?>
-        <!-- Service Hub Workspace Bar -->
+    <?php
+        $svcMode = $isService && $svc;
+        $isPub = $svcMode && $svc['status'] === 'published';
+        $secUrl = function ($k) use ($data) { return URLROOT . '/admin/section/' . $data['page'] . '/' . $k; };
+        // The page reads top to bottom; sections are grouped the same way so the list matches the live page.
+        $secGroups = [
+            'setup' => ['title' => 'Basic setup', 'hint' => 'Name, address & page header', 'keys' => ['settings', 'banner']],
+            'body' => ['title' => 'Page content', 'hint' => 'In the order visitors see them', 'keys' => []],
+            'end' => ['title' => 'End of page', 'hint' => 'Last things on the page', 'keys' => ['closing-banner', 'explore-more']],
+        ];
+        if (!$svcMode) {
+            // Home / About / Contact / Gallery: one list, top to bottom, like the live page
+            $secGroups = ['setup' => ['title' => '', 'hint' => '', 'keys' => []], 'body' => ['title' => 'Top to bottom', 'hint' => 'In the order visitors see them', 'keys' => []], 'end' => ['title' => '', 'hint' => '', 'keys' => []]];
+        }
+        $grouped = ['setup' => [], 'body' => [], 'end' => []];
+        foreach ($allSections as $n => $sItem) {
+            $sItem['num'] = $n + 1;
+            if (empty($sItem['help'])) {
+                $sItem['help'] = !empty($sItem['items']) && !empty($sItem['fields']) ? 'Text, images and a list of entries' : (!empty($sItem['items']) ? 'A list of entries you can add, edit and reorder' : 'Text and images');
+            }
+            $g = in_array($sItem['key'], $secGroups['setup']['keys'], true) ? 'setup' : (in_array($sItem['key'], $secGroups['end']['keys'], true) ? 'end' : 'body');
+            $grouped[$g][] = $sItem;
+        }
+        $pageSections = array_values(array_filter($allSections, function ($s) { return empty($s['settings']); }));
+        $shownCount = count(array_filter($pageSections, function ($s) { return empty($s['off']); }));
+        $currentSec = $allSections[$currentIndex] ?? null;
+        $statusOf = function ($s) use ($svcMode) {
+            if (!$svcMode || !empty($s['settings'])) return ['setup', 'fa-gear', ''];
+            return empty($s['off']) ? ['on', 'fa-eye', 'Visible'] : ['off', 'fa-eye-slash', 'Hidden'];
+        };
+    ?>
+    <?php if (!$svcMode): ?>
+        <!-- Which page, and where to see it -->
         <div class="svc-workspace-bar">
             <div class="svc-workspace-left">
-                <a href="<?php echo URLROOT; ?>/admin/services" class="svc-workspace-back" title="Return to Services list">
+                <a href="<?php echo URLROOT; ?>/admin" class="svc-workspace-back" title="Back to the dashboard">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+                <div class="svc-workspace-identity">
+                    <span class="svc-workspace-eyebrow">Editing website page</span>
+                    <h1 class="svc-workspace-title"><?php echo htmlspecialchars($data['pageLabel']); ?></h1>
+                    <?php if (!empty($data['publicUrl'])): ?>
+                        <span class="svc-workspace-slug"><i class="fas fa-link"></i> <?php echo htmlspecialchars($data['publicUrl']); ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="svc-workspace-right">
+                <?php if (!empty($data['publicUrl'])): ?>
+                    <a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener" class="admin-btn admin-btn-sm admin-btn-secondary svc-workspace-btn" title="Open the saved page in a new tab">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Open page
+                    </a>
+                <?php endif; ?>
+                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-sm svc-workspace-preview-btn" title="See your unsaved changes before saving">
+                    <i class="fas fa-desktop"></i> Preview changes
+                </button>
+            </div>
+        </div>
+    <?php else: ?>
+        <!-- Which service, is it live, and where to see it -->
+        <div class="svc-workspace-bar">
+            <div class="svc-workspace-left">
+                <a href="<?php echo URLROOT; ?>/admin/services" class="svc-workspace-back" title="Back to the list of all services">
                     <i class="fas fa-arrow-left"></i> All Services
                 </a>
-                <span class="svc-workspace-sep">/</span>
                 <div class="svc-workspace-identity">
+                    <span class="svc-workspace-eyebrow">Editing service page</span>
                     <h1 class="svc-workspace-title"><?php echo htmlspecialchars($svc['title']); ?></h1>
                     <?php if (!empty($data['publicUrl'])): ?>
-                        <span class="svc-workspace-slug">
-                            <i class="fas fa-link"></i> <?php echo htmlspecialchars($data['publicUrl']); ?>
-                        </span>
+                        <span class="svc-workspace-slug"><i class="fas fa-link"></i> <?php echo htmlspecialchars($data['publicUrl']); ?></span>
                     <?php endif; ?>
                 </div>
             </div>
 
             <div class="svc-workspace-right">
-                <!-- Status Switch Form -->
-                <?php $isPub = ($svc['status'] === 'published'); ?>
-                <form method="POST" action="<?php echo URLROOT; ?>/admin/service-action/<?php echo $isPub ? 'unpublish' : 'publish'; ?>/<?php echo (int)$svc['id']; ?>" class="svc-inline-form">
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
-                    <input type="hidden" name="return" value="/admin/section/<?php echo $data['page']; ?>/<?php echo $data['navKey']; ?>">
-                    <button type="submit" class="svc-pill <?php echo $isPub ? 'is-on' : 'is-off'; ?>" title="<?php echo $isPub ? 'Click to switch to Draft' : 'Click to Publish live'; ?>">
-                        <span class="svc-dot"></span>
-                        <span class="svc-pill-text"><?php echo $isPub ? 'Published' : 'Draft'; ?></span>
-                    </button>
-                </form>
+                <div class="svc-live-status <?php echo $isPub ? 'is-live' : 'is-draft'; ?>">
+                    <span class="svc-live-dot"></span>
+                    <span>
+                        <strong><?php echo $isPub ? 'Live on website' : 'Draft (not on website)'; ?></strong>
+                        <small><?php echo $isPub ? 'Visitors can see this page' : 'Only admins can see it'; ?></small>
+                    </span>
+                    <form method="POST" action="<?php echo URLROOT; ?>/admin/service-action/<?php echo $isPub ? 'unpublish' : 'publish'; ?>/<?php echo (int)$svc['id']; ?>" class="svc-inline-form"
+                        <?php if ($isPub): ?>
+                          data-confirm-title="Take this page off the website?"
+                          data-confirm-text="“<?php echo htmlspecialchars($svc['title']); ?>” will be hidden from visitors, the menu and the Services page until you publish it again. Nothing is deleted."
+                          data-confirm-button="Unpublish"
+                        <?php endif; ?>>
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
+                        <input type="hidden" name="return" value="/admin/section/<?php echo $data['page']; ?>/<?php echo $data['navKey']; ?>">
+                        <button type="submit" class="svc-live-toggle"><?php echo $isPub ? 'Unpublish' : 'Publish now'; ?></button>
+                    </form>
+                </div>
 
                 <?php if (!empty($data['publicUrl'])): ?>
-                    <a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener" class="admin-btn admin-btn-sm admin-btn-secondary svc-workspace-btn" title="View page in new tab">
-                        <i class="fas fa-arrow-up-right-from-square"></i> View Page
+                    <a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener" class="admin-btn admin-btn-sm admin-btn-secondary svc-workspace-btn" title="Open the saved page in a new tab">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Open page
                     </a>
                 <?php endif; ?>
-
-                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-sm svc-workspace-preview-btn">
-                    <i class="fas fa-desktop"></i> Live Preview
+                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-sm svc-workspace-preview-btn" title="See your unsaved changes before saving">
+                    <i class="fas fa-desktop"></i> Preview changes
                 </button>
             </div>
         </div>
+    <?php endif; ?>
 
-        <!-- Horizontal Section Sub-Navigation Tabs -->
-        <div class="svc-tabs-bar">
-            <div class="svc-tabs-scroll">
-                <?php foreach ($allSections as $sItem):
-                    $isActive = ($sItem['key'] === $data['navKey']);
-                    $sOff = !empty($sItem['off']);
-                    $sIsSettings = !empty($sItem['settings']);
-                    $iconClass = $secIcons[$sItem['key']] ?? 'fa-pen-to-square';
-                ?>
-                    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['page']; ?>/<?php echo $sItem['key']; ?>"
-                       class="svc-tab-item<?php echo $isActive ? ' is-active' : ''; ?><?php echo $sOff ? ' is-disabled-sec' : ''; ?>"
-                       title="<?php echo htmlspecialchars($sItem['label'] . ($sOff ? ' (Hidden on live site)' : '')); ?>">
-                        <i class="fas <?php echo $iconClass; ?> svc-tab-icon"></i>
-                        <span class="svc-tab-text"><?php echo htmlspecialchars($sItem['label']); ?></span>
-                        <?php if ($sOff): ?>
-                            <span class="svc-tab-state-badge is-off">OFF</span>
-                        <?php elseif (!$sIsSettings): ?>
-                            <span class="svc-tab-dot-state is-on"></span>
+        <div class="svc-editor-layout">
+            <!-- Page sections: a numbered list that mirrors the live page from top to bottom -->
+            <aside class="svc-steps" aria-label="Page sections">
+                <div class="svc-steps-head">
+                    <strong>Page sections</strong>
+                    <span>Click a section to edit it.</span>
+                    <?php if (!$svcMode): ?>
+                        <small class="svc-steps-count"><?php echo count($allSections); ?> sections on this page</small>
+                    <?php else: ?>
+                    <div class="svc-steps-progress" title="<?php echo $shownCount; ?> of <?php echo count($pageSections); ?> page sections are switched on">
+                        <div class="svc-steps-bar"><span style="width:<?php echo count($pageSections) ? round($shownCount / count($pageSections) * 100) : 0; ?>%"></span></div>
+                        <small><strong><?php echo $shownCount; ?> of <?php echo count($pageSections); ?></strong> sections shown on the website</small>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <nav class="svc-steps-list">
+                    <?php foreach ($grouped as $gKey => $items): if (!$items) continue; ?>
+                        <div class="svc-steps-group">
+                            <div class="svc-steps-group-title"><?php echo $secGroups[$gKey]['title']; ?> <small><?php echo $secGroups[$gKey]['hint']; ?></small></div>
+                            <?php foreach ($items as $sItem):
+                                $isActive = ($sItem['key'] === $data['navKey']);
+                                [$st, $stIcon, $stText] = $statusOf($sItem);
+                            ?>
+                                <a href="<?php echo $secUrl($sItem['key']); ?>"
+                                   class="svc-tab-item svc-step is-<?php echo $st; ?><?php echo $isActive ? ' is-active' : ''; ?>"
+                                   <?php echo $isActive ? 'aria-current="page"' : ''; ?>
+                                   title="<?php echo htmlspecialchars($sItem['help'] ?? $sItem['label']); ?>">
+                                    <span class="svc-step-num"><?php echo $sItem['num']; ?></span>
+                                    <span class="svc-step-text">
+                                        <span class="svc-step-label"><?php echo htmlspecialchars($sItem['label']); ?></span>
+                                        <?php if (!empty($sItem['help'])): ?><span class="svc-step-help"><?php echo htmlspecialchars($sItem['help']); ?></span><?php endif; ?>
+                                    </span>
+                                    <?php if ($st !== 'setup'): ?><span class="svc-step-status is-<?php echo $st; ?>"><i class="fas <?php echo $stIcon; ?>"></i> <?php echo $stText; ?></span><?php endif; ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </nav>
+
+                <?php if ($svcMode): ?>
+                <div class="svc-steps-legend">
+                    <span><i class="fas fa-eye"></i> Visible: shown to visitors</span>
+                    <span><i class="fas fa-eye-slash"></i> Hidden: switched off, not shown</span>
+                </div>
+                <?php endif; ?>
+
+                <!-- Phone & tablet: the same list as a dropdown -->
+                <div class="svc-secnav-mobile">
+                    <a href="<?php echo $prevSec ? $secUrl($prevSec['key']) : '#'; ?>" class="svc-tab-item svc-secnav-step<?php echo $prevSec ? '' : ' is-disabled'; ?>" aria-label="Previous section"<?php echo $prevSec ? '' : ' aria-disabled="true" tabindex="-1"'; ?>><i class="fas fa-chevron-left"></i></a>
+                    <label for="svcSectionSelect" class="sr-only">Go to section</label>
+                    <select id="svcSectionSelect" class="admin-select">
+                        <?php foreach ($grouped as $gKey => $items): if (!$items) continue; ?>
+                            <optgroup label="<?php echo htmlspecialchars($secGroups[$gKey]['title'] ?: $data['pageLabel']); ?>">
+                                <?php foreach ($items as $sItem): [, , $stText] = $statusOf($sItem); ?>
+                                    <option value="<?php echo htmlspecialchars($secUrl($sItem['key'])); ?>"<?php echo $sItem['key'] === $data['navKey'] ? ' selected' : ''; ?>>
+                                        <?php echo $sItem['num']; ?>. <?php echo htmlspecialchars($sItem['label']); ?><?php echo $stText !== '' ? ' (' . $stText . ')' : ''; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endforeach; ?>
+                    </select>
+                    <a href="<?php echo $nextSec ? $secUrl($nextSec['key']) : '#'; ?>" class="svc-tab-item svc-secnav-step<?php echo $nextSec ? '' : ' is-disabled'; ?>" aria-label="Next section"<?php echo $nextSec ? '' : ' aria-disabled="true" tabindex="-1"'; ?>><i class="fas fa-chevron-right"></i></a>
+                </div>
+            </aside>
+
+            <div class="svc-editor-main">
+                <?php [$curSt, $curIcon, $curText] = $currentSec ? $statusOf($currentSec) : ['setup', 'fa-gear', '']; ?>
+                <div class="svc-current-section-header">
+                    <div>
+                        <span class="svc-section-step">Section <?php echo $currentIndex + 1; ?> of <?php echo count($allSections); ?></span>
+                        <h2>
+                            <i class="fas <?php echo $svcMode ? ($secIcons[$data['navKey']] ?? 'fa-pen-to-square') : admin_section_icon($currentSec ?? []); ?>"></i>
+                            <?php echo htmlspecialchars($data['sectionLabel']); ?>
+                            <?php if ($curSt !== 'setup'): ?>
+                                <span class="svc-step-status is-<?php echo $curSt; ?> svc-step-status-lg"><i class="fas <?php echo $curIcon; ?>"></i> <?php echo $curSt === 'on' ? 'Visible on website' : 'Hidden from website'; ?></span>
+                            <?php endif; ?>
+                        </h2>
+                        <?php if (!empty($data['sectionHelp'])): ?>
+                            <p class="svc-section-description"><?php echo htmlspecialchars($data['sectionHelp']); ?></p>
                         <?php endif; ?>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php else: ?>
-        <div class="admin-page-header">
-            <div>
-                <h1><?php echo htmlspecialchars($data['sectionLabel']); ?></h1>
-                <?php if (!empty($data['sectionHelp'])): ?>
-                    <p class="admin-page-subtitle"><?php echo htmlspecialchars($data['sectionHelp']); ?></p>
-                <?php endif; ?>
-            </div>
-            <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-secondary admin-btn-sm">
-                <i class="fas fa-desktop"></i> Live Preview
-            </button>
-        </div>
-    <?php endif; ?>
-
-    <?php if ($isService): ?>
-        <div class="svc-current-section-header">
-            <div>
-                <h2>
-                    <i class="fas <?php echo $secIcons[$data['navKey']] ?? 'fa-pen-to-square'; ?>" style="color:var(--admin-primary); margin-right:8px;"></i>
-                    <?php echo htmlspecialchars($data['sectionLabel']); ?>
-                </h2>
-                <?php if (!empty($data['sectionHelp'])): ?>
-                    <p class="svc-section-description"><?php echo htmlspecialchars($data['sectionHelp']); ?></p>
-                <?php endif; ?>
-            </div>
-            <?php if (!$isService): ?>
-                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-secondary admin-btn-sm">
-                    <i class="fas fa-desktop"></i> Live Preview
-                </button>
-            <?php endif; ?>
-        </div>
-    <?php endif; ?>
+                    </div>
+                </div>
 
     <?php if ($currentIsOff): ?>
         <div class="svc-disabled-banner">
             <div class="svc-disabled-icon"><i class="fas fa-eye-slash"></i></div>
             <div class="svc-disabled-content">
-                <strong>This section is currently hidden on the website</strong>
-                <p>Visitors won't see this section until you switch on the "Show this section on the page" toggle below and click Save.</p>
+                <strong>This section is hidden from the website</strong>
+                <p>You can still edit it. To show it to visitors, turn on <em>“Show this section on the page”</em> below, then click <b>Save changes</b>.</p>
             </div>
         </div>
     <?php endif; ?>
 
-    <?php if (!empty($data['message'])): ?>
-        <div class="admin-message svc-flash"><i class="fas fa-circle-check"></i> <?php echo htmlspecialchars($data['message']); ?></div>
-    <?php endif; ?>
-    <?php if (!empty($data['flash'])): ?>
-        <div class="admin-<?php echo $data['flash']['type'] === 'error' ? 'error' : 'message'; ?> svc-flash">
-            <i class="fas <?php echo $data['flash']['type'] === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check'; ?>"></i>
-            <?php echo htmlspecialchars($data['flash']['message']); ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (!empty($data['errors'])): ?>
-        <div class="admin-error" role="alert">
-            <strong><i class="fas fa-circle-exclamation"></i> Please fix the following:</strong>
-            <ul style="margin:8px 0 0 18px; padding:0;"><?php foreach ($data['errors'] as $err): ?><li><?php echo htmlspecialchars($err); ?></li><?php endforeach; ?></ul>
-        </div>
-    <?php endif; ?>
+    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <!-- Main Fields Form -->
     <?php if ($data['fieldsData']): ?>
         <div class="admin-card svc-editor-card">
             <div class="admin-card-header">
-                <h3 class="admin-card-subtitle"><i class="fas fa-sliders" style="margin-right:6px; color:var(--admin-primary);"></i> Section Content &amp; Settings</h3>
+                <h3 class="admin-card-subtitle"><i class="fas fa-pen-to-square" style="margin-right:6px; color:var(--admin-primary);"></i> Edit this section</h3>
             </div>
-            <form method="POST" enctype="multipart/form-data" class="admin-form" id="sectionForm">
+            <form method="POST" enctype="multipart/form-data" class="admin-form" id="sectionForm" data-validate>
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
 
                 <?php foreach ($data['fieldsData']['schema']['fields'] as $f):
@@ -206,7 +281,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                     <div class="svc-actions-left">
                         <?php if ($prevSec): ?>
                             <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['page']; ?>/<?php echo $prevSec['key']; ?>" class="admin-btn admin-btn-secondary admin-btn-sm" title="Go to <?php echo htmlspecialchars($prevSec['label']); ?>">
-                                <i class="fas fa-chevron-left"></i> <?php echo htmlspecialchars($prevSec['label']); ?>
+                                <i class="fas fa-chevron-left"></i> <span class="svc-btn-hint">Previous:</span> <?php echo htmlspecialchars($prevSec['label']); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -215,11 +290,11 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                             <i class="fas fa-circle-dot"></i> Unsaved changes
                         </span>
                         <button type="submit" class="admin-btn svc-save-btn">
-                            <i class="fas fa-check"></i> Save Changes
+                            <i class="fas fa-check"></i> Save changes
                         </button>
                         <?php if ($nextSec): ?>
-                            <button type="submit" name="redirect_to_section" value="<?php echo htmlspecialchars($nextSec['key']); ?>" class="admin-btn admin-btn-primary svc-next-btn" title="Save and navigate to <?php echo htmlspecialchars($nextSec['label']); ?>">
-                                Save &amp; Continue <i class="fas fa-chevron-right"></i>
+                            <button type="submit" name="redirect_to_section" value="<?php echo htmlspecialchars($nextSec['key']); ?>" class="admin-btn svc-next-btn" title="Save and navigate to <?php echo htmlspecialchars($nextSec['label']); ?>">
+                                Save &amp; next: <?php echo htmlspecialchars($nextSec['label']); ?> <i class="fas fa-chevron-right"></i>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -244,7 +319,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                 <?php if ($atMax): ?>
                     <span class="admin-btn admin-btn-sm admin-btn-secondary is-disabled" title="Maximum reached"><i class="fas fa-plus"></i> Add New</span>
                 <?php else: ?>
-                    <a href="<?php echo URLROOT; ?>/admin/item-edit/<?php echo $data['page']; ?>/<?php echo $data['itemsData']['sectionKey']; ?>/new" class="admin-btn admin-btn-sm"><i class="fas fa-plus"></i> Add New Entry</a>
+                    <a href="<?php echo URLROOT; ?>/admin/item-edit/<?php echo $data['page']; ?>/<?php echo $data['itemsData']['sectionKey']; ?>/new" class="admin-btn admin-btn-sm"><i class="fas fa-plus"></i> Add entry</a>
                 <?php endif; ?>
             </div>
 
@@ -262,29 +337,34 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                 $fieldKeys = array_column($schema['fields'], 'key');
                 $imageKey = null;
                 foreach ($schema['fields'] as $f) { if ($f['type'] === 'image') { $imageKey = $f['key']; break; } }
+                // the icon is shown as a picture, so the entry is named by its first text field
+                $iconKey = null;
+                foreach ($schema['fields'] as $f) { if ($f['type'] === 'icon') { $iconKey = $f['key']; break; } }
                 $titleKey = $fieldKeys[0];
-                if ($titleKey === $imageKey && isset($fieldKeys[1])) { $titleKey = $fieldKeys[1]; }
+                foreach ($schema['fields'] as $f) { if (!in_array($f['type'], ['image', 'icon', 'toggle', 'select'], true)) { $titleKey = $f['key']; break; } }
             ?>
 
             <?php if (empty($data['itemsData']['items'])): ?>
                 <div class="svc-empty" style="padding:32px 10px;">
                     <div class="svc-empty-icon"><i class="fas fa-folder-open"></i></div>
                     <h3>No entries yet</h3>
-                    <p>Click "+ Add New Entry" above to add items to this section.</p>
+                    <p>Click <strong>Add entry</strong> above to add the first one.</p>
                 </div>
             <?php else: ?>
                 <div class="svc-items-list">
                     <?php foreach ($data['itemsData']['items'] as $idx => $item):
                         $d = $item['data'];
-                        $title = $d[$titleKey] ?? ('Item #' . $item['id']);
+                        $title = trim((string)($d[$titleKey] ?? '')) !== '' ? $d[$titleKey] : ('Entry ' . ($idx + 1));
                         $sub = '';
                         foreach ($fieldKeys as $fk) {
-                            if ($fk !== $titleKey && $fk !== $imageKey && !empty($d[$fk])) { $sub = $d[$fk]; break; }
+                            if ($fk !== $titleKey && $fk !== $imageKey && $fk !== $iconKey && !empty($d[$fk])) { $sub = $d[$fk]; break; }
                         }
                     ?>
                         <div class="admin-item-row svc-item-row">
                             <?php if ($imageKey && !empty($d[$imageKey])): ?>
                                 <img src="<?php echo URLROOT . htmlspecialchars($d[$imageKey]); ?>" class="admin-item-thumb" alt="" loading="lazy">
+                            <?php elseif ($iconKey && !empty($d[$iconKey])): ?>
+                                <span class="admin-item-icon"><i class="fas <?php echo htmlspecialchars($d[$iconKey]); ?>"></i></span>
                             <?php endif; ?>
                             <div class="admin-item-info">
                                 <strong><?php echo htmlspecialchars($title); ?></strong>
@@ -307,7 +387,10 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                                 <?php if ($atMin): ?>
                                     <span class="admin-btn admin-btn-sm admin-btn-danger-ghost is-disabled" title="At least <?php echo $min; ?> required"><i class="fas fa-trash"></i> Delete</span>
                                 <?php else: ?>
-                                    <form method="POST" action="<?php echo URLROOT; ?>/admin/item-delete/<?php echo $data['page']; ?>/<?php echo $data['itemsData']['sectionKey']; ?>/<?php echo $item['id']; ?>" onsubmit="return confirm('Delete this entry?');" style="margin:0;">
+                                    <form method="POST" action="<?php echo URLROOT; ?>/admin/item-delete/<?php echo $data['page']; ?>/<?php echo $data['itemsData']['sectionKey']; ?>/<?php echo $item['id']; ?>" style="margin:0;"
+                                          data-confirm-title="Delete this entry?"
+                                          data-confirm-text="“<?php echo htmlspecialchars(mb_substr((string)$title, 0, 80)); ?>” will be removed from <?php echo htmlspecialchars($data['pageLabel']); ?>. You can restore it from History."
+                                          data-confirm-button="Delete entry">
                                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
                                         <button type="submit" class="admin-btn admin-btn-sm admin-btn-danger-ghost"><i class="fas fa-trash"></i> Delete</button>
                                     </form>
@@ -319,21 +402,32 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
             <?php endif; ?>
         </div>
     <?php endif; ?>
+            </div><!-- /.svc-editor-main -->
+        </div><!-- /.svc-editor-layout -->
 </div>
 
-<!-- Live Preview Overlay Modal -->
-<div class="live-preview-overlay" id="livePreviewOverlay">
+<!-- Live Preview: full-screen, device switcher, always fits the screen -->
+<div class="live-preview-overlay" id="livePreviewOverlay" role="dialog" aria-modal="true" aria-labelledby="livePreviewTitle" aria-hidden="true">
     <div class="live-preview-toolbar">
-        <span><i class="fas fa-circle-notch fa-spin" id="livePreviewSpinner" style="display:none;"></i> Live Preview: <?php echo htmlspecialchars($data['pageLabel'] ?? 'Service'); ?></span>
-        <button type="button" id="livePreviewClose" class="admin-btn admin-btn-sm admin-btn-secondary">
-            <i class="fas fa-xmark"></i> Close Preview
-        </button>
-    </div>
-    <div class="laptop-mockup">
-        <div class="laptop-screen" id="laptopScreen">
-            <iframe id="livePreviewFrame" title="Live preview"></iframe>
+        <div class="lp-title">
+            <span class="lp-title-main" id="livePreviewTitle"><i class="fas fa-desktop"></i> Preview: <?php echo htmlspecialchars($isService && $svc ? $svc['title'] : ($data['pageLabel'] ?? 'Page')); ?></span>
+            <span class="lp-status" id="livePreviewStatus"><i class="fas fa-circle-notch fa-spin"></i> Loading…</span>
         </div>
-        <div class="laptop-base"><div class="laptop-notch"></div></div>
+        <div class="lp-devices" role="group" aria-label="Preview size">
+            <button type="button" class="lp-device" data-device="desktop" title="Desktop (1440 px)"><i class="fas fa-desktop"></i><span>Desktop</span></button>
+            <button type="button" class="lp-device" data-device="tablet" title="Tablet (820 px)"><i class="fas fa-tablet-screen-button"></i><span>Tablet</span></button>
+            <button type="button" class="lp-device" data-device="mobile" title="Mobile (390 px)"><i class="fas fa-mobile-screen-button"></i><span>Mobile</span></button>
+        </div>
+        <div class="lp-actions">
+            <button type="button" id="livePreviewRefresh" class="lp-icon-btn" title="Refresh preview" aria-label="Refresh preview"><i class="fas fa-rotate-right"></i></button>
+            <button type="button" id="livePreviewClose" class="lp-close-btn" title="Close preview (Esc)"><i class="fas fa-xmark"></i><span>Close</span></button>
+        </div>
+    </div>
+    <p class="lp-note"><i class="fas fa-circle-info"></i> Shows your unsaved text changes. Newly uploaded images appear after you save. Nothing is published until you click <b>Save changes</b>.</p>
+    <div class="lp-stage" id="livePreviewStage">
+        <div class="lp-device-frame" id="livePreviewDevice">
+            <iframe id="livePreviewFrame" title="Page preview"></iframe>
+        </div>
     </div>
 </div>
 
@@ -344,24 +438,42 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
     var overlay = document.getElementById('livePreviewOverlay');
     var closeBtn = document.getElementById('livePreviewClose');
     var frame = document.getElementById('livePreviewFrame');
-    var screenEl = document.getElementById('laptopScreen');
-    var spinner = document.getElementById('livePreviewSpinner');
-    var form = document.getElementById('sectionForm');
+        var form = document.getElementById('sectionForm');
     var page = <?php echo json_encode($data['page']); ?>;
     var previewUrl = <?php echo json_encode(URLROOT . '/admin/preview/' . $data['page']); ?>;
     var csrfToken = <?php echo json_encode($data['csrfToken']); ?>;
 
-    var FRAME_W = 1440, FRAME_H = 900;
+    var stage = document.getElementById('livePreviewStage');
+    var deviceEl = document.getElementById('livePreviewDevice');
+    var statusEl = document.getElementById('livePreviewStatus');
+    var DEVICES = { desktop: 1440, tablet: 820, mobile: 390 };
+    var device = window.innerWidth < 700 ? 'mobile' : (window.innerWidth < 1100 ? 'tablet' : 'desktop');
 
+    // Lay the page out at the real device width, then scale it down only if the screen is narrower,
+    // filling the available height so the whole frame (and the toolbar) always stays on screen.
     function sizeScreen() {
-        if (!screenEl || !frame) return;
-        var maxW = Math.min(window.innerWidth * 0.88, 1280);
-        var scale = maxW / FRAME_W;
-        screenEl.style.width = (FRAME_W * scale) + 'px';
-        screenEl.style.height = (FRAME_H * scale) + 'px';
-        frame.style.width = FRAME_W + 'px';
-        frame.style.height = FRAME_H + 'px';
-        frame.style.transform = 'scale(' + scale + ')';
+        if (!stage || !frame) return;
+        var pad = window.innerWidth < 600 ? 8 : 24;
+        var availW = stage.clientWidth - pad * 2;
+        var availH = stage.clientHeight - pad * 2;
+        var w = DEVICES[device];
+        var scale = Math.min(1, availW / w);
+        deviceEl.className = 'lp-device-frame is-' + device;
+        deviceEl.style.width = Math.floor(w * scale) + 'px';
+        deviceEl.style.height = Math.floor(availH) + 'px';
+        frame.style.width = w + 'px';
+        frame.style.height = Math.floor(availH / scale) + 'px';
+        frame.style.transform = scale < 1 ? 'scale(' + scale + ')' : 'none';
+        document.querySelectorAll('.lp-device').forEach(function (b) {
+            var on = b.dataset.device === device;
+            b.classList.toggle('is-active', on);
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+    }
+    function setStatus(loading) {
+        if (!statusEl) return;
+        statusEl.innerHTML = loading ? '<i class="fas fa-circle-notch fa-spin"></i> Updating…' : '<i class="fas fa-circle-check"></i> Up to date';
+        statusEl.classList.toggle('is-ready', !loading);
     }
 
     function collectFieldValues() {
@@ -373,6 +485,10 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         form.querySelectorAll('input[type="checkbox"]').forEach(function(el) {
             if (el.id) values[el.id] = el.checked ? '1' : '0';
         });
+        // images picked from the library (a new upload only shows after saving)
+        form.querySelectorAll('input[type="hidden"][id^="existing_"]').forEach(function(el) {
+            values[el.id.replace(/^existing_/, '')] = el.value;
+        });
         return values;
     }
 
@@ -381,7 +497,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         if (!frame) return;
         if (pending) { queued = true; return; }
         pending = true;
-        if (spinner) spinner.style.display = '';
+        setStatus(true);
         var body = new URLSearchParams();
         body.set('csrf_token', csrfToken);
         body.set('fields_json', JSON.stringify(collectFieldValues()));
@@ -393,7 +509,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
             .catch(function() { /* preview is best effort */ })
             .finally(function() {
                 pending = false;
-                if (spinner) spinner.style.display = 'none';
+                setStatus(false);
                 if (queued) { queued = false; renderPreview(); }
             });
     }
@@ -404,16 +520,33 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         debounceTimer = setTimeout(renderPreview, 450);
     }
 
+    var lastFocus = null;
+    function openPreview() {
+        lastFocus = document.activeElement;
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('lp-open');
+        sizeScreen();
+        renderPreview();
+        var c = document.getElementById('livePreviewClose');
+        if (c) c.focus();
+    }
+    function closePreview() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('lp-open');
+        if (lastFocus) lastFocus.focus();
+    }
     if (btn && overlay) {
-        btn.addEventListener('click', function() {
-            overlay.classList.add('active');
-            sizeScreen();
-            renderPreview();
+        btn.addEventListener('click', openPreview);
+        if (closeBtn) closeBtn.addEventListener('click', closePreview);
+        document.getElementById('livePreviewRefresh').addEventListener('click', renderPreview);
+        document.querySelectorAll('.lp-device').forEach(function (b) {
+            b.addEventListener('click', function () { device = b.dataset.device; sizeScreen(); });
         });
-        if (closeBtn) closeBtn.addEventListener('click', function() { overlay.classList.remove('active'); });
-        overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('active'); });
+        stage.addEventListener('click', function(e) { if (e.target === stage) closePreview(); });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && overlay.classList.contains('active')) overlay.classList.remove('active');
+            if (e.key === 'Escape' && overlay.classList.contains('active')) closePreview();
         });
         window.addEventListener('resize', function() {
             if (overlay.classList.contains('active')) sizeScreen();
@@ -440,7 +573,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                 updateSerpPreview();
             });
         });
-        form.querySelectorAll('select, input[type="checkbox"]').forEach(function(el) {
+        form.querySelectorAll('select, input[type="checkbox"], input[type="file"], input[type="hidden"][id^="existing_"]').forEach(function(el) {
             el.addEventListener('change', function() {
                 markDirty();
                 scheduleRender();
@@ -459,11 +592,28 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         }
     });
 
+    // phone section picker: same unsaved-changes check as the tabs
+    var secSelect = document.getElementById('svcSectionSelect');
+    if (secSelect) {
+        var secInitial = secSelect.value;
+        secSelect.addEventListener('change', function() {
+            if (formIsDirty && !confirm('You have unsaved changes on this section. Leave without saving?')) {
+                secSelect.value = secInitial;
+                return;
+            }
+            formIsDirty = false;
+            window.location.href = secSelect.value;
+        });
+    }
+
     document.querySelectorAll('.svc-tab-item, .svc-workspace-back').forEach(function(link) {
         link.addEventListener('click', function(e) {
+            if (link.classList.contains('is-disabled')) { e.preventDefault(); return; }
             if (formIsDirty) {
                 if (!confirm('You have unsaved changes on this section. Leave without saving?')) {
                     e.preventDefault();
+                } else {
+                    formIsDirty = false;   // already confirmed; don't ask again on unload
                 }
             }
         });

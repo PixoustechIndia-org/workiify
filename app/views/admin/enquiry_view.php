@@ -1,85 +1,78 @@
-<?php require APPROOT . '/views/admin/inc/header.php'; ?>
+<?php require APPROOT . '/views/admin/inc/header.php';
+$q = $data['enquiry'];
+$isWeb = in_array($q->source, Enquiry::webSources(), true);
+?>
 
-<div class="admin-page-header">
-    <div>
-        <div class="admin-breadcrumbs">
-            <a href="<?php echo URLROOT; ?>/admin/enquiries">Enquiries</a> &gt; View
+<div class="admin-wrap">
+    <a href="<?php echo URLROOT; ?>/admin/enquiries" class="admin-back-link"><i class="fas fa-arrow-left"></i> Back to Enquiries</a>
+
+    <div class="admin-page-header">
+        <div>
+            <h1><?php echo htmlspecialchars($q->company_name); ?></h1>
+            <p class="admin-page-subtitle">
+                Enquiry #<?php echo (int)$q->id; ?> &middot; received <?php echo date('M j, Y \a\t g:i A', strtotime($q->created_at)); ?>
+                &middot; <?php echo htmlspecialchars($data['sources'][$q->source] ?? ucfirst($q->source)); ?>
+            </p>
         </div>
-        <h1 class="admin-page-title">Enquiry from <?php echo htmlspecialchars($data['enquiry']->company_name); ?></h1>
-    </div>
-</div>
-
-<?php if (!empty($data['flash'])): ?>
-    <div class="admin-alert admin-alert-<?php echo htmlspecialchars($data['flash']['type']); ?>">
-        <?php echo htmlspecialchars($data['flash']['message']); ?>
-    </div>
-<?php endif; ?>
-
-<div class="admin-card max-w-800">
-    <div class="admin-form-group">
-        <label class="admin-form-label">Submitted</label>
-        <input type="text" class="admin-form-control" value="<?php echo date('M d, Y \a\t g:i A', strtotime($data['enquiry']->created_at)); ?> &middot; via <?php echo ucfirst(htmlspecialchars($data['enquiry']->source)); ?> page" disabled>
-    </div>
-
-    <div class="admin-form-group" style="display: flex; gap: 20px;">
-        <div style="flex: 1;">
-            <label class="admin-form-label">Company Name</label>
-            <input type="text" class="admin-form-control" value="<?php echo htmlspecialchars($data['enquiry']->company_name); ?>" disabled>
-        </div>
-        <div style="flex: 1;">
-            <label class="admin-form-label">Contact Number</label>
-            <input type="text" class="admin-form-control" value="<?php echo htmlspecialchars($data['enquiry']->contact_no); ?>" disabled>
+        <div class="admin-header-actions">
+            <a href="<?php echo URLROOT; ?>/admin/enquiry-edit/<?php echo (int)$q->id; ?>" class="admin-btn admin-btn-secondary"><i class="fas fa-pen"></i> Edit</a>
+            <form method="POST" action="<?php echo URLROOT; ?>/admin/enquiry-delete/<?php echo (int)$q->id; ?>"
+                  data-confirm-title="Delete this enquiry?"
+                  data-confirm-text="The enquiry from <?php echo htmlspecialchars($q->company_name); ?> will be permanently deleted. This cannot be undone."
+                  data-confirm-button="Delete enquiry">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
+                <button type="submit" class="admin-btn admin-btn-danger-ghost"><i class="fas fa-trash"></i> Delete</button>
+            </form>
         </div>
     </div>
 
-    <div class="admin-form-group">
-        <label class="admin-form-label">Company Address</label>
-        <input type="text" class="admin-form-control" value="<?php echo htmlspecialchars($data['enquiry']->company_address); ?>" disabled>
-    </div>
+    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
 
-    <div class="admin-form-group">
-        <label class="admin-form-label">Email</label>
-        <input type="text" class="admin-form-control" value="<?php echo htmlspecialchars($data['enquiry']->email); ?>" disabled>
-    </div>
-
-    <div class="admin-form-group">
-        <label class="admin-form-label">Requirement</label>
-        <input type="text" class="admin-form-control" value="<?php echo $data['enquiry']->req_type === 'space' ? 'Required space (sq. ft.)' : 'Seats (nos.)'; ?> &mdash; <?php echo htmlspecialchars($data['enquiry']->req_value); ?>" disabled>
-    </div>
-
-    <?php if (!empty($data['enquiry']->additional)): ?>
-    <div class="admin-form-group">
-        <label class="admin-form-label">Additional Requirements</label>
-        <textarea class="admin-form-control" rows="4" disabled><?php echo htmlspecialchars($data['enquiry']->additional); ?></textarea>
-    </div>
-    <?php endif; ?>
-
-    <div class="admin-form-group">
-        <label class="admin-form-label">Notification Email</label>
-        <input type="text" class="admin-form-control" value="<?php echo $data['enquiry']->email_sent ? 'Sent successfully' : 'Failed to send (enquiry is still saved here)'; ?>" disabled>
-    </div>
-
-    <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--admin-border);">
-
-    <form action="<?php echo URLROOT; ?>/admin/enquiry_view/<?php echo $data['enquiry']->id; ?>" method="POST">
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrf_token']); ?>">
-
-        <div class="admin-form-group">
-            <label class="admin-form-label">Status</label>
-            <select name="status" class="admin-form-control" style="max-width: 200px;">
-                <option value="New" <?php echo ($data['enquiry']->status === 'New') ? 'selected' : ''; ?>>New</option>
-                <option value="Contacted" <?php echo ($data['enquiry']->status === 'Contacted') ? 'selected' : ''; ?>>Contacted</option>
-                <option value="Closed" <?php echo ($data['enquiry']->status === 'Closed') ? 'selected' : ''; ?>>Closed</option>
-            </select>
+    <div class="admin-detail-layout">
+        <div class="admin-card">
+            <h2 class="admin-card-title"><i class="fas fa-building"></i> Enquiry details</h2>
+            <dl class="admin-detail-list">
+                <dt>Company name</dt>
+                <dd><?php echo htmlspecialchars($q->company_name); ?></dd>
+                <dt>Company address</dt>
+                <dd><?php echo nl2br(htmlspecialchars($q->company_address)); ?></dd>
+                <dt>Contact number</dt>
+                <dd><a href="tel:<?php echo htmlspecialchars($q->contact_no); ?>" class="admin-link"><?php echo htmlspecialchars($q->contact_no); ?></a></dd>
+                <dt>Email</dt>
+                <dd><a href="mailto:<?php echo htmlspecialchars($q->email); ?>" class="admin-link"><?php echo htmlspecialchars($q->email); ?></a></dd>
+                <dt>Requirement</dt>
+                <dd><?php echo $q->req_type === 'space' ? 'Required space: <strong>' . number_format((int)$q->req_value) . ' sq. ft.</strong>' : 'Seats: <strong>' . (int)$q->req_value . '</strong>'; ?></dd>
+                <dt>Additional requirements</dt>
+                <dd><?php echo $q->additional !== null && trim($q->additional) !== '' ? nl2br(htmlspecialchars($q->additional)) : '<span class="admin-muted">None given</span>'; ?></dd>
+                <?php if ($isWeb): ?>
+                    <dt>Team notification email</dt>
+                    <dd><?php echo $q->email_sent
+                        ? '<span class="admin-text-success"><i class="fas fa-circle-check"></i> Sent</span>'
+                        : '<span class="admin-text-danger"><i class="fas fa-triangle-exclamation"></i> Could not be sent (the enquiry is still saved here)</span>'; ?></dd>
+                <?php endif; ?>
+            </dl>
         </div>
 
-        <div class="admin-form-actions">
-            <button type="submit" class="admin-btn admin-btn-primary"><i class="fas fa-save"></i> Update Status</button>
-            <a href="tel:<?php echo htmlspecialchars($data['enquiry']->contact_no); ?>" class="admin-btn admin-btn-outline"><i class="fas fa-phone"></i> Call</a>
-            <a href="mailto:<?php echo htmlspecialchars($data['enquiry']->email); ?>" class="admin-btn admin-btn-outline"><i class="fas fa-envelope"></i> Email</a>
-            <a href="<?php echo URLROOT; ?>/admin/enquiries" class="admin-btn admin-btn-outline">Back</a>
+        <div class="admin-card admin-detail-side">
+            <h2 class="admin-card-title"><i class="fas fa-list-check"></i> Follow-up</h2>
+            <p class="admin-help-text" style="margin-top:0;">Current status: <span class="admin-status-badge <?php echo strtolower(htmlspecialchars($q->status)); ?>"><?php echo htmlspecialchars($q->status); ?></span></p>
+            <form action="<?php echo URLROOT; ?>/admin/enquiry-view/<?php echo (int)$q->id; ?>" method="POST" class="admin-form">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
+                <label for="status">Change status</label>
+                <select id="status" name="status" class="admin-select">
+                    <?php foreach (Enquiry::statuses() as $s): ?>
+                        <option value="<?php echo $s; ?>"<?php echo $q->status === $s ? ' selected' : ''; ?>><?php echo $s; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="admin-btn admin-btn-block" style="margin-top:12px;"><i class="fas fa-check"></i> Update Status</button>
+            </form>
+            <div class="admin-divider"></div>
+            <div class="admin-stack-actions">
+                <a href="tel:<?php echo htmlspecialchars($q->contact_no); ?>" class="admin-btn admin-btn-secondary admin-btn-block"><i class="fas fa-phone"></i> Call <?php echo htmlspecialchars($q->contact_no); ?></a>
+                <a href="mailto:<?php echo htmlspecialchars($q->email); ?>?subject=<?php echo rawurlencode('Your enquiry with Workiify'); ?>" class="admin-btn admin-btn-secondary admin-btn-block"><i class="fas fa-envelope"></i> Send an email</a>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 
 <?php require APPROOT . '/views/admin/inc/footer.php'; ?>

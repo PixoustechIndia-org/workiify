@@ -33,6 +33,42 @@ class Home_content_model {
         ];
     }
 
+    // ---- Field validation ----------------------------------------------
+    // Which format a field's value must have: an explicit 'rule' on the field definition, or one
+    // inferred from its key/type so every page (and every service) gets it without listing each
+    // field. Empty values always pass -- these are format checks, not "required" checks.
+    public static function fieldRule(array $f) {
+        if (!empty($f['rule'])) return $f['rule'];
+        $k = $f['key'];
+        if ($f['type'] === 'icon') return 'icon';
+        if (!in_array($f['type'], ['text', 'textarea'], true)) return null;
+        if (strpos($k, 'email') !== false) return 'email';
+        if (preg_match('/phone_link$/', $k)) return 'phone';
+        if (preg_match('/(^|_)(link|url)$/', $k)) return 'link';
+        return null;
+    }
+
+    // Returns an error message, or null when the value is acceptable for the rule.
+    public static function checkRule($rule, $value) {
+        $value = trim((string)$value);
+        if ($value === '' || $rule === null) return null;
+        switch ($rule) {
+            case 'email':
+                return filter_var($value, FILTER_VALIDATE_EMAIL) ? null : 'enter a valid email address (e.g. info@workiify.com).';
+            case 'phone':
+                return preg_match('/^\+?[0-9][0-9 \-]{6,18}$/', $value) ? null : 'enter a valid phone number (digits only, e.g. +919655500001).';
+            case 'link':
+                return preg_match('#^(/|\#|https?://|mailto:|tel:)\S*$#i', $value) ? null : 'enter a page path starting with "/" (e.g. /contact-us), a full https:// address, or a tel:/mailto: link, with no spaces.';
+            case 'number':
+                return preg_match('/^[0-9]+(\.[0-9]+)?$/', $value) ? null : 'enter a number only (e.g. 120).';
+            case 'rating':
+                return (preg_match('/^[0-5](\.[0-9])?$/', $value) && (float)$value <= 5) ? null : 'enter a rating from 0 to 5 (e.g. 4.8).';
+            case 'icon':
+                return preg_match('/^fa-[a-z0-9-]+$/', $value) ? null : 'pick an icon, or type a Font Awesome name such as fa-wifi.';
+        }
+        return null;
+    }
+
     // Every CMS-managed page, for the admin sidebar.
     public static function pages() {
         return [
@@ -90,7 +126,7 @@ class Home_content_model {
                     'label' => 'Testimonials Section',
                     'fields' => [
                         ['key' => 'testimonials_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
-                        ['key' => 'google_rating', 'label' => 'Google Rating', 'type' => 'text', 'maxlength' => 5],
+                        ['key' => 'google_rating', 'label' => 'Google Rating', 'type' => 'text', 'maxlength' => 3, 'rule' => 'rating'],
                     ],
                 ],
                 'gallery' => [
@@ -179,7 +215,7 @@ class Home_content_model {
                     'label' => 'Testimonials Section',
                     'fields' => [
                         ['key' => 'about_testimonials_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
-                        ['key' => 'about_google_rating', 'label' => 'Google Rating', 'type' => 'text', 'maxlength' => 5],
+                        ['key' => 'about_google_rating', 'label' => 'Google Rating', 'type' => 'text', 'maxlength' => 3, 'rule' => 'rating'],
                     ],
                 ],
                 'about_client_logos' => [
@@ -255,7 +291,7 @@ class Home_content_model {
                     'minItems' => 4,
                     'maxItems' => 4,
                     'fields' => [
-                        ['key' => 'value', 'label' => 'Number Value', 'type' => 'text', 'maxlength' => 8],
+                        ['key' => 'value', 'label' => 'Number Value', 'type' => 'text', 'maxlength' => 8, 'rule' => 'number'],
                         ['key' => 'suffix', 'label' => 'Suffix (e.g. /7, sq ft)', 'type' => 'text', 'maxlength' => 12],
                         ['key' => 'label', 'label' => 'Label', 'type' => 'text', 'maxlength' => 30],
                     ],
@@ -683,9 +719,10 @@ class Home_content_model {
     }
 
     // Across every page, newest first -- powers one combined History screen.
-    public static function getRecentRevisions($limit = 50) {
+    public static function getRecentRevisions($limit = 50, $offset = 0, $page = '') {
         $db = new Database();
-        $db->query('SELECT * FROM content_revisions ORDER BY created_at DESC, id DESC LIMIT ' . (int)$limit);
+        $db->query('SELECT * FROM content_revisions' . ($page !== '' ? ' WHERE page = :p' : '') . ' ORDER BY created_at DESC, id DESC LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset);
+        if ($page !== '') $db->bind(':p', $page);
         $rows = $db->resultSet();
         $out = [];
         foreach ($rows as $row) {
@@ -700,6 +737,20 @@ class Home_content_model {
             ];
         }
         return $out;
+    }
+
+    public static function countRevisions($page = '') {
+        $db = new Database();
+        $db->query('SELECT COUNT(*) AS c FROM content_revisions' . ($page !== '' ? ' WHERE page = :p' : ''));
+        if ($page !== '') $db->bind(':p', $page);
+        return (int)$db->single()->c;
+    }
+
+    // Pages that have history, for the History screen's filter.
+    public static function revisionPages() {
+        $db = new Database();
+        $db->query('SELECT DISTINCT page FROM content_revisions ORDER BY page');
+        return array_map(function ($r) { return $r->page; }, $db->resultSet());
     }
 
     public static function getRevision($id) {

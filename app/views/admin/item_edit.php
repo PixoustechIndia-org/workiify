@@ -1,35 +1,31 @@
-<?php require APPROOT . '/views/admin/inc/header.php'; ?>
+<?php require APPROOT . '/views/admin/inc/header.php';
+$back = URLROOT . '/admin/section/' . $data['page'] . '/' . $data['navKey'];
+?>
 
 <div class="admin-wrap">
-    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['page']; ?>/<?php echo $data['navKey']; ?>" class="admin-back-link"><i class="fas fa-arrow-left"></i> Back to <?php echo htmlspecialchars($data['schema']['label']); ?></a>
+    <a href="<?php echo $back; ?>" class="admin-back-link"><i class="fas fa-arrow-left"></i> Back to <?php echo htmlspecialchars($data['schema']['label']); ?></a>
+
+    <div class="admin-page-header">
+        <div>
+            <h1><?php echo $data['isNew'] ? 'Add Entry' : 'Edit Entry'; ?></h1>
+            <p class="admin-page-subtitle"><?php echo htmlspecialchars($data['pageLabel']); ?> &rarr; <?php echo htmlspecialchars($data['schema']['label']); ?></p>
+        </div>
+    </div>
+
+    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-card">
-        <h2 style="margin-top:0;"><i class="fas <?php echo $data['isNew'] ? 'fa-plus' : 'fa-pen'; ?>" style="color:var(--admin-primary); margin-right:8px;"></i><?php echo $data['isNew'] ? 'Add New' : 'Edit'; ?> &mdash; <?php echo htmlspecialchars($data['schema']['label']); ?></h2>
-
-        <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <form method="POST" enctype="multipart/form-data" class="admin-form" data-validate data-dirty-guard>
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($data['csrfToken']); ?>">
 
             <?php foreach ($data['schema']['fields'] as $f):
                 $val = $data['data'][$f['key']] ?? '';
-            ?>
-                <label for="<?php echo $f['key']; ?>">
-                    <?php echo htmlspecialchars($f['label']); ?>
-                    <?php if (!empty($f['maxlength'])): ?><span class="admin-field-limit">max <?php echo $f['maxlength']; ?> characters</span><?php endif; ?>
-                </label>
-                <?php if ($f['type'] === 'textarea'): ?>
-                    <textarea id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>"<?php echo !empty($f['maxlength']) ? ' maxlength="' . $f['maxlength'] . '"' : ''; ?>><?php echo htmlspecialchars($val); ?></textarea>
-                <?php elseif ($f['type'] === 'image'): ?>
-                    <?php require APPROOT . '/views/admin/inc/image_field.php'; ?>
-                <?php elseif ($f['type'] === 'icon'): ?>
-                    <?php require APPROOT . '/views/admin/inc/icon_field.php'; ?>
-                <?php else: ?>
-                    <input type="text" id="<?php echo $f['key']; ?>" name="<?php echo $f['key']; ?>" value="<?php echo htmlspecialchars($val); ?>"<?php echo !empty($f['maxlength']) ? ' maxlength="' . $f['maxlength'] . '"' : ''; ?>>
-                <?php endif; ?>
-            <?php endforeach; ?>
+                require APPROOT . '/views/admin/inc/field_input.php';
+            endforeach; ?>
 
-            <div class="admin-actions">
-                <button type="submit" class="admin-btn"><i class="fas fa-check"></i> Save Entry</button>
-                <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $data['page']; ?>/<?php echo $data['navKey']; ?>" class="admin-btn admin-btn-secondary">Cancel</a>
+            <div class="admin-form-footer">
+                <a href="<?php echo $back; ?>" class="admin-btn admin-btn-secondary">Cancel</a>
+                <button type="submit" class="admin-btn"><i class="fas fa-check"></i> <?php echo $data['isNew'] ? 'Add Entry' : 'Save Entry'; ?></button>
             </div>
         </form>
     </div>
