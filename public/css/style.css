@@ -8211,3 +8211,19 @@ body.header-hidden .services-subnav {
     .footer-col-links a { font-size: 0.76rem; }
     .footer-address { font-size: 0.7rem; }
 }
+
+/* ==========================================================================
+   Logo fix: the animated SVG logo must NOT sit on its own GPU layer.
+   With transform: translateZ(0) Chrome rasterises the <img> once and never
+   repaints its SVG animation frames, so the logo stayed on its first (blank)
+   frame until something forced a repaint (e.g. switching browser tabs).
+   Removing the layer has no visual effect; the animation now always plays.
+   ========================================================================== */
+.brand-icon,
+.brand-icon img,
+.footer-mini-logo .brand-icon,
+.footer-mini-logo .brand-icon img {
+    transform: none;
+    backface-visibility: visible;
+    will-change: auto;
+}

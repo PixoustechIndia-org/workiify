@@ -60,17 +60,115 @@
             });
         })();
 
-        function adminPickAsset(fieldKey, path, imgEl) {
-            const hidden = document.getElementById('existing_' + fieldKey);
-            hidden.value = path;
-            const preview = document.getElementById('preview_' + fieldKey);
-            preview.src = ADMIN_URLROOT + path;
-            preview.style.display = 'block';
-            const fileInput = document.getElementById('upload_' + fieldKey);
+        // ---- Image fields: "Choose from Media Library" OR "Upload from computer" ----
+        function adminSetImageState(key, state, name) {
+            // state: 'current' (unchanged), 'library' (picked from library), 'upload' (new file, saved on Save)
+            const field = document.querySelector('.admin-image-field[data-key="' + key + '"]');
+            if (!field) return;
+            const badges = {
+                current: '<span class="aif-badge is-current"><i class="fas fa-circle-check"></i> Current image</span>',
+                library: '<span class="aif-badge is-new"><i class="fas fa-photo-film"></i> From Media Library: not saved yet</span>',
+                upload: '<span class="aif-badge is-new"><i class="fas fa-upload"></i> New upload: uploads when you save</span>'
+            };
+            const status = document.getElementById('status_' + key);
+            const nameEl = document.getElementById('name_' + key);
+            status.querySelector('.aif-badge').outerHTML = badges[state] || badges.current;
+            nameEl.textContent = name || 'Choose an image below';
+            document.getElementById('undo_' + key).hidden = state === 'current';
+            field.classList.toggle('is-changed', state !== 'current');
+            const hasImg = !!document.getElementById('existing_' + key).value || state === 'upload';
+            document.getElementById('preview_' + key).hidden = !hasImg;
+            document.getElementById('empty_' + key).hidden = hasImg;
+        }
+
+        let adminPickerKey = null;
+        function adminOpenMediaPicker(key) {
+            const modal = document.getElementById('adminMediaPicker');
+            if (!modal) return;
+            adminPickerKey = key;
+            const current = document.getElementById('existing_' + key).value;
+            modal.querySelectorAll('.amp-item').forEach(function (b) { b.classList.toggle('is-selected', b.dataset.path === current); });
+            modal.hidden = false;
+            document.body.classList.add('lp-open');
+            const search = document.getElementById('ampSearch');
+            search.value = '';
+            search.dispatchEvent(new Event('input'));
+            const sel = modal.querySelector('.amp-item.is-selected');
+            if (sel) sel.scrollIntoView({ block: 'center' });
+            search.focus();
+        }
+        function adminCloseMediaPicker() {
+            const modal = document.getElementById('adminMediaPicker');
+            if (!modal || modal.hidden) return;
+            modal.hidden = true;
+            document.body.classList.remove('lp-open');
+            const opener = adminPickerKey && document.querySelector('.admin-image-field[data-key="' + adminPickerKey + '"] .aif-option');
+            if (opener) opener.focus();
+        }
+        (function () {
+            const modal = document.getElementById('adminMediaPicker');
+            if (!modal) return;
+            modal.addEventListener('click', function (e) {
+                if (e.target.closest('[data-amp-close]')) { adminCloseMediaPicker(); return; }
+                const item = e.target.closest('.amp-item');
+                if (!item || !adminPickerKey) return;
+                const key = adminPickerKey;
+                const hidden = document.getElementById('existing_' + key);
+                hidden.value = item.dataset.path;
+                document.getElementById('preview_' + key).src = ADMIN_URLROOT + item.dataset.path;
+                const fileInput = document.getElementById('upload_' + key);
+                if (fileInput) { fileInput.value = ''; adminClearFieldError(fileInput); }
+                const field = document.querySelector('.admin-image-field[data-key="' + key + '"]');
+                const unchanged = item.dataset.path === field.dataset.original;
+                adminSetImageState(key, unchanged ? 'current' : 'library', item.dataset.name);
+                hidden.dispatchEvent(new Event('change', { bubbles: true }));
+                adminCloseMediaPicker();
+            });
+            // the picker sits inside the edit form: Enter must search, never submit the form
+            document.getElementById('ampSearch').addEventListener('keydown', function (e) { if (e.key === 'Enter') e.preventDefault(); });
+            document.getElementById('ampSearch').addEventListener('input', function () {
+                const q = this.value.trim().toLowerCase();
+                let shown = 0;
+                modal.querySelectorAll('.amp-item').forEach(function (b) {
+                    const ok = !q || b.dataset.search.indexOf(q) !== -1;
+                    b.hidden = !ok;
+                    if (ok) shown++;
+                });
+                document.getElementById('ampNoMatch').hidden = shown !== 0;
+            });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') adminCloseMediaPicker(); });
+        })();
+
+        // a computer file was chosen (the form's validator has already rejected wrong types / sizes)
+        document.addEventListener('change', function (e) {
+            const el = e.target;
+            if (!el.classList || !el.classList.contains('aif-file')) return;
+            const key = el.id.replace(/^upload_/, '');
+            const field = document.querySelector('.admin-image-field[data-key="' + key + '"]');
+            if (el.files && el.files[0]) {
+                const preview = document.getElementById('preview_' + key);
+                if (!preview.src || preview.src.indexOf('blob:') !== 0) preview.src = URL.createObjectURL(el.files[0]);
+                adminSetImageState(key, 'upload', el.files[0].name);
+            } else if (field) {
+                // rejected or cleared: show the current image again, but keep any error message visible
+                const original = field.dataset.original;
+                document.getElementById('existing_' + key).value = original;
+                if (original) document.getElementById('preview_' + key).src = ADMIN_URLROOT + original;
+                adminSetImageState(key, 'current', original ? field.dataset.originalName : '');
+            }
+        });
+
+        function adminUndoImage(key) {
+            const field = document.querySelector('.admin-image-field[data-key="' + key + '"]');
+            if (!field) return;
+            const original = field.dataset.original;
+            document.getElementById('existing_' + key).value = original;
+            const fileInput = document.getElementById('upload_' + key);
             if (fileInput) { fileInput.value = ''; adminClearFieldError(fileInput); }
-            imgEl.closest('.admin-media-picker').querySelectorAll('.admin-media-picker-thumb').forEach(function (el) { el.classList.remove('selected'); });
-            imgEl.classList.add('selected');
-            hidden.dispatchEvent(new Event('change', { bubbles: true }));
+            const preview = document.getElementById('preview_' + key);
+            if (original) preview.src = ADMIN_URLROOT + original;
+            adminSetImageState(key, 'current', original ? field.dataset.originalName : '');
+            document.getElementById('existing_' + key).dispatchEvent(new Event('change', { bubbles: true }));
         }
 
         function adminUpdateIconPreview(fieldKey) {
@@ -219,8 +317,8 @@
         // ---- Warn before leaving a form with unsaved edits ----
         document.querySelectorAll('form[data-dirty-guard]').forEach(function (form) {
             let dirty = false;
-            form.addEventListener('input', function () { dirty = true; });
-            form.addEventListener('change', function () { dirty = true; });
+            form.addEventListener('input', function (e) { if (!e.target.closest('.amp-modal')) dirty = true; });
+            form.addEventListener('change', function (e) { if (!e.target.closest('.amp-modal')) dirty = true; });
             form.addEventListener('submit', function () { dirty = false; });
             window.addEventListener('beforeunload', function (e) {
                 if (dirty && !form.dataset.submitting) { e.preventDefault(); e.returnValue = ''; }

@@ -1,0 +1,18 @@
+# Uploaded files are data, never code: nothing in this folder may run as a script,
+# whatever its name, and the folder can't be listed.
+Options -Indexes -ExecCGI
+
+<IfModule php_module>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+<FilesMatch "(?i)\.(php[0-9]?|phtml|phar|pht|phps|pl|py|cgi|sh|asp|aspx|jsp|shtml|htaccess|svgz?|html?|js)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

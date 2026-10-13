@@ -1,6 +1,12 @@
 <IfModule mod_rewrite.c>
-  Options -Multiviews
+  Options -Multiviews -Indexes
   RewriteEngine On
+
+  # Security: files in the upload folders are never served as code (blocks uploaded scripts)
+  RewriteRule ^(uploads|images/uploads)/.*\.(php[0-9]?|phtml|phar|pht|phps|pl|py|cgi|sh|asp|aspx|jsp|shtml|svgz?|html?|js)$ - [F,L,NC]
+  # Security: hidden/dot files (.htaccess, .git, .env ...) are never served
+  RewriteRule (^|/)\. - [F,L]
+
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
@@ -40,4 +46,21 @@
   <FilesMatch "\.(css|js)$">
     Header set Cache-Control "public, max-age=604800"
   </FilesMatch>
+</IfModule>
+# ── Security headers ─────────────────────────────────────────────────────────
+# (no visual effect: they only tell browsers to refuse common attacks)
+<IfModule mod_headers.c>
+  # don't let other sites put these pages in a frame (clickjacking)
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # never guess a file's type from its content (stops "image that is really a script")
+  Header always set X-Content-Type-Options "nosniff"
+  # don't leak full page addresses to other sites
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # this site never needs camera / microphone / location / payment
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  # safe policy that can't break existing scripts, styles, fonts, images or the map
+  Header always set Content-Security-Policy "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self'"
+  # don't advertise the server software / PHP version
+  Header always unset X-Powered-By
+  Header unset X-Powered-By
 </IfModule>

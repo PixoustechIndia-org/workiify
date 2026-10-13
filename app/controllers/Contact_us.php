@@ -59,6 +59,20 @@ class Contact_us extends Controller {
             exit;
         }
 
+        // Flood protection: only accept submissions made from this site, and cap how often one
+        // visitor can send (real visitors never come close to these limits).
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        if ($origin !== '' && parse_url($origin, PHP_URL_HOST) !== parse_url('http://' . ($_SERVER['HTTP_HOST'] ?? ''), PHP_URL_HOST)) {
+            echo json_encode(['success' => false, 'message' => 'Something went wrong sending your enquiry. Please try WhatsApp or call us directly.']);
+            exit;
+        }
+        $enquiryModel = $this->model('Enquiry');
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        if ($ip !== '' && ($enquiryModel->countRecentByIp($ip, 10) >= 5 || $enquiryModel->countRecentByIp($ip, 1440) >= 20)) {
+            echo json_encode(['success' => false, 'message' => 'You have sent several enquiries already. Our team will get back to you shortly. For anything urgent, please WhatsApp or call us.']);
+            exit;
+        }
+
         $contentModel = $this->model('Home_content_model');
         $contentModel->setPage('contact');
         $f = $contentModel->getFields(['contact_email_1', 'contact_email_2']);
@@ -91,7 +105,6 @@ class Contact_us extends Controller {
         // Always record the enquiry so it shows up in the admin panel, even
         // if the notification email couldn't be sent -- a lead should never
         // be lost to a mail delivery problem.
-        $enquiryModel = $this->model('Enquiry');
         $saved = $enquiryModel->addEnquiry([
             'source' => $source,
             'company_name' => $companyName,

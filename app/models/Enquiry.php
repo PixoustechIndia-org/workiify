@@ -145,6 +145,13 @@ class Enquiry {
         return $this->db->execute();
     }
 
+    // How many enquiries one IP address sent in the last N minutes (spam / flood protection).
+    public function countRecentByIp($ip, $minutes) {
+        $this->db->query('SELECT COUNT(*) AS c FROM enquiries WHERE ip_address = :ip AND created_at >= DATE_SUB(NOW(), INTERVAL ' . (int)$minutes . ' MINUTE)');
+        $this->db->bind(':ip', (string)$ip);
+        return (int)$this->db->single()->c;
+    }
+
     public function getNewCount() {
         $this->db->query("SELECT COUNT(*) as count FROM enquiries WHERE status = 'New'");
         $row = $this->db->single();

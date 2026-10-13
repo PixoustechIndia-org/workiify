@@ -10,7 +10,7 @@
     <!-- Favicon (Animated Workiify Logo) -->
     <link rel="icon" type="image/svg+xml" href="<?php echo URLROOT; ?>/images/favicon-animated.svg">
     <link rel="alternate icon" href="<?php echo URLROOT; ?>/favicon.svg">
-    <script src="<?php echo URLROOT; ?>/js/favicon-animator.js" defer></script>
+    <script src="<?php echo URLROOT; ?>/js/favicon-animator.js?v=<?php echo @filemtime(APPROOT . "/../public/js/favicon-animator.js"); ?>" defer></script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,10 +37,11 @@
             if ($rel_path == '' || $rel_path == '/index.php') $rel_path = '/';
         ?>
         <div class="container header-container">
+            <?php $logoBust = base_convert((string)(int)(microtime(true) * 1000), 10, 36); // fresh logo per page view: the animated SVG starts blank, a cached copy can stay on that frame ?>
             <a href="<?php echo URLROOT; ?>/" class="brand-logo">
                 <div class="brand-icon">
-                    <img src="<?php echo URLROOT; ?>/images/logo-light.svg" alt="Workiify" class="logo-light">
-                    <img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify" class="logo-dark">
+                    <img src="<?php echo URLROOT; ?>/images/logo-light.svg?v=<?php echo $logoBust; ?>" alt="Workiify" class="logo-light">
+                    <img src="<?php echo URLROOT; ?>/images/logo-dark.svg?v=<?php echo $logoBust; ?>" alt="Workiify" class="logo-dark">
                 </div>
                 <div class="brand-text">
                     <span class="brand-name">WORKIIFY</span>

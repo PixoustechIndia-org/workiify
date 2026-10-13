@@ -7,8 +7,9 @@ class Testimonials extends Controller {
     public function index() {
         // Handle form submission
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Normalise POST data: plain text only (HTML tags removed). Output is escaped where it is
+            // displayed, so quotes etc. are kept as typed. (FILTER_SANITIZE_STRING is deprecated in PHP 8.1+.)
+            $_POST = array_map(function ($v) { return is_string($v) ? trim(strip_tags($v)) : ''; }, $_POST);
             
             $data = [
                 'full_name' => trim($_POST['full_name'] ?? ''),

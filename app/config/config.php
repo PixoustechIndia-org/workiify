@@ -1,14 +1,20 @@
 <?php
-// DB Params - NEVER HARDCODE IN PRODUCTION, USE ENV VARIABLES
-// Using define for local development, ensure to secure this for production
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'workiify');
-/* define('DB_HOST', 'localhost');
-define('DB_USER', 'thms');
-define('DB_PASS', 'xp]nq=NGFrnY');
-define('DB_NAME', 'workiify'); */
+// Machine-specific settings (database password, debug switch) live in app/config/config.local.php,
+// which is never committed to git (.gitignore: *.local.php). Copy config.local.example.php to
+// config.local.php on each server and fill in that server's values. Environment variables work too.
+if (is_file(__DIR__ . '/config.local.php')) {
+    require __DIR__ . '/config.local.php';
+}
+
+// DB Params: defaults are for local XAMPP only
+if (!defined('DB_HOST')) define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+if (!defined('DB_USER')) define('DB_USER', getenv('DB_USER') ?: 'root');
+if (!defined('DB_PASS')) define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
+if (!defined('DB_NAME')) define('DB_NAME', getenv('DB_NAME') ?: 'workiify');
+
+// Show PHP error details in the browser? Keep false on the live server.
+if (!defined('APP_DEBUG')) define('APP_DEBUG', getenv('APP_DEBUG') === '1');
+
 // App Root
 define('APPROOT', dirname(dirname(__FILE__)));
 

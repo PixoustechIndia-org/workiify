@@ -191,12 +191,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="full_name">Full Name <span class="required-star">*</span></label>
-                        <input type="text" name="full_name" id="full_name" class="<?php echo (!empty($data['full_name_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['full_name']; ?>" maxlength="100" required placeholder="Your name">
+                        <input type="text" name="full_name" id="full_name" class="<?php echo (!empty($data['full_name_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars((string)$data['full_name']); ?>" maxlength="100" required placeholder="Your name">
                         <span class="invalid-feedback"><?php echo $data['full_name_err']; ?></span>
                     </div>
                     <div class="form-group">
                         <label for="email">Email <span class="required-star">*</span> <small>(never published)</small></label>
-                        <input type="email" name="email" id="email" class="<?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo $data['email']; ?>" required placeholder="you@company.com">
+                        <input type="email" name="email" id="email" class="<?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" value="<?php echo htmlspecialchars((string)$data['email']); ?>" required placeholder="you@company.com">
                         <span class="invalid-feedback"><?php echo $data['email_err']; ?></span>
                     </div>
                 </div>
@@ -204,11 +204,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="company">Company</label>
-                        <input type="text" name="company" id="company" value="<?php echo $data['company']; ?>" maxlength="150" placeholder="Where you work">
+                        <input type="text" name="company" id="company" value="<?php echo htmlspecialchars((string)$data['company']); ?>" maxlength="150" placeholder="Where you work">
                     </div>
                     <div class="form-group">
                         <label for="designation">Designation</label>
-                        <input type="text" name="designation" id="designation" value="<?php echo $data['designation']; ?>" maxlength="100" placeholder="Your role">
+                        <input type="text" name="designation" id="designation" value="<?php echo htmlspecialchars((string)$data['designation']); ?>" maxlength="100" placeholder="Your role">
                     </div>
                 </div>
 
@@ -231,7 +231,7 @@
 
                 <div class="form-group">
                     <label for="feedback">Your Feedback <span class="required-star">*</span></label>
-                    <textarea name="feedback" id="feedback" rows="4" class="<?php echo (!empty($data['feedback_err'])) ? 'is-invalid' : ''; ?>" required minlength="20" maxlength="1000" placeholder="Tell us about your experience at Workiify..."><?php echo $data['feedback']; ?></textarea>
+                    <textarea name="feedback" id="feedback" rows="4" class="<?php echo (!empty($data['feedback_err'])) ? 'is-invalid' : ''; ?>" required minlength="20" maxlength="1000" placeholder="Tell us about your experience at Workiify..."><?php echo htmlspecialchars((string)$data['feedback']); ?></textarea>
                     <small class="field-hint">Between 20 and 1000 characters.</small>
                     <span class="invalid-feedback"><?php echo $data['feedback_err']; ?></span>
                 </div>

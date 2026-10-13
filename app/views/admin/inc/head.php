@@ -11,5 +11,5 @@
     <!-- Favicon (Animated Workiify Logo) -->
     <link rel="icon" type="image/svg+xml" href="<?php echo URLROOT; ?>/images/favicon-animated.svg">
     <link rel="alternate icon" href="<?php echo URLROOT; ?>/favicon.svg">
-    <script src="<?php echo URLROOT; ?>/js/favicon-animator.js" defer></script>
+    <script src="<?php echo URLROOT; ?>/js/favicon-animator.js?v=<?php echo @filemtime(APPROOT . "/../public/js/favicon-animator.js"); ?>" defer></script>
 </head>

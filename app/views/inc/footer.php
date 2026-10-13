@@ -26,8 +26,8 @@
                 <div class="footer-col footer-col-brand">
                     <a href="<?php echo URLROOT; ?>/" class="footer-mini-logo">
                         <div class="brand-icon">
-                            <img src="<?php echo URLROOT; ?>/images/logo-light.svg" alt="Workiify" class="logo-light">
-                            <img src="<?php echo URLROOT; ?>/images/logo-dark.svg" alt="Workiify" class="logo-dark">
+                            <img src="<?php echo URLROOT; ?>/images/logo-light.svg?v=<?php echo isset($logoBust) ? $logoBust : base_convert((string)(int)(microtime(true) * 1000), 10, 36); ?>" alt="Workiify" class="logo-light">
+                            <img src="<?php echo URLROOT; ?>/images/logo-dark.svg?v=<?php echo isset($logoBust) ? $logoBust : base_convert((string)(int)(microtime(true) * 1000), 10, 36); ?>" alt="Workiify" class="logo-dark">
                         </div>
                         <div class="brand-text">
                             <span class="brand-name">WORKIIFY</span>
@@ -191,6 +191,32 @@
             offset: 80,
             once: true
         });
+    </script>
+
+    <script>
+    // Logo safety net: the animated SVG logo starts blank and fades in. Some browsers only redraw an
+    // animated SVG <img> when something repaints it (this is why switching tabs made it appear), so for
+    // the first seconds after the page opens / becomes visible, ask for a repaint on every frame.
+    // The change is invisible (a 0px transparent outline toggled on and off).
+    (function () {
+        var imgs = document.querySelectorAll(".brand-icon img");
+        if (!imgs.length || !window.requestAnimationFrame) return;
+        var until = 0, running = false;
+        function tick(now) {
+            var flip = Math.floor(now / 50) % 2 === 0;
+            for (var i = 0; i < imgs.length; i++) imgs[i].style.outline = flip ? "0px solid transparent" : "";
+            if (now < until) { requestAnimationFrame(tick); }
+            else { running = false; for (var j = 0; j < imgs.length; j++) imgs[j].style.outline = ""; }
+        }
+        function start() {
+            until = performance.now() + 6000;
+            if (!running) { running = true; requestAnimationFrame(tick); }
+        }
+        start();
+        window.addEventListener("load", start);
+        window.addEventListener("pageshow", start);
+        document.addEventListener("visibilitychange", function () { if (!document.hidden) start(); });
+    })();
     </script>
 
 </body>

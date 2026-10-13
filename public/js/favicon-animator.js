@@ -17,6 +17,15 @@
         link.rel = 'icon';
         document.head.appendChild(link);
     }
+    // From here on this script supplies the tab icon itself (a PNG frame ~12x a second). Any other
+    // icon links (e.g. the "alternate icon" fallback) are removed: otherwise every frame makes the
+    // browser re-evaluate them and re-request favicon.svg over and over. (Without JavaScript the
+    // icons in the HTML are used as before.)
+    Array.prototype.forEach.call(document.querySelectorAll("link[rel*='icon']"), function (other) {
+        if (other !== link && other.parentNode) other.parentNode.removeChild(other);
+    });
+    link.rel = 'icon';
+    link.type = 'image/png';
 
     var frame = 0;
     var isRunning = true;
