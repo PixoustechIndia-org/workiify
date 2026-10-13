@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedTheme) {
             htmlElement.dataset.theme = savedTheme;
             updateThemeIcon(savedTheme);
-        } else if (globalThis.matchMedia && globalThis.matchMedia('(prefers-color-scheme: dark)').matches) {
+        } else if (globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches) {
             // Optionally check OS preference
             htmlElement.dataset.theme = 'dark';
             updateThemeIcon('dark');
