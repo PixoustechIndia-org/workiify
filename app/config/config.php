@@ -30,7 +30,8 @@ define('URLROOT', $protocol . '://' . $domain . $dir);
 // Site Name
 define('SITENAME', 'Workiify');
 
-// Outgoing mail "From" address for enquiry notifications. Uses this
-// domain's own name so the mail server doesn't flag it as spoofed; in
-// production, point it at a real mailbox on this domain.
-define('MAIL_FROM', 'no-reply@' . $domain);
+// Outgoing mail sender for enquiry notifications. Set MAIL_FROM in config.local.php to a REAL mailbox
+// on your own domain (e.g. no-reply@workiify.com, created in cPanel > Email Accounts). Never a Gmail
+// address: mail sent from this server "as gmail.com" is treated as forged and lands in spam.
+if (!defined('MAIL_FROM')) define('MAIL_FROM', getenv('MAIL_FROM') ?: 'no-reply@' . preg_replace('/:\d+$/', '', $domain));
+if (!defined('MAIL_FROM_NAME')) define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?: 'Workiify Website');

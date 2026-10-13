@@ -92,14 +92,16 @@ class Contact_us extends Controller {
                   . "Requirement: {$reqLabel} - {$reqValue}\r\n"
                   . 'Additional requirements: ' . ($additional !== '' ? $additional : '-') . "\r\n";
 
-            $headers = 'From: Workiify Website <' . MAIL_FROM . ">\r\n";
+            $headers = 'From: ' . MAIL_FROM_NAME . ' <' . MAIL_FROM . ">\r\n";
             $headers .= "Reply-To: {$email}\r\n";
-            $headers .= "X-Mailer: PHP/" . phpversion();
             if (!empty($f['contact_email_2'])) {
                 $headers = "Cc: {$f['contact_email_2']}\r\n" . $headers;
             }
 
-            $sent = @mail($to, $subject, $body, $headers);
+            // Envelope sender (Return-Path) = the same no-reply address, so receiving servers can verify the
+            // mail really comes from this domain (otherwise Gmail shows "via <server name>").
+            $envelope = filter_var(MAIL_FROM, FILTER_VALIDATE_EMAIL) ? '-f' . MAIL_FROM : '';
+            $sent = $envelope !== '' ? @mail($to, $subject, $body, $headers, $envelope) : @mail($to, $subject, $body, $headers);
         }
 
         // Always record the enquiry so it shows up in the admin panel, even
