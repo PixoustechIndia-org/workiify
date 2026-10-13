@@ -45,7 +45,7 @@
                 <!-- Quick Links -->
                 <div class="footer-col">
                     <h4 class="footer-col-title">Quick Links</h4>
-                    <nav class="footer-col-links">
+                    <nav class="footer-col-links" aria-label="Quick links">
                         <a href="<?php echo URLROOT; ?>/">Home</a>
                         <a href="<?php echo URLROOT; ?>/about-us">About</a>
                         <a href="<?php echo URLROOT; ?>/services">Services</a>
@@ -56,7 +56,7 @@
                 <!-- Support -->
                 <div class="footer-col">
                     <h4 class="footer-col-title">Support</h4>
-                    <nav class="footer-col-links">
+                    <nav class="footer-col-links" aria-label="Support">
                         <a href="<?php echo URLROOT; ?>/testimonials">Testimonials</a>
                         <a href="<?php echo URLROOT; ?>/contact-us">Contact</a>
                         <a href="<?php echo URLROOT; ?>/privacy-policy">Privacy</a>

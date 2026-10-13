@@ -12,6 +12,11 @@
  * of the template as it needs.
  */
 class Service_schema {
+    // Repeated values, defined once
+    private const LBL_BUTTON_TEXT = 'Button text';
+    private const LBL_BUTTON_TEXT_OPT = 'Button text (optional)';
+    private const TXT_EXPLORE_OTHERS = 'Explore Other Services';
+
     // Fixed order the sections appear on the page.
     public static function contentSections() {
         return [
@@ -27,7 +32,7 @@ class Service_schema {
             ['key' => 'highlight-2',   'label' => 'Highlight Block 2',         'fields' => 'svc_hl2',       'items' => 'hl2_items',   'help' => 'A second photo-and-text block, same options as Highlight Block 1.'],
             ['key' => 'faq',           'label' => 'FAQ',                       'fields' => 'svc_faq',       'items' => 'faq',         'help' => 'Frequently asked questions (click to expand).'],
             ['key' => 'closing-banner', 'label' => 'Closing Banner',           'fields' => 'svc_cta',       'help' => 'The final call-to-action at the bottom of the page.'],
-            ['key' => 'explore-more',  'label' => 'Explore Other Services',    'fields' => 'svc_related',   'help' => 'Automatically lists your other services.'],
+            ['key' => 'explore-more',  'label' => self::TXT_EXPLORE_OTHERS,    'fields' => 'svc_related',   'help' => 'Automatically lists your other services.'],
         ];
     }
 
@@ -69,7 +74,7 @@ class Service_schema {
                 self::f($p . '_image', 'Photo', 'image'),
                 self::f($p . '_badge_big', 'Badge on the photo: large text (optional, e.g. 24/7)', 'text', 24),
                 self::f($p . '_badge_small', 'Badge on the photo: small text (optional)', 'text', 40),
-                self::f($p . '_btn_text', 'Button text (optional)', 'text', 70),
+                self::f($p . '_btn_text', self::LBL_BUTTON_TEXT_OPT, 'text', 70),
                 self::f($p . '_btn_link', 'Button link (optional, e.g. /contact-us#enquiry)', 'text', 160),
             ],
         ];
@@ -119,7 +124,7 @@ class Service_schema {
                     self::toggle('intro'),
                     self::f('intro_heading', 'Section heading (optional)', 'text', 140),
                     self::f('intro_text', 'Paragraph', 'textarea', 800),
-                    self::f('intro_btn_text', 'Button text', 'text', 60),
+                    self::f('intro_btn_text', self::LBL_BUTTON_TEXT, 'text', 60),
                     self::f('intro_btn_link', 'Button link', 'text', 160),
                 ],
             ],
@@ -134,7 +139,7 @@ class Service_schema {
                     self::f('location_text', 'Paragraph (optional)', 'textarea', 500),
                     self::f('location_address', 'Address', 'textarea', 220),
                     self::f('location_image', 'Background photo', 'image'),
-                    self::f('location_btn_text', 'Button text (optional)', 'text', 70),
+                    self::f('location_btn_text', self::LBL_BUTTON_TEXT_OPT, 'text', 70),
                     self::f('location_btn_link', 'Button link (optional)', 'text', 160),
                 ],
             ],
@@ -149,7 +154,7 @@ class Service_schema {
                     self::toggle('faq'),
                     self::f('faq_heading', 'Heading', 'text', 140),
                     self::f('faq_text', 'Text beside the heading', 'textarea', 240),
-                    self::f('faq_btn_text', 'Button text (optional)', 'text', 60),
+                    self::f('faq_btn_text', self::LBL_BUTTON_TEXT_OPT, 'text', 60),
                     self::f('faq_btn_link', 'Button link (optional)', 'text', 400),
                 ],
             ],
@@ -159,17 +164,17 @@ class Service_schema {
                     self::toggle('cta'),
                     self::f('cta_heading', 'Heading', 'text', 140),
                     self::f('cta_text', 'Text', 'textarea', 300),
-                    self::f('cta_btn_text', 'Button text', 'text', 60),
+                    self::f('cta_btn_text', self::LBL_BUTTON_TEXT, 'text', 60),
                     self::f('cta_btn_link', 'Button link', 'text', 160),
                     self::f('cta_image', 'Background photo (optional: leave empty for a plain banner)', 'image'),
                 ],
             ],
             'svc_related' => [
-                'label' => 'Explore Other Services',
+                'label' => self::TXT_EXPLORE_OTHERS,
                 'fields' => [
                     self::toggle('related'),
                     self::f('related_heading', 'Heading', 'text', 80),
-                    self::f('related_btn_text', 'Button text', 'text', 40),
+                    self::f('related_btn_text', self::LBL_BUTTON_TEXT, 'text', 40),
                 ],
             ],
         ];
@@ -249,7 +254,7 @@ class Service_schema {
         $f['cta_text'] = 'Get in touch and we will help you find the right option.';
         $f['cta_btn_text'] = 'Enquire Now';
         $f['cta_btn_link'] = '/contact-us#enquiry';
-        $f['related_heading'] = 'Explore Other Services';
+        $f['related_heading'] = self::TXT_EXPLORE_OTHERS;
         $f['related_btn_text'] = 'View All Services';
         return $f;
     }

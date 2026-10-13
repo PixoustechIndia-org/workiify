@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $returnTo = admin_current_path();
 ?>
 
@@ -10,7 +10,7 @@ $returnTo = admin_current_path();
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-card admin-card-flush">
         <form method="GET" action="<?php echo URLROOT; ?>/admin/history" class="admin-toolbar" data-no-lock>
@@ -59,8 +59,8 @@ $returnTo = admin_current_path();
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-        <?php require APPROOT . '/views/admin/inc/pagination.php'; ?>
+        <?php require_once APPROOT . '/views/admin/inc/pagination.php'; ?>
     </div>
 </div>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

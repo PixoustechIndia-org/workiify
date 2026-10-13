@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require_once APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
 <section class="page-banner" style="--banner-img: url('<?php echo URLROOT; ?>/images/services_bg.jpg'); color: #fff;">
@@ -62,13 +62,13 @@
 
                         <div class="client-info">
                             <div class="avatar-placeholder">
-                                <?php 
+                                <?php
                                     $photoName = !empty($testimonial->photo) ? trim($testimonial->photo) : '';
                                     $hasAvatar = !empty($photoName) && file_exists(APPROOT . '/../public/uploads/testimonials/' . $photoName);
                                 ?>
                                 <?php if ($hasAvatar) : ?>
-                                    <img src="<?php echo URLROOT; ?>/uploads/testimonials/<?php echo htmlspecialchars($photoName); ?>" 
-                                         alt="<?php echo htmlspecialchars($testimonial->full_name); ?>" 
+                                    <img src="<?php echo URLROOT; ?>/uploads/testimonials/<?php echo htmlspecialchars($photoName); ?>"
+                                         alt="<?php echo htmlspecialchars($testimonial->full_name); ?>"
                                          class="client-avatar-img">
                                 <?php else : ?>
                                     <i class="fas fa-user-tie"></i>
@@ -431,4 +431,4 @@
     });
 </script>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/inc/footer.php'; ?>

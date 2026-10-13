@@ -1,5 +1,10 @@
 <?php
 class Enquiry {
+    // Repeated values, defined once
+    private const P_STATUS = ':status';
+
+    use ListQuery;
+
     private $db;
 
     // Where an enquiry came from. The first three are the website's own forms; the rest are
@@ -57,14 +62,14 @@ class Enquiry {
     public function create(array $data) {
         $this->db->query('INSERT INTO enquiries (source, company_name, company_address, contact_no, email, req_type, req_value, additional, status, email_sent) VALUES (:source, :company_name, :company_address, :contact_no, :email, :req_type, :req_value, :additional, :status, 0)');
         $this->bindEditable($data);
-        $this->db->bind(':status', $data['status']);
+        $this->db->bind(self::P_STATUS, $data['status']);
         return $this->db->execute() ? (int)$this->db->lastInsertId() : false;
     }
 
     public function update($id, array $data) {
         $this->db->query('UPDATE enquiries SET source = :source, company_name = :company_name, company_address = :company_address, contact_no = :contact_no, email = :email, req_type = :req_type, req_value = :req_value, additional = :additional, status = :status WHERE id = :id');
         $this->bindEditable($data);
-        $this->db->bind(':status', $data['status']);
+        $this->db->bind(self::P_STATUS, $data['status']);
         $this->db->bind(':id', (int)$id);
         return $this->db->execute();
     }
@@ -100,21 +105,11 @@ class Enquiry {
             $where[] = '(company_name LIKE :q1 OR email LIKE :q2 OR contact_no LIKE :q3 OR company_address LIKE :q4)';
             foreach (['q1', 'q2', 'q3', 'q4'] as $p) { $params[':' . $p] = '%' . $f['q'] . '%'; }
         }
-        if ($f['status'] !== '') { $where[] = 'status = :status'; $params[':status'] = $f['status']; }
+        if ($f['status'] !== '') { $where[] = 'status = :status'; $params[self::P_STATUS] = $f['status']; }
         if ($f['source'] !== '') { $where[] = 'source = :source'; $params[':source'] = $f['source']; }
         if ($f['from'] !== '') { $where[] = 'created_at >= :from'; $params[':from'] = $f['from'] . ' 00:00:00'; }
         if ($f['to'] !== '') { $where[] = 'created_at <= :to'; $params[':to'] = $f['to'] . ' 23:59:59'; }
-        $sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
-
-        $this->db->query('SELECT COUNT(*) AS c FROM enquiries' . $sql);
-        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
-        $total = (int)$this->db->single()->c;
-
-        $col = self::$sortable[$sort] ?? 'created_at';
-        $dir = $dir === 'asc' ? 'ASC' : 'DESC';
-        $this->db->query('SELECT * FROM enquiries' . $sql . " ORDER BY $col $dir, id $dir LIMIT " . (int)$perPage . ' OFFSET ' . (int)(($page - 1) * $perPage));
-        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
-        return [$this->db->resultSet(), $total];
+        return $this->pagedRows('enquiries', $where, $params, self::$sortable[$sort] ?? 'created_at', $dir, $page, $perPage);
     }
 
     public static function sortKeys() {
@@ -122,14 +117,7 @@ class Enquiry {
     }
 
     public function statusCounts() {
-        $this->db->query('SELECT status, COUNT(*) AS c FROM enquiries GROUP BY status');
-        $out = ['all' => 0];
-        foreach (self::statuses() as $s) { $out[$s] = 0; }
-        foreach ($this->db->resultSet() as $r) {
-            $out[$r->status] = (int)$r->c;
-            $out['all'] += (int)$r->c;
-        }
-        return $out;
+        return $this->countByStatus('enquiries', self::statuses());
     }
 
     public function getEnquiryById($id) {
@@ -140,7 +128,7 @@ class Enquiry {
 
     public function updateStatus($id, $status) {
         $this->db->query('UPDATE enquiries SET status = :status WHERE id = :id');
-        $this->db->bind(':status', $status);
+        $this->db->bind(self::P_STATUS, $status);
         $this->db->bind(':id', (int)$id);
         return $this->db->execute();
     }

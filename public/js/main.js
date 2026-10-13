@@ -67,19 +67,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check local storage for saved theme
         const savedTheme = localStorage.getItem('workiify_theme');
         if (savedTheme) {
-            htmlElement.setAttribute('data-theme', savedTheme);
+            htmlElement.dataset.theme = savedTheme;
             updateThemeIcon(savedTheme);
-        } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        } else if (globalThis.matchMedia && globalThis.matchMedia('(prefers-color-scheme: dark)').matches) {
             // Optionally check OS preference
-            htmlElement.setAttribute('data-theme', 'dark');
+            htmlElement.dataset.theme = 'dark';
             updateThemeIcon('dark');
         }
 
         themeToggleBtn.addEventListener('click', () => {
-            const currentTheme = htmlElement.getAttribute('data-theme');
+            const currentTheme = htmlElement.dataset.theme;
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-            htmlElement.setAttribute('data-theme', newTheme);
+            htmlElement.dataset.theme = newTheme;
             localStorage.setItem('workiify_theme', newTheme);
             updateThemeIcon(newTheme);
         });
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!faqSearchInput) return;
         const query = faqSearchInput.value.toLowerCase();
         const activeBtn = document.querySelector('.faq-cat-btn.active');
-        const activeCategory = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+        const activeCategory = activeBtn ? activeBtn.dataset.filter : 'all';
         let visibleCount = 0;
 
         faqItems.forEach(item => {
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const questionText = questionElement.textContent.toLowerCase();
             const answerText = answerElement.textContent.toLowerCase();
-            const itemCategory = item.getAttribute('data-category');
+            const itemCategory = item.dataset.category;
             
             const matchesSearch = questionText.includes(query) || answerText.includes(query);
             const matchesCategory = (activeCategory === 'all' || itemCategory === activeCategory);
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!value) {
                     isValid = false;
                     message = 'Please enter a contact number.';
-                } else if (!/^[0-9+\s-]{8,15}$/.test(value) || value.replace(/\D/g, '').length < 10) {
+                } else if (!/^[0-9+\s-]{8,15}$/.test(value) || value.replaceAll(/\D/g, '').length < 10) {
                     isValid = false;
                     message = 'Please enter a valid 10-digit contact number.';
                 }
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     message = 'Please select a requirement type.';
                 }
             } else if (name === 'reqValue') {
-                if (!field.disabled && (!value || parseInt(value, 10) <= 0)) {
+                if (!field.disabled && (!value || Number.parseInt(value, 10) <= 0)) {
                     isValid = false;
                     message = 'Please enter requirement value.';
                 }
@@ -593,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (photoInput) {
             photoInput.addEventListener('change', () => {
-                const file = photoInput.files && photoInput.files[0];
+                const file = photoInput.files?.[0];
                 if (!file) {
                     if (avatarPreviewImg) {
                         avatarPreviewImg.style.display = 'none';
@@ -829,21 +829,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.testimonial-album').forEach((album) => {
             let photos = [];
             try {
-                photos = JSON.parse(album.getAttribute('data-photos') || '[]');
-            } catch (err) {
+                photos = JSON.parse(album.dataset.photos || '[]');
+            } catch {
                 photos = [];
             }
-            const author = album.getAttribute('data-author') || '';
+            const author = album.dataset.author || '';
 
             album.querySelectorAll('.album-thumb-item').forEach((item) => {
                 item.addEventListener('click', () => {
-                    const idx = parseInt(item.getAttribute('data-index') || '0', 10);
+                    const idx = Number.parseInt(item.dataset.index || '0', 10);
                     openLightbox(photos, idx, author);
                 });
                 item.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        const idx = parseInt(item.getAttribute('data-index') || '0', 10);
+                        const idx = Number.parseInt(item.dataset.index || '0', 10);
                         openLightbox(photos, idx, author);
                     }
                 });
@@ -896,7 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const POPUP_DELAY_MS = 20000;
         try {
             if (!sessionStorage.getItem('workiifyEnquiryPopupShown')) {
-                let arrival = parseInt(sessionStorage.getItem('workiifyArrivalTime'), 10);
+                let arrival = Number.parseInt(sessionStorage.getItem('workiifyArrivalTime'), 10);
                 if (!arrival) {
                     arrival = Date.now();
                     sessionStorage.setItem('workiifyArrivalTime', String(arrival));
@@ -909,7 +909,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     armAutoDismiss();
                 }, wait);
             }
-        } catch (e) { /* storage blocked (private mode): skip the popup rather than nag on every page */ }
+        } catch { /* storage blocked (private mode): skip the popup rather than nag on every page */ }
 
         // Keep the chat button out of the way while the popup is open.
         new MutationObserver(() => {
@@ -973,7 +973,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let autoplayTimer = null;
 
         const getStep = () => {
-            const gap = parseFloat(getComputedStyle(track).gap) || 24;
+            const gap = Number.parseFloat(getComputedStyle(track).gap) || 24;
             return viewport.clientWidth + gap;
         };
 
@@ -1106,7 +1106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabs.forEach(t => t.classList.remove('active'));
             panes.forEach(p => p.classList.remove('active'));
             tab.classList.add('active');
-            const pane = widget.querySelector('#' + tab.getAttribute('data-target'));
+            const pane = widget.querySelector('#' + tab.dataset.target);
             if (pane) pane.classList.add('active');
         }));
     });

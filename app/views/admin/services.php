@@ -1,5 +1,5 @@
 <?php
-require APPROOT . '/views/admin/inc/header.php';
+require_once APPROOT . '/views/admin/inc/header.php';
 
 $e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
 $cats = $data['categories'];
@@ -58,7 +58,7 @@ foreach ($services as $svc) {
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <?php if (!empty($data['offline'])): ?>
         <div class="admin-error">
@@ -437,4 +437,4 @@ foreach ($services as $svc) {
 })();
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

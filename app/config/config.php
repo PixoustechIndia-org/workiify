@@ -3,7 +3,7 @@
 // which is never committed to git (.gitignore: *.local.php). Copy config.local.example.php to
 // config.local.php on each server and fill in that server's values. Environment variables work too.
 if (is_file(__DIR__ . '/config.local.php')) {
-    require __DIR__ . '/config.local.php';
+    require_once __DIR__ . '/config.local.php';
 }
 
 // DB Params: defaults are for local XAMPP only

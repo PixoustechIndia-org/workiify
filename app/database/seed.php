@@ -13,6 +13,16 @@ $host = getenv('DB_HOST') ?: 'localhost';
 $user = getenv('DB_USER') ?: 'root';
 $pass = (string)getenv('DB_PASS');
 $dbname = getenv('DB_NAME') ?: 'workiify';
+// Repeated values, defined once
+const MSG_UPSERTED = '  - upserted ';
+const MSG_FIELDS = " field(s)\n";
+const IMG_CW_MAIN = '/images/coworking_main_1791350864870.jpg';
+const IMG_CW_LOUNGE = '/images/coworking_lounge_1791350901804.jpg';
+const IMG_PRIVATE = '/images/private_office_enhanced_1791353356099.jpg';
+const IMG_DINING = '/images/gallery-dining-hall-1.png';
+const IMG_LOGO_DARK = '/images/logo-dark.svg';
+const TXT_PRIVATE_OFFICE = 'Private Office';
+const URL_SERVICES = '/services';
 
 $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -44,7 +54,7 @@ $fields = [
     'services_heading' => 'Our Services',
     'services_subtitle' => 'Flexible workspace solutions crafted for productivity, comfort, and business growth.',
     'services_cta_text' => 'View All Services',
-    'services_cta_link' => '/services',
+    'services_cta_link' => URL_SERVICES,
 
     'amenities_heading' => 'AMENITIES',
     'amenities_subtitle' => 'Everything your workspace needs to keep moving.',
@@ -82,13 +92,13 @@ $fields = [
 foreach ($fields as $k => $v) {
     setField($pdo, $k, $v);
 }
-echo '  - upserted ' . count($fields) . " field(s)\n";
+echo MSG_UPSERTED . count($fields) . MSG_FIELDS;
 
 echo "Seeding home_items...\n";
 
 seedItems($pdo, 'hero', [
     [
-        'bg_image' => '/images/coworking_main_1791350864870.jpg',
+        'bg_image' => IMG_CW_MAIN,
         'heading_line1' => 'Premium Coworking Space',
         'heading_highlight' => 'Modern Professionals',
         'paragraph' => 'Experience stylish, flexible, and productive workspaces in Saravanampatti, Coimbatore. Designed for startups, freelancers, remote teams, and growing businesses.',
@@ -103,12 +113,12 @@ seedItems($pdo, 'hero', [
         'heading_highlight' => 'Growing Teams',
         'paragraph' => "Focus and scale your business with fully serviced private suites tailored to your team's needs.",
         'btn1_text' => 'View Private Offices',
-        'btn1_link' => '/services',
+        'btn1_link' => URL_SERVICES,
         'btn2_text' => '',
         'btn2_link' => '',
     ],
     [
-        'bg_image' => '/images/coworking_lounge_1791350901804.jpg',
+        'bg_image' => IMG_CW_LOUNGE,
         'heading_line1' => 'Creative Lounges to',
         'heading_highlight' => 'Connect & Collaborate',
         'paragraph' => 'Network with like-minded professionals in our vibrant, high-end community spaces.',
@@ -129,7 +139,7 @@ seedItems($pdo, 'counters', [
 seedItems($pdo, 'services', [
     ['title' => 'Hot Desk', 'description' => 'Perfect for freelancers and remote workers who need a vibrant and flexible workspace every day.', 'image' => '/images/hot_desk_enhanced_1791353156473.jpg', 'link' => '/services/hot-desk'],
     ['title' => 'Dedicated Desk', 'description' => 'Your own reserved workstation in a collaborative environment with professional amenities.', 'image' => '/images/dedicated_desk_enhanced_1791353327423.jpg', 'link' => '/services/dedicated-desk'],
-    ['title' => 'Private Office', 'description' => 'Secure and fully furnished office spaces ideal for startups, teams, and established businesses.', 'image' => '/images/private_office_enhanced_1791353356099.jpg', 'link' => '/services/private-office'],
+    ['title' => TXT_PRIVATE_OFFICE, 'description' => 'Secure and fully furnished office spaces ideal for startups, teams, and established businesses.', 'image' => IMG_PRIVATE, 'link' => '/services/private-office'],
     ['title' => 'Meeting Room', 'description' => 'Host client meetings, team discussions, and presentations in a polished and well-equipped setting.', 'image' => '/images/meeting_room_enhanced_1791353342929.jpg', 'link' => '/services/meeting-room'],
 ]);
 
@@ -172,22 +182,22 @@ seedItems($pdo, 'gallery', [
     ['image' => '/images/gallery-front-office-lounge.png', 'alt' => 'Lounge'],
     ['image' => '/images/gallery-open-desk-area.png', 'alt' => 'Open Desks'],
     ['image' => '/images/gallery-boardroom.png', 'alt' => 'Meeting Room'],
-    ['image' => '/images/gallery-dining-hall-1.png', 'alt' => 'Cafeteria'],
-    ['image' => '/images/private_office_enhanced_1791353356099.jpg', 'alt' => 'Private Office'],
+    ['image' => IMG_DINING, 'alt' => 'Cafeteria'],
+    ['image' => IMG_PRIVATE, 'alt' => TXT_PRIVATE_OFFICE],
     ['image' => '/images/gallery-front-office-reception.png', 'alt' => 'Reception'],
 ]);
 
 echo "Seeding about_us fields...\n";
 
 $aboutFields = [
-    'about_banner_image' => '/images/coworking_main_1791350864870.jpg',
+    'about_banner_image' => IMG_CW_MAIN,
     'about_banner_heading' => 'About Workiify',
     'about_banner_tagline' => 'Workspace Simplified',
 
     'about_story_eyebrow' => 'Fully Serviced Offices & Coworking',
     'about_story_heading' => 'Introducing Workiify',
     'about_story_text' => "Workiify offers professional shared workspaces that are connected and completely flexible. Move in today and have the freedom to upsize or downsize according to your needs. What's more, you get instant access to meeting facilities and excellent support services – everything you need to grow your business.",
-    'about_story_image' => '/images/coworking_lounge_1791350901804.jpg',
+    'about_story_image' => IMG_CW_LOUNGE,
 
     'purpose_mission_heading' => 'Our Mission',
     'purpose_mission_text' => 'To provide flexible, fully serviced workspaces with everything businesses need to work productively and grow.',
@@ -218,15 +228,15 @@ $aboutFields = [
 foreach ($aboutFields as $k => $v) {
     setField($pdo, $k, $v, 'about');
 }
-echo '  - upserted ' . count($aboutFields) . " field(s)\n";
+echo MSG_UPSERTED . count($aboutFields) . MSG_FIELDS;
 
 echo "Seeding about_us items...\n";
 
 seedItems($pdo, 'workspace_tiles', [
-    ['icon' => 'fa-rocket', 'title' => 'SMEs & Entrepreneurs', 'description' => 'Flexible packages that let you downsize or grow without long-term commitments.', 'link' => '/services'],
-    ['icon' => 'fa-building', 'title' => 'Corporates', 'description' => 'Coworking and serviced office packages; place up to 160 employees in coworking spaces with managers in private offices.', 'link' => '/services'],
-    ['icon' => 'fa-briefcase', 'title' => 'Freelancers & Self-Employed', 'description' => 'Affordable coworking or serviced offices without long-term leases: a full-time office, a business address, or a desk a few days a week.', 'link' => '/services'],
-    ['icon' => 'fa-graduation-cap', 'title' => 'Students', 'description' => 'A peaceful place to study and work on assignments, occasionally or for a 3-month exam period.', 'link' => '/services'],
+    ['icon' => 'fa-rocket', 'title' => 'SMEs & Entrepreneurs', 'description' => 'Flexible packages that let you downsize or grow without long-term commitments.', 'link' => URL_SERVICES],
+    ['icon' => 'fa-building', 'title' => 'Corporates', 'description' => 'Coworking and serviced office packages; place up to 160 employees in coworking spaces with managers in private offices.', 'link' => URL_SERVICES],
+    ['icon' => 'fa-briefcase', 'title' => 'Freelancers & Self-Employed', 'description' => 'Affordable coworking or serviced offices without long-term leases: a full-time office, a business address, or a desk a few days a week.', 'link' => URL_SERVICES],
+    ['icon' => 'fa-graduation-cap', 'title' => 'Students', 'description' => 'A peaceful place to study and work on assignments, occasionally or for a 3-month exam period.', 'link' => URL_SERVICES],
 ], 'about');
 
 seedItems($pdo, 'why_choose_cards', [
@@ -244,7 +254,7 @@ seedItems($pdo, 'why_choose_icons', [
 seedItems($pdo, 'community_photos', [
     ['image' => '/images/gallery-pongal-celebration-2026.png', 'alt' => 'Pongal Celebration 2026'],
     ['image' => '/images/gallery-office-inauguration.png', 'alt' => 'Office Inauguration'],
-    ['image' => '/images/gallery-dining-hall-1.png', 'alt' => 'Community dining & networking'],
+    ['image' => IMG_DINING, 'alt' => 'Community dining & networking'],
     ['image' => '/images/gallery-reception-workstations.png', 'alt' => 'Team collaboration space'],
 ], 'about');
 
@@ -255,11 +265,11 @@ seedItems($pdo, 'about_testimonials_items', [
 ], 'about');
 
 seedItems($pdo, 'client_logos', [
-    ['image' => '/images/logo-dark.svg', 'alt' => 'Workiify'],
-    ['image' => '/images/logo-dark.svg', 'alt' => 'Workiify'],
-    ['image' => '/images/logo-dark.svg', 'alt' => 'Workiify'],
-    ['image' => '/images/logo-dark.svg', 'alt' => 'Workiify'],
-    ['image' => '/images/logo-dark.svg', 'alt' => 'Workiify'],
+    ['image' => IMG_LOGO_DARK, 'alt' => 'Workiify'],
+    ['image' => IMG_LOGO_DARK, 'alt' => 'Workiify'],
+    ['image' => IMG_LOGO_DARK, 'alt' => 'Workiify'],
+    ['image' => IMG_LOGO_DARK, 'alt' => 'Workiify'],
+    ['image' => IMG_LOGO_DARK, 'alt' => 'Workiify'],
 ], 'about');
 
 echo "Seeding contact_us fields...\n";
@@ -280,11 +290,11 @@ $contactFields = [
 foreach ($contactFields as $k => $v) {
     setField($pdo, $k, $v, 'contact');
 }
-echo '  - upserted ' . count($contactFields) . " field(s)\n";
+echo MSG_UPSERTED . count($contactFields) . MSG_FIELDS;
 
 echo "Seeding gallery fields...\n";
 $galleryFields = [
-    'gallery_banner_image' => '/images/coworking_lounge_1791350901804.jpg',
+    'gallery_banner_image' => IMG_CW_LOUNGE,
     'gallery_banner_eyebrow' => 'Photo Gallery',
     'gallery_banner_heading' => 'Workspace Gallery',
     'gallery_banner_tagline' => 'Explore our thoughtfully designed workspaces, where comfort, creativity, and productivity come together.',
@@ -292,7 +302,7 @@ $galleryFields = [
 foreach ($galleryFields as $k => $v) {
     setField($pdo, $k, $v, 'gallery');
 }
-echo '  - upserted ' . count($galleryFields) . " field(s)\n";
+echo MSG_UPSERTED . count($galleryFields) . MSG_FIELDS;
 
 echo "Seeding gallery items...\n";
 
@@ -300,11 +310,11 @@ seedItems($pdo, 'gallery_photos', [
     ['image' => '/images/gallery-building-exterior.png', 'caption' => 'Workiify Building Exterior', 'category' => 'common-areas'],
     ['image' => '/images/gallery-pongal-celebration-2026.png', 'caption' => 'Pongal Celebration 2026', 'category' => 'events'],
     ['image' => '/images/gallery-office-inauguration.png', 'caption' => 'Office Inauguration Ceremony', 'category' => 'events'],
-    ['image' => '/images/gallery-dining-hall-1.png', 'caption' => 'Dining Hall – View 1', 'category' => 'common-areas'],
+    ['image' => IMG_DINING, 'caption' => 'Dining Hall – View 1', 'category' => 'common-areas'],
     ['image' => '/images/gallery-dining-hall-2.png', 'caption' => 'Dining Hall – View 2', 'category' => 'common-areas'],
     ['image' => '/images/gallery-front-office-lounge.png', 'caption' => 'Front Office Lounge', 'category' => 'common-areas'],
     ['image' => '/images/gallery-front-office-reception.png', 'caption' => 'Front Office Reception', 'category' => 'common-areas'],
-    ['image' => '/images/coworking_lounge_1791350901804.jpg', 'caption' => 'Lounge Seating Area', 'category' => 'common-areas'],
+    ['image' => IMG_CW_LOUNGE, 'caption' => 'Lounge Seating Area', 'category' => 'common-areas'],
     ['image' => '/images/gallery-locker-corridor.png', 'caption' => 'Locker Area & Corridor', 'category' => 'common-areas'],
     ['image' => '/images/gallery-main-corridor.png', 'caption' => 'Main Corridor', 'category' => 'common-areas'],
     ['image' => '/images/coworking_private_1791350889843.jpg', 'caption' => 'Community Coworking', 'category' => 'common-areas'],
@@ -314,10 +324,10 @@ seedItems($pdo, 'gallery_photos', [
     ['image' => '/images/gallery-reception-workstations.png', 'caption' => 'Reception Workstations', 'category' => 'workspaces'],
     ['image' => '/images/gallery-shared-workspace-floor.png', 'caption' => 'Shared Workspace Floor', 'category' => 'workspaces'],
     ['image' => '/images/gallery-open-workstation-area.png', 'caption' => 'Open Workstation Area', 'category' => 'workspaces'],
-    ['image' => '/images/coworking_main_1791350864870.jpg', 'caption' => 'Collaborative Space', 'category' => 'workspaces'],
+    ['image' => IMG_CW_MAIN, 'caption' => 'Collaborative Space', 'category' => 'workspaces'],
     ['image' => '/images/hot_desk_enhanced_1791353156473.jpg', 'caption' => 'Hot Desk Zone', 'category' => 'workspaces'],
     ['image' => '/images/dedicated_desk_enhanced_1791353327423.jpg', 'caption' => 'Dedicated Desk Area', 'category' => 'workspaces'],
-    ['image' => '/images/private_office_enhanced_1791353356099.jpg', 'caption' => 'Private Office', 'category' => 'workspaces'],
+    ['image' => IMG_PRIVATE, 'caption' => TXT_PRIVATE_OFFICE, 'category' => 'workspaces'],
 ], 'gallery');
 
 echo "Seeding admin user...\n";

@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $ec = $data['enquiryCounts'];
 $fc = $data['feedbackCounts'];
 $sc = $data['serviceCounts'];
@@ -12,7 +12,7 @@ $sc = $data['serviceCounts'];
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-stat-grid">
         <a class="admin-stat-card" href="<?php echo URLROOT; ?>/admin/enquiries?status=New">
@@ -79,7 +79,15 @@ $sc = $data['serviceCounts'];
                     <span class="admin-link-card-icon"><i class="fas <?php echo admin_section_icon($section); ?>"></i></span>
                     <span>
                         <strong><?php echo htmlspecialchars($section['label']); ?></strong>
-                        <span><?php echo !empty($section['items']) && empty($section['fields']) ? 'Add, edit &amp; reorder entries' : (!empty($section['items']) ? 'Edit text, images &amp; entries' : 'Edit text &amp; images'); ?></span>
+                        <span><?php
+                            if (empty($section['items'])) {
+                                echo 'Edit text &amp; images';
+                            } elseif (empty($section['fields'])) {
+                                echo 'Add, edit &amp; reorder entries';
+                            } else {
+                                echo 'Edit text, images &amp; entries';
+                            }
+                        ?></span>
                     </span>
                 </a>
             <?php endforeach; ?>
@@ -141,4 +149,4 @@ $sc = $data['serviceCounts'];
     </div>
 </div>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

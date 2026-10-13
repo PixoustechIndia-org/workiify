@@ -1,4 +1,4 @@
-﻿<?php require APPROOT . '/views/inc/header.php'; ?>
+﻿<?php require_once APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
 <section class="page-banner" style="--banner-img: url('<?php echo URLROOT . htmlspecialchars($data['f']['gallery_banner_image']); ?>'); color: #fff;">
@@ -160,4 +160,4 @@
     });
 </script>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/inc/footer.php'; ?>

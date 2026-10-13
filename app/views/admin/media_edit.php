@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $a = $data['asset'];
 $e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
 $err = function ($key) use ($data) {
@@ -32,7 +32,7 @@ $size = $a['bytes'] >= 1048576 ? number_format($a['bytes'] / 1048576, 1) . ' MB'
         <?php endif; ?>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <form method="POST" enctype="multipart/form-data" class="admin-form" data-validate data-dirty-guard id="mediaEditForm">
         <input type="hidden" name="csrf_token" value="<?php echo $e($data['csrfToken']); ?>">
@@ -70,7 +70,13 @@ $size = $a['bytes'] >= 1048576 ? number_format($a['bytes'] / 1048576, 1) . ' MB'
                     <h2 class="admin-card-title"><i class="fas fa-circle-info"></i> Details</h2>
                     <dl class="admin-detail-list admin-detail-list-compact">
                         <dt>Type</dt><dd><?php echo $e($a['ext']); ?> &middot; <?php echo $a['isUpload'] ? 'Upload' : 'Built-in'; ?></dd>
-                        <dt>Size</dt><dd><?php echo $a['exists'] ? $size . ($a['width'] ? ' &middot; ' . (int)$a['width'] . ' × ' . (int)$a['height'] . ' px' : '') : '<span class="admin-text-danger">File missing</span>'; ?></dd>
+                        <dt>Size</dt><dd><?php
+                            if (!$a['exists']) {
+                                echo '<span class="admin-text-danger">File missing</span>';
+                            } else {
+                                echo $size . ($a['width'] ? ' &middot; ' . (int)$a['width'] . ' × ' . (int)$a['height'] . ' px' : '');
+                            }
+                        ?></dd>
                         <dt>Added</dt><dd><?php echo date('M j, Y g:i A', strtotime($a['uploaded_at'])); ?></dd>
                         <dt>Address</dt><dd><span class="admin-mono admin-break"><?php echo $e($a['path']); ?></span>
                             <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm admin-copy-path" data-path="<?php echo $e($url); ?>" style="margin-top:6px;"><i class="fas fa-copy"></i> Copy URL</button></dd>
@@ -126,4 +132,4 @@ $size = $a['bytes'] >= 1048576 ? number_format($a['bytes'] / 1048576, 1) . ' MB'
 })();
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

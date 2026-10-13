@@ -14,10 +14,10 @@ class Controller {
     }
 
     // Load view
-    public function view($view, $data = []){
+    public function view($view, $data = []){ // NOSONAR - $data is read by the included view file
         // Sanitize data before sending to view to prevent XSS where appropriate
         // Data should ideally be escaped in the view itself for context-specific output.
-        
+
         // Check for view file
         if(file_exists('../app/views/' . $view . '.php')){
             require_once '../app/views/' . $view . '.php';

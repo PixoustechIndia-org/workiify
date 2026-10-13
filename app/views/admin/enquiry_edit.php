@@ -1,4 +1,6 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
+// Repeated values, defined once
+$selectedAttr = ' selected';
 $form = $data['form'];
 $e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
 // Inline message + invalid marker for one field, from the server-side validation.
@@ -19,7 +21,7 @@ $back = $data['isNew'] ? URLROOT . '/admin/enquiries' : URLROOT . '/admin/enquir
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-card">
         <form method="POST" class="admin-form" data-validate data-dirty-guard>
@@ -53,8 +55,8 @@ $back = $data['isNew'] ? URLROOT . '/admin/enquiries' : URLROOT . '/admin/enquir
                 <div>
                     <label for="req_type">Requirement type <span class="admin-req">*</span></label>
                     <select id="req_type" name="req_type" class="admin-select<?php echo isset($data['errors']['req_type']) ? ' is-invalid' : ''; ?>" required data-label="Requirement type">
-                        <option value="seats"<?php echo $form['req_type'] === 'seats' ? ' selected' : ''; ?>>Seats (nos.)</option>
-                        <option value="space"<?php echo $form['req_type'] === 'space' ? ' selected' : ''; ?>>Required space (sq. ft.)</option>
+                        <option value="seats"<?php echo $form['req_type'] === 'seats' ? $selectedAttr : ''; ?>>Seats (nos.)</option>
+                        <option value="space"<?php echo $form['req_type'] === 'space' ? $selectedAttr : ''; ?>>Required space (sq. ft.)</option>
                     </select>
                     <?php echo $err('req_type'); ?>
                 </div>
@@ -75,7 +77,7 @@ $back = $data['isNew'] ? URLROOT . '/admin/enquiries' : URLROOT . '/admin/enquir
                     <label for="source">Source <span class="admin-req">*</span></label>
                     <select id="source" name="source" class="admin-select" required data-label="Source">
                         <?php foreach ($data['sources'] as $k => $label): ?>
-                            <option value="<?php echo $k; ?>"<?php echo $form['source'] === $k ? ' selected' : ''; ?>><?php echo $e($label); ?></option>
+                            <option value="<?php echo $k; ?>"<?php echo $form['source'] === $k ? $selectedAttr : ''; ?>><?php echo $e($label); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php echo $err('source'); ?>
@@ -85,7 +87,7 @@ $back = $data['isNew'] ? URLROOT . '/admin/enquiries' : URLROOT . '/admin/enquir
                     <label for="status">Status <span class="admin-req">*</span></label>
                     <select id="status" name="status" class="admin-select" required data-label="Status">
                         <?php foreach (Enquiry::statuses() as $s): ?>
-                            <option value="<?php echo $s; ?>"<?php echo $form['status'] === $s ? ' selected' : ''; ?>><?php echo $s; ?></option>
+                            <option value="<?php echo $s; ?>"<?php echo $form['status'] === $s ? $selectedAttr : ''; ?>><?php echo $s; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php echo $err('status'); ?>
@@ -106,4 +108,4 @@ document.getElementById('req_type').addEventListener('change', function () {
 });
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

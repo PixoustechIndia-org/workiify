@@ -48,7 +48,7 @@ class Contact_us extends Controller {
         if (mb_strlen($companyName) > 150) { $errors[] = 'Company name is too long.'; }
         if ($companyAddress === '') { $errors[] = 'Company address is required.'; }
         if (mb_strlen($companyAddress) > 250) { $errors[] = 'Company address is too long.'; }
-        if (!preg_match('/^[6-9][0-9]{9}$/', $contactNo)) { $errors[] = 'Enter a valid 10-digit contact number.'; }
+        if (!preg_match('/^[6-9]\d{9}$/', $contactNo)) { $errors[] = 'Enter a valid 10-digit contact number.'; }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) { $errors[] = 'Enter a valid email address.'; }
         if (!in_array($reqType, ['space', 'seats'], true)) { $errors[] = 'Select a requirement type.'; }
         if (!ctype_digit((string) $reqValue) || (int) $reqValue < 1) { $errors[] = 'Enter a valid requirement value.'; }

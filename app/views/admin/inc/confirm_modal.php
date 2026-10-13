@@ -4,7 +4,7 @@
     <div class="svc-modal-backdrop" data-close></div>
     <div class="svc-modal-box" role="alertdialog" aria-modal="true" aria-labelledby="svcModalTitle" aria-describedby="svcModalText">
         <div class="svc-modal-icon" id="svcModalIcon"><i class="fas fa-triangle-exclamation"></i></div>
-        <h3 id="svcModalTitle"></h3>
+        <h3 id="svcModalTitle">Are you sure?</h3>
         <p id="svcModalText"></p>
         <div class="svc-modal-actions">
             <button type="button" class="admin-btn admin-btn-secondary" data-close>Cancel</button>

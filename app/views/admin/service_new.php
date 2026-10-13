@@ -1,5 +1,7 @@
 <?php
-require APPROOT . '/views/admin/inc/header.php';
+require_once APPROOT . '/views/admin/inc/header.php';
+// Repeated values, defined once
+$selectedAttr = ' selected';
 
 $e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
 $form = $data['form'];
@@ -23,7 +25,7 @@ $form = $data['form'];
             </div>
         </div>
 
-        <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+        <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
         <form method="POST" class="admin-form" id="newServiceForm" novalidate>
             <input type="hidden" name="csrf_token" value="<?php echo $e($data['csrfToken']); ?>">
@@ -46,7 +48,7 @@ $form = $data['form'];
                 <label for="category">Category (Placement on Services Page)</label>
                 <select id="category" name="category" class="admin-select">
                     <?php foreach ($data['categories'] as $key => $meta): ?>
-                        <option value="<?php echo $e($key); ?>"<?php echo $form['category'] === $key ? ' selected' : ''; ?>>
+                        <option value="<?php echo $e($key); ?>"<?php echo $form['category'] === $key ? $selectedAttr : ''; ?>>
                             <?php echo $e($meta['label']); ?> &mdash; <?php echo $e($meta['eyebrow'] ?? ''); ?>
                         </option>
                     <?php endforeach; ?>
@@ -57,11 +59,11 @@ $form = $data['form'];
             <div class="svc-form-group">
                 <label for="copy_from">Starting Content Template</label>
                 <select id="copy_from" name="copy_from" class="admin-select">
-                    <option value="0"<?php echo !$form['copy_from'] ? ' selected' : ''; ?>>Blank Template (Banner + Introduction, add and enable sections as needed)</option>
+                    <option value="0"<?php echo !$form['copy_from'] ? $selectedAttr : ''; ?>>Blank Template (Banner + Introduction, add and enable sections as needed)</option>
                     <?php if (!empty($data['existing'])): ?>
                         <optgroup label="Clone from an existing service">
                             <?php foreach ($data['existing'] as $svc): ?>
-                                <option value="<?php echo (int)$svc['id']; ?>"<?php echo (int)$form['copy_from'] === (int)$svc['id'] ? ' selected' : ''; ?>>
+                                <option value="<?php echo (int)$svc['id']; ?>"<?php echo (int)$form['copy_from'] === (int)$svc['id'] ? $selectedAttr : ''; ?>>
                                     Clone all content from: <?php echo $e($svc['title']); ?>
                                 </option>
                             <?php endforeach; ?>
@@ -107,4 +109,4 @@ $form = $data['form'];
 })();
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

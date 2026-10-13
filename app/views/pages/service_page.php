@@ -7,7 +7,10 @@
  * Expects: $data['service'] (settings row), $data['content'] ['f' => fields, 'items' => lists],
  *          $data['related'], $data['isDraft'].
  */
-require APPROOT . '/views/inc/header.php';
+require_once APPROOT . '/views/inc/header.php';
+// Repeated values, defined once
+$activeCls = ' active';
+$enquiryLink = '/contact-us#enquiry';
 
 $s = $data['service'];
 $f = $data['content']['f'];
@@ -62,7 +65,7 @@ $tagline = $val('banner_tagline');
 $heading = $val('banner_heading', $s['title']);
 
 // Renders one "highlight" block (photo + text + sliding cards or a row list)
-$highlight = function ($p, $secKey) use ($f, $e, $para, $img, $icon, $href, $val, $list, $bg) {
+$highlight = function ($p, $secKey) use ($f, $e, $para, $img, $icon, $href, $val, $list, $bg, $enquiryLink) {
     $style = ($f[$p . '_style'] ?? 'list') === 'slides' ? 'slides' : 'list';
     $imgUrl = $img($f[$p . '_image'] ?? '');
     $side = ($f[$p . '_side'] ?? 'left') === 'right' ? 'right' : 'left';
@@ -114,7 +117,7 @@ $highlight = function ($p, $secKey) use ($f, $e, $para, $img, $icon, $href, $val
                 </ul>
                 <?php endif; ?>
 
-                <?php if ($btnText !== ''): ?><a href="<?php echo $href($val($p . '_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary mt-4"><?php echo $e($btnText); ?></a><?php endif; ?>
+                <?php if ($btnText !== ''): ?><a href="<?php echo $href($val($p . '_btn_link', $enquiryLink)); ?>" class="btn btn-primary mt-4"><?php echo $e($btnText); ?></a><?php endif; ?>
             </div>
             <?php $body = ob_get_clean();
             echo $side === 'right' ? $body . $media : $media . $body; ?>
@@ -212,7 +215,7 @@ $head = function ($p) use ($e, $para, $val) {
 
             <?php if ($val('intro_btn_text') !== ''): ?>
             <div class="sw-intro-actions">
-                <a href="<?php echo $href($val('intro_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary sw-intro-btn">
+                <a href="<?php echo $href($val('intro_btn_link', $enquiryLink)); ?>" class="btn btn-primary sw-intro-btn">
                     <span><?php echo $e($val('intro_btn_text')); ?></span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -280,12 +283,12 @@ $head = function ($p) use ($e, $para, $val) {
                 <div class="sw-location-ticker" style="height: 130px;">
                     <div class="sw-ticker-wrap">
                         <?php foreach ($pts as $i => $pt): ?>
-                        <div class="sw-ticker-item<?php echo $i === 0 ? ' active' : ''; ?>"><i class="fas <?php echo $icon($pt['icon'] ?? '') ?: 'fa-location-dot'; ?>"></i> <span><strong><?php echo $e($pt['title'] ?? ''); ?><?php echo trim((string)($pt['text'] ?? '')) !== '' ? ':' : ''; ?></strong> <?php echo $e($pt['text'] ?? ''); ?></span></div>
+                        <div class="sw-ticker-item<?php echo $i === 0 ? $activeCls : ''; ?>"><i class="fas <?php echo $icon($pt['icon'] ?? '') ?: 'fa-location-dot'; ?>"></i> <span><strong><?php echo $e($pt['title'] ?? ''); ?><?php echo trim((string)($pt['text'] ?? '')) !== '' ? ':' : ''; ?></strong> <?php echo $e($pt['text'] ?? ''); ?></span></div>
                         <?php endforeach; ?>
                     </div>
                 </div>
                 <?php endif; ?>
-                <?php if ($val('location_btn_text') !== ''): ?><a href="<?php echo $href($val('location_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary" style="margin-top: 1.5rem;"><?php echo $e($val('location_btn_text')); ?></a><?php endif; ?>
+                <?php if ($val('location_btn_text') !== ''): ?><a href="<?php echo $href($val('location_btn_link', $enquiryLink)); ?>" class="btn btn-primary" style="margin-top: 1.5rem;"><?php echo $e($val('location_btn_text')); ?></a><?php endif; ?>
             </div>
             <div class="sw-location-visual"></div>
         </div>
@@ -301,7 +304,7 @@ $head = function ($p) use ($e, $para, $val) {
         <div class="sw-amenities-tabs" data-aos="fade-up">
             <div class="sw-tabs-sidebar">
                 <?php foreach ($tabs as $i => $t): ?>
-                <button type="button" class="sw-tab-btn<?php echo $i === 0 ? ' active' : ''; ?>" data-target="svc-tab-<?php echo $i; ?>">
+                <button type="button" class="sw-tab-btn<?php echo $i === 0 ? $activeCls : ''; ?>" data-target="svc-tab-<?php echo $i; ?>">
                     <div class="sw-tab-icon"><i class="fas <?php echo $icon($t['icon'] ?? '') ?: 'fa-circle'; ?>"></i></div>
                     <div class="sw-tab-text"><?php echo $e($t['label'] ?? ($t['title'] ?? '')); ?></div>
                 </button>
@@ -309,7 +312,7 @@ $head = function ($p) use ($e, $para, $val) {
             </div>
             <div class="sw-tabs-content">
                 <?php foreach ($tabs as $i => $t): ?>
-                <div class="sw-tab-pane<?php echo $i === 0 ? ' active' : ''; ?>" id="svc-tab-<?php echo $i; ?>">
+                <div class="sw-tab-pane<?php echo $i === 0 ? $activeCls : ''; ?>" id="svc-tab-<?php echo $i; ?>">
                     <?php if ($img($t['image'] ?? '') !== ''): ?><img src="<?php echo $img($t['image']); ?>" alt="<?php echo $e($t['title'] ?? ''); ?>" loading="lazy"><?php endif; ?>
                     <div class="sw-pane-info">
                         <h3><?php echo $e($t['title'] ?? ''); ?></h3>
@@ -330,7 +333,7 @@ $head = function ($p) use ($e, $para, $val) {
         <?php echo $head('audience'); ?>
         <div class="sw-audience-accordion" data-aos="fade-up">
             <?php foreach ($cards as $i => $c): ?>
-            <div class="sw-aud-card<?php echo $i === 0 ? ' active' : ''; ?>">
+            <div class="sw-aud-card<?php echo $i === 0 ? $activeCls : ''; ?>">
                 <?php if ($img($c['image'] ?? '') !== ''): ?><img src="<?php echo $img($c['image']); ?>" alt="<?php echo $e($c['title'] ?? ''); ?>" loading="lazy"><?php endif; ?>
                 <div class="sw-aud-card-content">
                     <span class="sw-aud-num"><?php echo str_pad($i + 1, 2, '0', STR_PAD_LEFT); ?></span>
@@ -395,7 +398,7 @@ $head = function ($p) use ($e, $para, $val) {
                 <span class="category-eyebrow">FAQ</span>
                 <?php if ($val('faq_heading') !== ''): ?><h2 class="section-title"><?php echo $e($val('faq_heading')); ?></h2><?php endif; ?>
                 <?php if ($val('faq_text') !== ''): ?><p><?php echo $para($val('faq_text')); ?></p><?php endif; ?>
-                <?php if ($val('faq_btn_text') !== ''): ?><a href="<?php echo $href($val('faq_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary"<?php echo preg_match('#^https?://#i', $val('faq_btn_link')) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo $e($val('faq_btn_text')); ?></a><?php endif; ?>
+                <?php if ($val('faq_btn_text') !== ''): ?><a href="<?php echo $href($val('faq_btn_link', $enquiryLink)); ?>" class="btn btn-primary"<?php echo preg_match('#^https?://#i', $val('faq_btn_link')) ? ' target="_blank" rel="noopener"' : ''; ?>><?php echo $e($val('faq_btn_text')); ?></a><?php endif; ?>
             </div>
             <div class="faq-accordion" data-aos="fade-left">
                 <?php foreach ($qs as $q): ?>
@@ -412,15 +415,11 @@ $head = function ($p) use ($e, $para, $val) {
 
 <?php if ($vis['closing-banner']): $ctaImg = $img($f['cta_image'] ?? ''); ?>
 <!-- Closing banner -->
-<?php if ($ctaImg !== ''): ?>
-<section class="sw-cta" id="sec-closing-banner" style="background-image: url('<?php echo $ctaImg; ?>');">
-<?php else: ?>
-<section class="section-padding bg-alt text-center" id="sec-closing-banner">
-<?php endif; ?>
+<section class="<?php echo $ctaImg !== '' ? 'sw-cta' : 'section-padding bg-alt text-center'; ?>" id="sec-closing-banner"<?php if ($ctaImg !== ''): ?> style="background-image: url('<?php echo $ctaImg; ?>');"<?php endif; ?>>
     <div class="container max-w-1100">
         <h2 class="section-title"><?php echo $e($val('cta_heading')); ?></h2>
         <?php if ($val('cta_text') !== ''): ?><p class="<?php echo $ctaImg === '' ? 'section-subtitle' : ''; ?>"><?php echo $para($val('cta_text')); ?></p><?php endif; ?>
-        <?php if ($val('cta_btn_text') !== ''): ?><a href="<?php echo $href($val('cta_btn_link', '/contact-us#enquiry')); ?>" class="btn btn-primary mt-4"><?php echo $e($val('cta_btn_text')); ?></a><?php endif; ?>
+        <?php if ($val('cta_btn_text') !== ''): ?><a href="<?php echo $href($val('cta_btn_link', $enquiryLink)); ?>" class="btn btn-primary mt-4"><?php echo $e($val('cta_btn_text')); ?></a><?php endif; ?>
     </div>
 </section>
 <?php endif; ?>
@@ -447,4 +446,4 @@ $head = function ($p) use ($e, $para, $val) {
 </section>
 <?php endif; ?>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/inc/footer.php'; ?>

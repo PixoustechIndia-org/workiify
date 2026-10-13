@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $back = URLROOT . '/admin/section/' . $data['page'] . '/' . $data['navKey'];
 ?>
 
@@ -12,7 +12,7 @@ $back = URLROOT . '/admin/section/' . $data['page'] . '/' . $data['navKey'];
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-card">
         <form method="POST" enctype="multipart/form-data" class="admin-form" data-validate data-dirty-guard>
@@ -20,7 +20,7 @@ $back = URLROOT . '/admin/section/' . $data['page'] . '/' . $data['navKey'];
 
             <?php foreach ($data['schema']['fields'] as $f):
                 $val = $data['data'][$f['key']] ?? '';
-                require APPROOT . '/views/admin/inc/field_input.php';
+                require APPROOT . '/views/admin/inc/field_input.php'; // NOSONAR - included once per field on purpose (require_once would show only the first field)
             endforeach; ?>
 
             <div class="admin-form-footer">
@@ -31,4 +31,4 @@ $back = URLROOT . '/admin/section/' . $data['page'] . '/' . $data['navKey'];
     </div>
 </div>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $f = $data['filters'];
 $c = $data['counts'];
 $returnTo = admin_current_path();
@@ -15,7 +15,7 @@ $tabs = ['' => ['All', $c['all']], 'used' => ['In use', $c['used']], 'unused' =>
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-card">
         <h2 class="admin-card-title"><i class="fas fa-upload"></i> Upload a new image</h2>
@@ -138,7 +138,7 @@ $tabs = ['' => ['All', $c['all']], 'used' => ['In use', $c['used']], 'unused' =>
                 </tbody>
             </table>
         </div>
-        <?php require APPROOT . '/views/admin/inc/pagination.php'; ?>
+        <?php require_once APPROOT . '/views/admin/inc/pagination.php'; ?>
     </div>
 </div>
 
@@ -152,4 +152,4 @@ document.querySelectorAll('.admin-copy-path').forEach(function (btn) {
 });
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

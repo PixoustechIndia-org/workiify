@@ -1,4 +1,6 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
+// Repeated values, defined once
+$selectedAttr = ' selected';
 $f = $data['filters'];
 $counts = $data['counts'];
 $returnTo = admin_current_path();
@@ -15,7 +17,7 @@ $csrf = htmlspecialchars($data['csrfToken']);
         <a href="<?php echo URLROOT; ?>/admin/feedback-edit/new" class="admin-btn"><i class="fas fa-plus"></i> Add Testimonial</a>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-tabs" role="tablist" aria-label="Filter by status">
         <a href="<?php echo admin_query_url(['status' => null, 'page' => null]); ?>" class="admin-tab<?php echo $f['status'] === '' ? ' is-active' : ''; ?>">All <span class="admin-tab-count"><?php echo $counts['all']; ?></span></a>
@@ -38,13 +40,13 @@ $csrf = htmlspecialchars($data['csrfToken']);
             <select name="rating" class="admin-select admin-select-sm" aria-label="Rating" data-autosubmit>
                 <option value="">Any rating</option>
                 <?php for ($i = 5; $i >= 1; $i--): ?>
-                    <option value="<?php echo $i; ?>"<?php echo $f['rating'] === (string)$i ? ' selected' : ''; ?>><?php echo $i; ?> star<?php echo $i > 1 ? 's' : ''; ?></option>
+                    <option value="<?php echo $i; ?>"<?php echo $f['rating'] === (string)$i ? $selectedAttr : ''; ?>><?php echo $i; ?> star<?php echo $i > 1 ? 's' : ''; ?></option>
                 <?php endfor; ?>
             </select>
             <select name="featured" class="admin-select admin-select-sm" aria-label="Featured" data-autosubmit>
                 <option value="">Featured or not</option>
-                <option value="1"<?php echo $f['featured'] === '1' ? ' selected' : ''; ?>>Featured on Home</option>
-                <option value="0"<?php echo $f['featured'] === '0' ? ' selected' : ''; ?>>Not featured</option>
+                <option value="1"<?php echo $f['featured'] === '1' ? $selectedAttr : ''; ?>>Featured on Home</option>
+                <option value="0"<?php echo $f['featured'] === '0' ? $selectedAttr : ''; ?>>Not featured</option>
             </select>
             <button type="submit" class="admin-btn admin-btn-sm"><i class="fas fa-filter"></i> Apply</button>
             <?php if ($hasFilters): ?>
@@ -88,7 +90,11 @@ $csrf = htmlspecialchars($data['csrfToken']);
                                         <?php endif; ?>
                                         <span>
                                             <a class="admin-table-title" href="<?php echo URLROOT; ?>/admin/feedback-edit/<?php echo (int)$item->id; ?>"><?php echo htmlspecialchars($item->full_name); ?></a>
-                                            <small><?php echo htmlspecialchars(trim(($item->designation ? $item->designation . ', ' : '') . ($item->company ?? ''), ', ') ?: ($item->email ?: '—')); ?></small>
+                                            <small><?php
+                                                $fbSub = trim(($item->designation ? $item->designation . ', ' : '') . ($item->company ?? ''), ', ');
+                                                if ($fbSub === '') { $fbSub = $item->email ?: '—'; }
+                                                echo htmlspecialchars($fbSub);
+                                            ?></small>
                                         </span>
                                     </div>
                                 </td>
@@ -130,8 +136,8 @@ $csrf = htmlspecialchars($data['csrfToken']);
                 </tbody>
             </table>
         </div>
-        <?php require APPROOT . '/views/admin/inc/pagination.php'; ?>
+        <?php require_once APPROOT . '/views/admin/inc/pagination.php'; ?>
     </div>
 </div>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

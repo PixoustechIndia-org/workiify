@@ -1,5 +1,5 @@
 <?php
-require APPROOT . '/views/admin/inc/header.php';
+require_once APPROOT . '/views/admin/inc/header.php';
 
 $isService = !empty($data['isService']);
 $svc = $data['service'] ?? null;
@@ -66,9 +66,20 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         foreach ($allSections as $n => $sItem) {
             $sItem['num'] = $n + 1;
             if (empty($sItem['help'])) {
-                $sItem['help'] = !empty($sItem['items']) && !empty($sItem['fields']) ? 'Text, images and a list of entries' : (!empty($sItem['items']) ? 'A list of entries you can add, edit and reorder' : 'Text and images');
+                if (empty($sItem['items'])) {
+                    $sItem['help'] = 'Text and images';
+                } elseif (!empty($sItem['fields'])) {
+                    $sItem['help'] = 'Text, images and a list of entries';
+                } else {
+                    $sItem['help'] = 'A list of entries you can add, edit and reorder';
+                }
             }
-            $g = in_array($sItem['key'], $secGroups['setup']['keys'], true) ? 'setup' : (in_array($sItem['key'], $secGroups['end']['keys'], true) ? 'end' : 'body');
+            $g = 'body';
+            if (in_array($sItem['key'], $secGroups['setup']['keys'], true)) {
+                $g = 'setup';
+            } elseif (in_array($sItem['key'], $secGroups['end']['keys'], true)) {
+                $g = 'end';
+            }
             $grouped[$g][] = $sItem;
         }
         $pageSections = array_values(array_filter($allSections, function ($s) { return empty($s['settings']); }));
@@ -78,6 +89,19 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
             if (!$svcMode || !empty($s['settings'])) { return ['setup', 'fa-gear', '']; }
             return empty($s['off']) ? ['on', 'fa-eye', 'Visible'] : ['off', 'fa-eye-slash', 'Hidden'];
         };
+    ?>
+    <?php
+        // "Open page" + "Preview changes": the same two buttons on page and service editors.
+        $workspaceActions = function () use ($data) { ?>
+                <?php if (!empty($data['publicUrl'])): ?>
+                    <a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener" class="admin-btn admin-btn-sm admin-btn-secondary svc-workspace-btn" title="Open the saved page in a new tab">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Open page
+                    </a>
+                <?php endif; ?>
+                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-sm svc-workspace-preview-btn" title="See your unsaved changes before saving">
+                    <i class="fas fa-desktop"></i> Preview changes
+                </button>
+        <?php };
     ?>
     <?php if (!$svcMode): ?>
         <!-- Which page, and where to see it -->
@@ -95,14 +119,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                 </div>
             </div>
             <div class="svc-workspace-right">
-                <?php if (!empty($data['publicUrl'])): ?>
-                    <a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener" class="admin-btn admin-btn-sm admin-btn-secondary svc-workspace-btn" title="Open the saved page in a new tab">
-                        <i class="fas fa-arrow-up-right-from-square"></i> Open page
-                    </a>
-                <?php endif; ?>
-                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-sm svc-workspace-preview-btn" title="See your unsaved changes before saving">
-                    <i class="fas fa-desktop"></i> Preview changes
-                </button>
+                <?php $workspaceActions(); ?>
             </div>
         </div>
     <?php else: ?>
@@ -140,14 +157,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                     </form>
                 </div>
 
-                <?php if (!empty($data['publicUrl'])): ?>
-                    <a href="<?php echo URLROOT . htmlspecialchars($data['publicUrl']); ?>" target="_blank" rel="noopener" class="admin-btn admin-btn-sm admin-btn-secondary svc-workspace-btn" title="Open the saved page in a new tab">
-                        <i class="fas fa-arrow-up-right-from-square"></i> Open page
-                    </a>
-                <?php endif; ?>
-                <button type="button" id="livePreviewBtn" class="admin-btn admin-btn-sm svc-workspace-preview-btn" title="See your unsaved changes before saving">
-                    <i class="fas fa-desktop"></i> Preview changes
-                </button>
+                <?php $workspaceActions(); ?>
             </div>
         </div>
     <?php endif; ?>
@@ -246,7 +256,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
         </div>
     <?php endif; ?>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <!-- Main Fields Form -->
     <?php if ($data['fieldsData']): ?>
@@ -259,7 +269,7 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
 
                 <?php foreach ($data['fieldsData']['schema']['fields'] as $f):
                     $val = $data['fieldsData']['values'][$f['key']] ?? '';
-                    require APPROOT . '/views/admin/inc/field_input.php';
+                    require APPROOT . '/views/admin/inc/field_input.php'; // NOSONAR - included once per field on purpose (require_once would show only the first field)
 
                     // If we just rendered meta_description in settings, render the Google SERP preview
                     if ($f['key'] === 'meta_description' && $data['navKey'] === 'settings'): ?>
@@ -271,7 +281,13 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
                             <div class="svc-serp-card">
                                 <div class="svc-serp-url">workiify.com › services › <span id="serpSlug"><?php echo htmlspecialchars($svc['slug'] ?? 'service'); ?></span></div>
                                 <div class="svc-serp-title" id="serpTitle"><?php echo htmlspecialchars(!empty($data['fieldsData']['values']['meta_title']) ? $data['fieldsData']['values']['meta_title'] . ' | Workiify' : ($svc['title'] ?? 'Service') . ' | Workiify'); ?></div>
-                                <div class="svc-serp-desc" id="serpDesc"><?php echo htmlspecialchars(!empty($data['fieldsData']['values']['meta_description']) ? $data['fieldsData']['values']['meta_description'] : (!empty($data['fieldsData']['values']['card_summary']) ? $data['fieldsData']['values']['card_summary'] : 'Discover flexible workspace options with Workiify in Coimbatore.')); ?></div>
+                                <div class="svc-serp-desc" id="serpDesc"><?php
+                                    $serpDesc = 'Discover flexible workspace options with Workiify in Coimbatore.';
+                                    foreach (['meta_description', 'card_summary'] as $serpKey) {
+                                        if (!empty($data['fieldsData']['values'][$serpKey])) { $serpDesc = $data['fieldsData']['values'][$serpKey]; break; }
+                                    }
+                                    echo htmlspecialchars($serpDesc);
+                                ?></div>
                             </div>
                         </div>
                     <?php endif;
@@ -660,4 +676,4 @@ if ($isService && !empty($data['fieldsData']['schema']['fields'])) {
 })();
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

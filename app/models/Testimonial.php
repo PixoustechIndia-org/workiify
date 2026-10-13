@@ -1,5 +1,7 @@
 <?php
 class Testimonial {
+    use ListQuery;
+
     private $db;
 
     public static function statuses() {
@@ -60,17 +62,7 @@ class Testimonial {
         if ($f['status'] !== '') { $where[] = 'status = :status'; $params[':status'] = $f['status']; }
         if ($f['rating'] !== '') { $where[] = 'rating = :rating'; $params[':rating'] = (int)$f['rating']; }
         if ($f['featured'] !== '') { $where[] = 'show_on_home = :featured'; $params[':featured'] = (int)$f['featured']; }
-        $sql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
-
-        $this->db->query('SELECT COUNT(*) AS c FROM testimonials' . $sql);
-        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
-        $total = (int)$this->db->single()->c;
-
-        $col = self::$sortable[$sort] ?? 'created_at';
-        $dir = $dir === 'asc' ? 'ASC' : 'DESC';
-        $this->db->query('SELECT * FROM testimonials' . $sql . " ORDER BY $col $dir, id $dir LIMIT " . (int)$perPage . ' OFFSET ' . (int)(($page - 1) * $perPage));
-        foreach ($params as $k => $v) { $this->db->bind($k, $v); }
-        return [$this->db->resultSet(), $total];
+        return $this->pagedRows('testimonials', $where, $params, self::$sortable[$sort] ?? 'created_at', $dir, $page, $perPage);
     }
 
     public static function sortKeys() {
@@ -78,14 +70,7 @@ class Testimonial {
     }
 
     public function statusCounts() {
-        $this->db->query('SELECT status, COUNT(*) AS c FROM testimonials GROUP BY status');
-        $out = ['all' => 0];
-        foreach (self::statuses() as $s) { $out[$s] = 0; }
-        foreach ($this->db->resultSet() as $r) {
-            $out[$r->status] = (int)$r->c;
-            $out['all'] += (int)$r->c;
-        }
-        return $out;
+        return $this->countByStatus('testimonials', self::statuses());
     }
 
     public function getTestimonialById($id) {

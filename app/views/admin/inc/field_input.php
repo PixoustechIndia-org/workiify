@@ -13,13 +13,21 @@ $frule = Home_content_model::fieldRule($f);
 $fattrs = ' data-label="' . htmlspecialchars($f['label']) . '"' . ($frule ? ' data-rule="' . $frule . '"' : '');
 $ferror = $data['errors'][$fid] ?? null;
 if ($ferror) { $fattrs .= ' class="is-invalid" aria-invalid="true" data-server-error="1"'; }
+// id + name of the control (only one control is printed per field, whichever its type)
+$fidAttrs = ' id="' . $fid . '" name="' . $fid . '"';
+$fplaceholder = '';
+if ($frule === 'link') {
+    $fplaceholder = ' placeholder="/contact-us or https://…"';
+} elseif ($frule === 'email') {
+    $fplaceholder = ' placeholder="name@example.com" inputmode="email"';
+}
 ?>
 <?php if ($f['type'] === 'heading'): ?>
     <div class="admin-field-heading"><?php echo htmlspecialchars($f['label']); ?></div>
 
 <?php elseif ($f['type'] === 'toggle'): ?>
     <label class="admin-toggle-row" for="<?php echo $fid; ?>">
-        <input type="checkbox" id="<?php echo $fid; ?>" name="<?php echo $fid; ?>" value="1"<?php echo ($val === '1' || $val === 1 || $val === true) ? ' checked' : ''; ?>>
+        <input type="checkbox"<?php echo $fidAttrs; ?> value="1"<?php echo ($val === '1' || $val === 1 || $val === true) ? ' checked' : ''; ?>>
         <span class="admin-toggle-track"><span class="admin-toggle-knob"></span></span>
         <span class="admin-toggle-text"><?php echo htmlspecialchars($f['label']); ?></span>
     </label>
@@ -32,19 +40,19 @@ if ($ferror) { $fattrs .= ' class="is-invalid" aria-invalid="true" data-server-e
         <?php endif; ?>
     </label>
     <?php if ($f['type'] === 'textarea'): ?>
-        <textarea id="<?php echo $fid; ?>" name="<?php echo $fid; ?>"<?php echo $flimit . $fattrs; ?>><?php echo htmlspecialchars((string)$val); ?></textarea>
+        <textarea<?php echo $fidAttrs . $flimit . $fattrs; ?>><?php echo htmlspecialchars((string)$val); ?></textarea>
     <?php elseif ($f['type'] === 'image'): ?>
-        <?php require APPROOT . '/views/admin/inc/image_field.php'; ?>
+        <?php require APPROOT . '/views/admin/inc/image_field.php'; // NOSONAR - once per image field on purpose ?>
     <?php elseif ($f['type'] === 'icon'): ?>
-        <?php require APPROOT . '/views/admin/inc/icon_field.php'; ?>
+        <?php require APPROOT . '/views/admin/inc/icon_field.php'; // NOSONAR - once per icon field on purpose ?>
     <?php elseif ($f['type'] === 'select'): ?>
-        <select id="<?php echo $fid; ?>" name="<?php echo $fid; ?>" class="admin-select">
+        <select<?php echo $fidAttrs; ?> class="admin-select">
             <?php foreach ($f['options'] as $optValue => $optLabel): ?>
                 <option value="<?php echo htmlspecialchars((string)$optValue); ?>"<?php echo ((string)$val === (string)$optValue) ? ' selected' : ''; ?>><?php echo htmlspecialchars($optLabel); ?></option>
             <?php endforeach; ?>
         </select>
     <?php else: ?>
-        <input type="text" id="<?php echo $fid; ?>" name="<?php echo $fid; ?>" value="<?php echo htmlspecialchars((string)$val); ?>"<?php echo $flimit . $fattrs; ?><?php echo $frule === 'link' ? ' placeholder="/contact-us or https://…"' : ($frule === 'email' ? ' placeholder="name@example.com" inputmode="email"' : ''); ?>>
+        <input type="text"<?php echo $fidAttrs; ?> value="<?php echo htmlspecialchars((string)$val); ?>"<?php echo $flimit . $fattrs . $fplaceholder; ?>>
     <?php endif; ?>
     <?php if ($ferror): ?>
         <div class="admin-field-error" data-for="<?php echo $fid; ?>"><i class="fas fa-circle-exclamation"></i> <?php echo htmlspecialchars(ucfirst(preg_replace('/^' . preg_quote($f['label'], '/') . ': /', '', $ferror))); ?></div>

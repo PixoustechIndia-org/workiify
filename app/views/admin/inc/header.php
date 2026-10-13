@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php require APPROOT . '/views/admin/inc/head.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/head.php'; ?>
 <body class="admin-body">
     <?php
+// Repeated values, defined once
+$navActiveCls = ' active';
+$navSectionUrl = '/admin/section/';
+$navItemUrl = '/admin/item-edit/';
         $current = $_SERVER['REQUEST_URI'];
         function admin_nav_active($needle, $current) { return strpos($current, $needle) !== false; }
         function admin_page_icon($pageKey) {
@@ -44,8 +48,13 @@
         function admin_sort_th($key, $label, $sort, $dir) {
             $active = $sort === $key;
             $next = $active && $dir === 'asc' ? 'desc' : 'asc';
-            $icon = $active ? ($dir === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort';
-            return '<th class="admin-th-sort' . ($active ? ' is-sorted' : '') . '"' . ($active ? ' aria-sort="' . ($dir === 'asc' ? 'ascending' : 'descending') . '"' : '') . '>'
+            $icon = 'fa-sort';
+            $ariaSort = '';
+            if ($active) {
+                $icon = $dir === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
+                $ariaSort = ' aria-sort="' . ($dir === 'asc' ? 'ascending' : 'descending') . '"';
+            }
+            return '<th class="admin-th-sort' . ($active ? ' is-sorted' : '') . '"' . $ariaSort . '>'
                 . '<a href="' . admin_query_url(['sort' => $key, 'dir' => $next, 'page' => null]) . '">' . htmlspecialchars($label) . ' <i class="fas ' . $icon . '"></i></a></th>';
         }
 
@@ -82,7 +91,7 @@
         <aside class="admin-sidebar" id="adminSidebar">
             <nav class="admin-sidebar-nav" aria-label="Overview">
                 <div class="admin-nav-page">
-                    <a href="<?php echo URLROOT; ?>/admin" class="admin-nav-link admin-nav-top-link<?php echo preg_match('#/admin/?(\?|$)#', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin" class="admin-nav-link admin-nav-top-link<?php echo preg_match('#/admin/?(\?|$)#', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-gauge-high"></i> Dashboard
                     </a>
                 </div>
@@ -94,8 +103,8 @@
                     $sections = Home_content_model::navSections($pageKey);
                     $sectionActive = false;
                     foreach ($sections as $s) {
-                        if (admin_nav_active('/admin/section/' . $pageKey . '/' . $s['key'], $current)
-                            || (!empty($s['items']) && admin_nav_active('/admin/item-edit/' . $pageKey . '/' . $s['items'], $current))) {
+                        if (admin_nav_active($navSectionUrl . $pageKey . '/' . $s['key'], $current)
+                            || (!empty($s['items']) && admin_nav_active($navItemUrl . $pageKey . '/' . $s['items'], $current))) {
                             $sectionActive = true;
                             break;
                         }
@@ -121,15 +130,15 @@
                     $svcAnyActive = false;
                     foreach ($navServices as $navSvc) {
                         $k = Service_model::pageKey($navSvc['id']);
-                        if (admin_nav_active('/admin/section/' . $k . '/', $current) || admin_nav_active('/admin/item-edit/' . $k . '/', $current)) { $svcAnyActive = true; break; }
+                        if (admin_nav_active($navSectionUrl . $k . '/', $current) || admin_nav_active($navItemUrl . $k . '/', $current)) { $svcAnyActive = true; break; }
                     }
                     $svcListOpen = $svcAnyActive || admin_nav_active('/admin/service', $current);
                 ?>
                 <div class="admin-nav-page">
-                    <a href="<?php echo URLROOT; ?>/admin/services" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/services', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin/services" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/services', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-list"></i> All Services
                     </a>
-                    <a href="<?php echo URLROOT; ?>/admin/service-new" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/service-new', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin/service-new" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/service-new', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-plus"></i> Add Service
                     </a>
                     <button type="button" class="admin-nav-page-toggle admin-nav-svc-toggle<?php echo $svcListOpen ? ' open' : ''; ?>" data-target="admin-nav-svc-list" aria-expanded="<?php echo $svcListOpen ? 'true' : 'false'; ?>">
@@ -147,10 +156,10 @@
                         <ul>
                             <?php foreach ($navServices as $navSvc):
                                 $svcKey = Service_model::pageKey($navSvc['id']);
-                                $svcActive = admin_nav_active('/admin/section/' . $svcKey . '/', $current) || admin_nav_active('/admin/item-edit/' . $svcKey . '/', $current);
+                                $svcActive = admin_nav_active($navSectionUrl . $svcKey . '/', $current) || admin_nav_active($navItemUrl . $svcKey . '/', $current);
                             ?>
                                 <li data-name="<?php echo htmlspecialchars(strtolower($navSvc['title'])); ?>">
-                                    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $svcKey; ?>/banner" class="admin-nav-link<?php echo $svcActive ? ' active' : ''; ?>">
+                                    <a href="<?php echo URLROOT; ?>/admin/section/<?php echo $svcKey; ?>/banner" class="admin-nav-link<?php echo $svcActive ? $navActiveCls : ''; ?>">
                                         <i class="fas <?php echo htmlspecialchars($navSvc['nav_icon'] ?: 'fa-briefcase'); ?>"></i>
                                         <span class="admin-nav-link-text"><?php echo htmlspecialchars($navSvc['title']); ?></span>
                                         <?php if ($navSvc['status'] !== 'published'): ?><em class="admin-nav-draft">draft</em><?php endif; ?>
@@ -166,11 +175,11 @@
             <div class="admin-nav-page-label">Modules</div>
             <nav class="admin-sidebar-nav" aria-label="Modules">
                 <div class="admin-nav-page">
-                    <a href="<?php echo URLROOT; ?>/admin/enquiries" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/enquir', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin/enquiries" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/enquir', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-envelope-open-text"></i> Enquiries
                         <?php if ($navNewEnquiries > 0): ?><span class="admin-nav-badge" title="<?php echo $navNewEnquiries; ?> new"><?php echo $navNewEnquiries; ?></span><?php endif; ?>
                     </a>
-                    <a href="<?php echo URLROOT; ?>/admin/feedback" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/feedback', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin/feedback" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/feedback', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-comment-dots"></i> Feedback
                         <?php if ($navPendingFeedback > 0): ?><span class="admin-nav-badge" title="<?php echo $navPendingFeedback; ?> awaiting review"><?php echo $navPendingFeedback; ?></span><?php endif; ?>
                     </a>
@@ -180,10 +189,10 @@
             <div class="admin-nav-page-label">Assets</div>
             <nav class="admin-sidebar-nav" aria-label="Assets">
                 <div class="admin-nav-page">
-                    <a href="<?php echo URLROOT; ?>/admin/media" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/media', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin/media" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/media', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-images"></i> Media Library
                     </a>
-                    <a href="<?php echo URLROOT; ?>/admin/history" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/history', $current) ? ' active' : ''; ?>">
+                    <a href="<?php echo URLROOT; ?>/admin/history" class="admin-nav-link admin-nav-top-link<?php echo admin_nav_active('/admin/history', $current) ? $navActiveCls : ''; ?>">
                         <i class="fas fa-clock-rotate-left"></i> History
                     </a>
                 </div>

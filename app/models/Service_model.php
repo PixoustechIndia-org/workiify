@@ -15,6 +15,17 @@ require_once __DIR__ . '/Service_schema.php';
 require_once __DIR__ . '/Home_content_model.php';
 
 class Service_model {
+    // Repeated values, defined once
+    private const TXT_ENQUIRE_NOW = 'Enquire Now';
+    private const TXT_VIRTUAL_OFFICE = 'Virtual Office';
+    private const TXT_SHARED_WORKSPACE = 'Shared Workspace';
+    private const TXT_CO_WORKING = 'Co Working Space';
+    private const TXT_FLEX_OFFICE = 'Flexible Office Space';
+    private const TXT_247_ACCESS = '24/7 access';
+    private const TXT_BUSINESS_ADDRESS = 'Business address';
+    private const TXT_FLEX_PLANS = 'Flexible plans';
+    private const TXT_PLAN_YEARLY = 'Plan: Yearly';
+
     private $db;
     private static $ready = false;
     private static $offline = false;
@@ -116,16 +127,16 @@ class Service_model {
     // old built-in values are touched, so anything an admin has already edited is left alone.
     private function migrateShortNames() {
         $map = [
-            'coworking-space-coimbatore' => ['Co Working Space in Coimbatore', 'Co Working Space', 'workspaces', 'Flexible plans',
+            'coworking-space-coimbatore' => ['Co Working Space in Coimbatore', self::TXT_CO_WORKING, 'workspaces', self::TXT_FLEX_PLANS,
                 'Hot desks, dedicated desks, private offices and meeting rooms in Saravanampatti, with Wi-Fi, parking and a food court.',
                 ['Hot desks to private offices', 'High-speed Wi-Fi and parking', 'Food court and game area'], 'Explore Co Working Space'],
-            'shared-workspace-in-coimbatore' => ['Shared Workspace in Coimbatore', 'Shared Workspace', 'workspaces', '24/7 access',
+            'shared-workspace-in-coimbatore' => ['Shared Workspace in Coimbatore', self::TXT_SHARED_WORKSPACE, 'workspaces', self::TXT_247_ACCESS,
                 'A professional shared workspace for freelancers, startups and growing teams, open round the clock.',
-                ['24/7 access', 'Hot, dedicated and private desks', 'Celebration hall for up to 60 people'], 'Explore Shared Workspace'],
-            'flexible-office-space-coimbatore' => ['Flexible Office Space in Coimbatore', 'Flexible Office Space', 'workspaces', 'Flexible plans',
+                [self::TXT_247_ACCESS, 'Hot, dedicated and private desks', 'Celebration hall for up to 60 people'], 'Explore Shared Workspace'],
+            'flexible-office-space-coimbatore' => ['Flexible Office Space in Coimbatore', self::TXT_FLEX_OFFICE, 'workspaces', self::TXT_FLEX_PLANS,
                 'Private, managed and shared offices with flexible rental plans that grow with your team.',
                 ['Private and managed offices', 'Flexible rental terms', 'Room to scale as you grow'], 'Explore Flexible Office Space'],
-            'virtual-office-in-coimbatore' => ['Virtual Office in Coimbatore', 'Virtual Office', 'virtual-day-pass', 'Business address',
+            'virtual-office-in-coimbatore' => ['Virtual Office in Coimbatore', self::TXT_VIRTUAL_OFFICE, 'virtual-day-pass', self::TXT_BUSINESS_ADDRESS,
                 'A professional business address with mail handling and GST / company registration support.',
                 ['Business address in Saravanampatti', 'Mail handling', 'GST and company registration support'], 'Explore Virtual Office'],
         ];
@@ -193,7 +204,10 @@ class Service_model {
         static $json = null;
         if ($json === null) {
             $file = APPROOT . '/database/services_seed.json';
-            $json = is_file($file) ? (json_decode(file_get_contents($file), true) ?: []) : [];
+            $json = [];
+            if (is_file($file)) {
+                $json = json_decode(file_get_contents($file), true) ?: [];
+            }
         }
         return $json;
     }
@@ -226,7 +240,7 @@ class Service_model {
         $ideal = trim((string)($row['ideal_for'] ?? ''));
         $badge = trim((string)($row['badge_text'] ?? ''));
         $img = $row['detail_image'] ?? '' ?: ($row['banner_image'] ?? '' ?: ($row['card_image'] ?? ''));
-        $cta = trim((string)($row['cta_label'] ?? '')) ?: 'Enquire Now';
+        $cta = trim((string)($row['cta_label'] ?? '')) ?: self::TXT_ENQUIRE_NOW;
         $check = function ($list) {
             return array_map(function ($t) { return ['icon' => 'fa-check-circle', 'title' => $t, 'text' => '']; }, $list);
         };
@@ -525,7 +539,7 @@ class Service_model {
 
     // Creates a draft service with the shared template: blank, or a copy of another service's page.
     public function create($title, $slug, $category, $copyFromId = 0) {
-        if (self::$offline) { throw new RuntimeException('Database unavailable'); }
+        if (self::$offline) { throw new ServiceException('Database unavailable'); }
         $this->db->query('SELECT COALESCE(MAX(sort_order), 0) + 10 AS n FROM services');
         $order = (int)$this->db->single()->n;
 
@@ -553,9 +567,9 @@ class Service_model {
     }
 
     public function saveSettings($id, array $d) {
-        if (self::$offline) { throw new RuntimeException('Database unavailable'); }
+        if (self::$offline) { throw new ServiceException('Database unavailable'); }
         $existing = $this->get($id);
-        if (!$existing) { throw new RuntimeException('Service not found'); }
+        if (!$existing) { throw new ServiceException('Service not found'); }
 
         // keep old URLs alive: remember the previous slug as a redirect
         $old = $existing['old_slugs'];
@@ -680,30 +694,30 @@ class Service_model {
         return [
             ['slug' => 'hot-desk', 'title' => 'Hot Desk', 'category' => 'workspaces', 'status' => 'published', 'sort_order' => 10, 'show_in_nav' => 1,
              'card_image' => $hot, 'card_badge' => 'Plan: Weekly', 'card_summary' => 'Perfect for freelancers and remote workers who need a vibrant and flexible workspace every day.',
-             'card_features' => ['Any open desk', 'High-speed Wi-Fi', '24/7 access'], 'card_cta' => 'Enquire about Hot Desk',
+             'card_features' => ['Any open desk', 'High-speed Wi-Fi', self::TXT_247_ACCESS], 'card_cta' => 'Enquire about Hot Desk',
              'nav_label' => 'Hot Desk', 'nav_icon' => 'fa-chair', 'nav_blurb' => 'Flexible seating, pay as you go',
              'banner_image' => $hot, 'layout' => 'split-left', 'detail_image' => $hot,
              'detail_intro' => 'Perfect for freelancers and remote workers who need a vibrant and flexible workspace every day.',
              'badge_icon' => 'fa-calendar-alt', 'badge_text' => 'Plan: Weekly', 'ideal_for' => 'Freelancers, remote workers, students',
-             'includes' => json_encode(['Any open desk', 'High-speed Wi-Fi', '24/7 access', 'Cafeteria and kitchen']), 'cta_label' => 'Enquire Now'],
+             'includes' => json_encode(['Any open desk', 'High-speed Wi-Fi', self::TXT_247_ACCESS, 'Cafeteria and kitchen']), 'cta_label' => self::TXT_ENQUIRE_NOW],
 
             ['slug' => 'dedicated-desk', 'title' => 'Dedicated Desk', 'category' => 'workspaces', 'status' => 'published', 'sort_order' => 20, 'show_in_nav' => 1,
-             'card_image' => $ded, 'card_badge' => 'Plan: Yearly', 'card_summary' => 'Your own reserved workstation in a collaborative environment with professional amenities.',
+             'card_image' => $ded, 'card_badge' => self::TXT_PLAN_YEARLY, 'card_summary' => 'Your own reserved workstation in a collaborative environment with professional amenities.',
              'card_features' => ['Reserved desk and locker', '24/7 access and Wi-Fi', '2 hours free boardroom use per month'], 'card_cta' => 'Enquire about Dedicated Desk',
              'nav_label' => 'Dedicated Desk', 'nav_icon' => 'fa-desktop', 'nav_blurb' => 'Your own desk, every day',
              'banner_image' => $ded, 'layout' => 'split-right', 'detail_image' => $ded,
              'detail_intro' => 'Your own reserved workstation in a collaborative environment with professional amenities.',
-             'badge_icon' => 'fa-calendar-alt', 'badge_text' => 'Plan: Yearly', 'ideal_for' => 'Professionals needing a fixed seat',
-             'includes' => json_encode(['Reserved desk', 'Locker', '24/7 access', 'Wi-Fi', '2 hours free boardroom use per month']), 'cta_label' => 'Enquire Now'],
+             'badge_icon' => 'fa-calendar-alt', 'badge_text' => self::TXT_PLAN_YEARLY, 'ideal_for' => 'Professionals needing a fixed seat',
+             'includes' => json_encode(['Reserved desk', 'Locker', self::TXT_247_ACCESS, 'Wi-Fi', '2 hours free boardroom use per month']), 'cta_label' => self::TXT_ENQUIRE_NOW],
 
             ['slug' => 'private-office', 'title' => 'Private Office', 'category' => 'workspaces', 'status' => 'published', 'sort_order' => 30, 'show_in_nav' => 1,
-             'card_image' => $prv, 'card_badge' => 'Plan: Yearly', 'card_summary' => 'Secure and fully furnished office spaces ideal for startups, teams, and established businesses.',
+             'card_image' => $prv, 'card_badge' => self::TXT_PLAN_YEARLY, 'card_summary' => 'Secure and fully furnished office spaces ideal for startups, teams, and established businesses.',
              'card_features' => ['Furnished lockable office', '6 hours free boardroom use per month', 'Reception services and business address'], 'card_cta' => 'Enquire about Private Office',
              'nav_label' => 'Private Office', 'nav_icon' => 'fa-door-closed', 'nav_blurb' => 'Lockable offices for teams',
              'banner_image' => $prv, 'layout' => 'split-left', 'detail_image' => $prv,
              'detail_intro' => 'Secure and fully furnished office spaces ideal for startups, teams, and established businesses.',
-             'badge_icon' => 'fa-calendar-alt', 'badge_text' => 'Plan: Yearly', 'ideal_for' => 'Startups, teams, corporates (up to 160 employees across coworking and private offices)',
-             'includes' => json_encode(['Furnished lockable office', '6 hours free boardroom use per month', 'Reception services', 'Business address', 'Customisable layout']), 'cta_label' => 'Enquire Now'],
+             'badge_icon' => 'fa-calendar-alt', 'badge_text' => self::TXT_PLAN_YEARLY, 'ideal_for' => 'Startups, teams, corporates (up to 160 employees across coworking and private offices)',
+             'includes' => json_encode(['Furnished lockable office', '6 hours free boardroom use per month', 'Reception services', self::TXT_BUSINESS_ADDRESS, 'Customisable layout']), 'cta_label' => self::TXT_ENQUIRE_NOW],
 
             ['slug' => 'meeting-room', 'title' => 'Meeting Room', 'category' => 'meetings-events', 'status' => 'published', 'sort_order' => 40, 'show_in_nav' => 1,
              'card_image' => $mtg, 'card_badge' => 'Booking: Hourly – maximum 2 hours', 'card_summary' => 'Host client meetings, team discussions, and presentations in a polished and well-equipped setting.',
@@ -712,7 +726,7 @@ class Service_model {
              'banner_image' => $mtg, 'layout' => 'split-right', 'detail_image' => $mtg,
              'detail_intro' => 'Host client meetings, team discussions, and presentations in a polished and well-equipped setting.',
              'badge_icon' => 'fa-clock', 'badge_text' => 'Booking: Hourly – maximum 2 hours',
-             'includes' => json_encode(['Audio-visual equipment', 'Wi-Fi', 'AC', 'Refreshment service']), 'cta_label' => 'Enquire Now'],
+             'includes' => json_encode(['Audio-visual equipment', 'Wi-Fi', 'AC', 'Refreshment service']), 'cta_label' => self::TXT_ENQUIRE_NOW],
 
             ['slug' => 'event-spaces', 'title' => 'Event Spaces', 'category' => 'meetings-events', 'status' => 'published', 'sort_order' => 50, 'show_in_nav' => 1,
              'card_image' => $img('event_spaces.png'), 'card_badge' => 'Custom setup', 'card_summary' => 'Space for workshops, seminars, training sessions and meetups, customisable to your event.',
@@ -721,49 +735,49 @@ class Service_model {
              'banner_image' => $img('gallery-building-exterior.png'), 'layout' => 'split-left', 'detail_image' => $img('event_spaces.png'),
              'detail_intro' => 'Space for workshops, seminars, training sessions and meetups, customisable to your event.',
              'includes' => json_encode(['Audio-Visual & Presentation Setup', 'Flexible Seating Configurations', 'High-Speed Wi-Fi & Power Backup', 'Hospitality & Event Support']),
-             'cta_label' => 'Enquire Now'],
+             'cta_label' => self::TXT_ENQUIRE_NOW],
 
-            ['slug' => 'coworking-space-coimbatore', 'title' => 'Co Working Space',
+            ['slug' => 'coworking-space-coimbatore', 'title' => self::TXT_CO_WORKING,
              'category' => 'workspaces', 'status' => 'published', 'sort_order' => 60, 'show_in_nav' => 1,
-             'card_image' => $img('coworking_main_1791350864870.jpg'), 'card_badge' => 'Flexible plans', 'card_summary' => 'Hot desks, dedicated desks, private offices and meeting rooms in Saravanampatti, with Wi-Fi, parking and a food court.',
+             'card_image' => $img('coworking_main_1791350864870.jpg'), 'card_badge' => self::TXT_FLEX_PLANS, 'card_summary' => 'Hot desks, dedicated desks, private offices and meeting rooms in Saravanampatti, with Wi-Fi, parking and a food court.',
              'card_features' => ['Hot desks to private offices', 'High-speed Wi-Fi and parking', 'Food court and game area'], 'card_cta' => 'Explore Co Working Space',
-             'nav_label' => 'Co Working Space', 'nav_icon' => 'fa-city', 'nav_blurb' => 'Guide to coworking in Coimbatore',
+             'nav_label' => self::TXT_CO_WORKING, 'nav_icon' => 'fa-city', 'nav_blurb' => 'Guide to coworking in Coimbatore',
              'meta_title' => 'Coworking Space in Coimbatore - Workiify Spaces',
              'meta_description' => 'Workiify Spaces offers a flexible coworking space in Coimbatore at Saravanampatti, near KGiSL Campus - hot desks, dedicated desks, private offices and meeting rooms.'],
 
-            ['slug' => 'shared-workspace-in-coimbatore', 'title' => 'Shared Workspace',
+            ['slug' => 'shared-workspace-in-coimbatore', 'title' => self::TXT_SHARED_WORKSPACE,
              'category' => 'workspaces', 'status' => 'published', 'sort_order' => 70, 'show_in_nav' => 1,
-             'card_image' => $img('gallery-shared-workspace-floor.png'), 'card_badge' => '24/7 access', 'card_summary' => 'A professional shared workspace for freelancers, startups and growing teams, open round the clock.',
-             'card_features' => ['24/7 access', 'Hot, dedicated and private desks', 'Celebration hall for up to 60 people'], 'card_cta' => 'Explore Shared Workspace',
-             'nav_label' => 'Shared Workspace', 'nav_icon' => 'fa-people-roof', 'nav_blurb' => '24/7 access in Saravanampatti',
+             'card_image' => $img('gallery-shared-workspace-floor.png'), 'card_badge' => self::TXT_247_ACCESS, 'card_summary' => 'A professional shared workspace for freelancers, startups and growing teams, open round the clock.',
+             'card_features' => [self::TXT_247_ACCESS, 'Hot, dedicated and private desks', 'Celebration hall for up to 60 people'], 'card_cta' => 'Explore Shared Workspace',
+             'nav_label' => self::TXT_SHARED_WORKSPACE, 'nav_icon' => 'fa-people-roof', 'nav_blurb' => '24/7 access in Saravanampatti',
              'meta_title' => 'Best Shared Workspace in Coimbatore | Workiify',
              'meta_description' => 'Find a professional workspace in Saravanampatti with flexible options, modern facilities, and a convenient location near KGiSL Campus'],
 
-            ['slug' => 'flexible-office-space-coimbatore', 'title' => 'Flexible Office Space',
+            ['slug' => 'flexible-office-space-coimbatore', 'title' => self::TXT_FLEX_OFFICE,
              'category' => 'workspaces', 'status' => 'published', 'sort_order' => 80, 'show_in_nav' => 1,
-             'card_image' => $prv, 'card_badge' => 'Flexible plans', 'card_summary' => 'Private, managed and shared offices with flexible rental plans that grow with your team.',
+             'card_image' => $prv, 'card_badge' => self::TXT_FLEX_PLANS, 'card_summary' => 'Private, managed and shared offices with flexible rental plans that grow with your team.',
              'card_features' => ['Private and managed offices', 'Flexible rental terms', 'Room to scale as you grow'], 'card_cta' => 'Explore Flexible Office Space',
-             'nav_label' => 'Flexible Office Space', 'nav_icon' => 'fa-building-user', 'nav_blurb' => 'Private, managed & shared offices',
+             'nav_label' => self::TXT_FLEX_OFFICE, 'nav_icon' => 'fa-building-user', 'nav_blurb' => 'Private, managed & shared offices',
              'meta_title' => 'Flexible Office Space in Coimbatore | Workiify',
              'meta_description' => 'Find flexible office space in Coimbatore with Workiify. Explore workspace options in Saravanampatti for startups and growing businesses. Enquire today!'],
 
-            ['slug' => 'virtual-office-in-coimbatore', 'title' => 'Virtual Office',
+            ['slug' => 'virtual-office-in-coimbatore', 'title' => self::TXT_VIRTUAL_OFFICE,
              'category' => 'virtual-day-pass', 'status' => 'published', 'sort_order' => 100, 'show_in_nav' => 1,
-             'card_image' => $img('gallery-front-office-reception.png'), 'card_badge' => 'Business address', 'card_summary' => 'A professional business address with mail handling and GST / company registration support.',
+             'card_image' => $img('gallery-front-office-reception.png'), 'card_badge' => self::TXT_BUSINESS_ADDRESS, 'card_summary' => 'A professional business address with mail handling and GST / company registration support.',
              'card_features' => ['Business address in Saravanampatti', 'Mail handling', 'GST and company registration support'], 'card_cta' => 'Explore Virtual Office',
-             'nav_label' => 'Virtual Office', 'nav_icon' => 'fa-laptop-house', 'nav_blurb' => 'Business address & registration',
+             'nav_label' => self::TXT_VIRTUAL_OFFICE, 'nav_icon' => 'fa-laptop-house', 'nav_blurb' => 'Business address & registration',
              'meta_title' => 'Virtual Office in Coimbatore | Affordable Business Address',
              'meta_description' => 'Find a virtual office in Coimbatore with a professional business address, flexible plans, mail handling and registration support. Explore our Saravanampatti office today.'],
 
-            ['slug' => 'virtual-office', 'title' => 'Virtual Office', 'category' => 'virtual-day-pass', 'status' => 'published', 'sort_order' => 100, 'show_in_nav' => 0,
-             'card_image' => $img('gallery-front-office-reception.png'), 'card_badge' => 'Business address',
+            ['slug' => 'virtual-office', 'title' => self::TXT_VIRTUAL_OFFICE, 'category' => 'virtual-day-pass', 'status' => 'published', 'sort_order' => 100, 'show_in_nav' => 0,
+             'card_image' => $img('gallery-front-office-reception.png'), 'card_badge' => self::TXT_BUSINESS_ADDRESS,
              'card_summary' => 'A virtual office lets you work remotely while presenting your business from a well-established, professional business address.',
              'card_features' => ['Business address for GST / company registration', 'Dedicated phone number', "Calls answered in your company's name"], 'card_cta' => 'Get a business address',
-             'nav_label' => 'Virtual Office', 'nav_icon' => 'fa-laptop-house', 'nav_blurb' => 'A professional business address',
+             'nav_label' => self::TXT_VIRTUAL_OFFICE, 'nav_icon' => 'fa-laptop-house', 'nav_blurb' => 'A professional business address',
              'banner_image' => $img('gallery-front-office-reception.png'), 'layout' => 'centered',
              'detail_intro' => 'A virtual office lets you work remotely while presenting your business from a well-established, professional business address.',
              'includes' => json_encode(['Business address (for GST / company registration)', 'Dedicated phone number', "Calls answered in your company's name", 'Messages passed on by email', 'Meeting room access at a small extra fee']),
-             'benefits' => json_encode(['Professional image', 'Never miss a client call', 'No commute or lease costs']), 'cta_label' => 'Enquire Now'],
+             'benefits' => json_encode(['Professional image', 'Never miss a client call', 'No commute or lease costs']), 'cta_label' => self::TXT_ENQUIRE_NOW],
 
             ['slug' => 'day-pass', 'title' => 'Day Pass', 'category' => 'virtual-day-pass', 'status' => 'published', 'sort_order' => 110, 'show_in_nav' => 0,
              'card_image' => $img('gallery-boardroom.png'), 'card_badge' => 'Conference hall only',
@@ -772,7 +786,7 @@ class Service_model {
              'nav_label' => 'Day Pass', 'nav_icon' => 'fa-ticket', 'nav_blurb' => 'Work for a single day',
              'banner_image' => $img('gallery-boardroom.png'), 'layout' => 'centered',
              'detail_intro' => 'Use Workiify for a single day without a monthly plan – ideal for freelancers, travellers, or anyone trying the space before joining. Day Pass is available in the conference hall only.',
-             'badge_icon' => 'fa-map-marker-alt', 'badge_text' => 'Available in the conference hall only', 'cta_label' => 'Enquire Now'],
+             'badge_icon' => 'fa-map-marker-alt', 'badge_text' => 'Available in the conference hall only', 'cta_label' => self::TXT_ENQUIRE_NOW],
         ];
     }
 }

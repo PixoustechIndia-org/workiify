@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php
 $e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
 $groups = $data['groups'] ?? [];
@@ -17,7 +17,10 @@ $renderGroup = function (array $group, $alt) use ($e) {
         <?php
             // keep the last row tidy: 5-6 cards sit in 3 columns, 8 in 4
             $n = count($group['items']);
-            $gridCls = $n <= 4 ? '' : (($n % 4 === 0) ? ' sfg-4' : ' sfg-3');
+            $gridCls = '';
+            if ($n > 4) {
+                $gridCls = ($n % 4 === 0) ? ' sfg-4' : ' sfg-3';
+            }
         ?>
         <div class="service-feature-grid<?php echo $gridCls; ?>">
             <?php foreach ($group['items'] as $i => $svc):
@@ -279,4 +282,4 @@ $renderGroup = function (array $group, $alt) use ($e) {
     </div>
 </section>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/inc/footer.php'; ?>

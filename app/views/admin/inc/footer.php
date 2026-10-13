@@ -1,7 +1,7 @@
         </main>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/confirm_modal.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/confirm_modal.php'; ?>
 
     <script>
         const ADMIN_URLROOT = <?php echo json_encode(URLROOT); ?>;

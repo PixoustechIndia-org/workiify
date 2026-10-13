@@ -1,5 +1,20 @@
 <?php
 class Admin extends Controller {
+    // Repeated values, defined once
+    private const URL_ADMIN = '/admin';
+    private const URL_LOGIN = '/admin/login';
+    private const URL_SECTION = '/admin/section/';
+    private const URL_SERVICES = '/admin/services';
+    private const URL_MEDIA = '/admin/media';
+    private const URL_FEEDBACK = '/admin/feedback';
+    private const URL_ENQUIRY_VIEW = '/admin/enquiry-view/';
+    private const PUBLIC_DIR = '/../public';
+    private const MIME_JPEG = 'image/jpeg';
+    private const MSG_DB_ERROR = 'Could not save (a database error occurred). Nothing was changed.';
+    private const MSG_BAD_STATUS = 'Choose a valid status.';
+    private const LOG_ENQUIRY = 'Enquiry from ';
+    private const LOG_FEEDBACK = 'Feedback from ';
+
     private $adminModel;
     private $contentModel;
     private $mediaModel;
@@ -29,7 +44,7 @@ class Admin extends Controller {
 
     private function requireLogin() {
         if (empty($_SESSION['admin_logged_in'])) {
-            $this->redirect('/admin/login');
+            $this->redirect(self::URL_LOGIN);
         }
     }
 
@@ -43,7 +58,7 @@ class Admin extends Controller {
     private function checkCsrf() {
         if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)$_POST['csrf_token'])) {
             $this->setFlash('Your session expired before that form was sent, so nothing was saved. Please try again.', 'error');
-            $this->redirect(empty($_SESSION['admin_logged_in']) ? '/admin/login' : '/admin');
+            $this->redirect(empty($_SESSION['admin_logged_in']) ? self::URL_LOGIN : self::URL_ADMIN);
         }
     }
 
@@ -119,7 +134,7 @@ class Admin extends Controller {
 
     public function login() {
         if (!empty($_SESSION['admin_logged_in'])) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
 
         $error = '';
@@ -143,7 +158,7 @@ class Admin extends Controller {
                     unset($_SESSION['login_failures'], $_SESSION['login_locked_until']);
                     $_SESSION['admin_logged_in'] = true;
                     $_SESSION['admin_username'] = $user->username;
-                    $this->redirect('/admin');
+                    $this->redirect(self::URL_ADMIN);
                 }
                 $_SESSION['login_failures'] = (int)($_SESSION['login_failures'] ?? 0) + 1;
                 if ($_SESSION['login_failures'] >= self::LOGIN_MAX_ATTEMPTS) {
@@ -168,7 +183,7 @@ class Admin extends Controller {
     public function logout() {
         $_SESSION = [];
         session_destroy();
-        $this->redirect('/admin/login');
+        $this->redirect(self::URL_LOGIN);
     }
 
     // ---- Dashboard -----------------------------------------------------
@@ -207,7 +222,7 @@ class Admin extends Controller {
             return null;
         }
         $file = $_FILES[$inputName];
-        $allowed = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
+        $allowed = ['jpg' => self::MIME_JPEG, 'jpeg' => self::MIME_JPEG, 'png' => 'image/png', 'webp' => 'image/webp', 'gif' => 'image/gif'];
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!isset($allowed[$ext])) {
             return null;
@@ -300,7 +315,7 @@ class Admin extends Controller {
     public function section($page = '', $key = '') {
         $this->requireLogin();
         if (!Home_content_model::pageExists($page)) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
         $this->contentModel->setPage($page);
 
@@ -309,7 +324,7 @@ class Admin extends Controller {
             if ($s['key'] === $key) { $section = $s; break; }
         }
         if (!$section) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
 
         $svc = Home_content_model::isServicePage($page) ? $this->serviceModel->get(Home_content_model::servicePageId($page)) : null;
@@ -345,16 +360,22 @@ class Admin extends Controller {
                         try {
                             $this->serviceModel->saveSettings($svc['id'], $clean);
                             $this->setFlash('Settings saved' . ($clean['status'] === 'published' ? ' and live on the site.' : ' (this service is still a draft).'), 'success');
-                            $this->redirect('/admin/section/' . $page . '/' . $targetSec);
+                            $this->redirect(self::URL_SECTION . $page . '/' . $targetSec);
                         } catch (Throwable $e) {
                             error_log('Service settings save failed: ' . $e->getMessage());
-                            $errors[] = 'Could not save (a database error occurred). Nothing was changed.';
+                            $errors[] = self::MSG_DB_ERROR;
                         }
                     }
                     // show what was typed, so nothing is lost
                     $values = [];
                     foreach ($inputFields as $f) {
-                        $values[$f['key']] = $f['type'] === 'toggle' ? (isset($_POST[$f['key']]) ? '1' : '0') : (string)($f['key'] === 'card_image' ? $in['card_image'] : ($_POST[$f['key']] ?? ''));
+                        if ($f['type'] === 'toggle') {
+                            $values[$f['key']] = isset($_POST[$f['key']]) ? '1' : '0';
+                        } elseif ($f['key'] === 'card_image') {
+                            $values[$f['key']] = (string)$in['card_image'];
+                        } else {
+                            $values[$f['key']] = (string)($_POST[$f['key']] ?? '');
+                        }
                     }
                 } else {
                     // Validate everything first; nothing is written unless the whole section is valid.
@@ -369,7 +390,7 @@ class Admin extends Controller {
                             if ($value !== null) { $this->contentModel->setField($k, $value); }
                         }
                         $this->setFlash('"' . $section['label'] . '" saved. The website now shows these changes.', 'success');
-                        $this->redirect('/admin/section/' . $page . '/' . $targetSec);
+                        $this->redirect(self::URL_SECTION . $page . '/' . $targetSec);
                     }
                     $values = [];
                     foreach ($submitted as $k => $value) { $values[$k] = $value ?? $before[$k]; }
@@ -510,13 +531,13 @@ class Admin extends Controller {
     public function item_edit($page = '', $section = '', $id = 'new') {
         $this->requireLogin();
         if (!Home_content_model::pageExists($page)) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
         $this->contentModel->setPage($page);
 
         $schemas = Home_content_model::itemSchemas($page);
         if (!isset($schemas[$section])) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
         $schema = $schemas[$section];
         $data = [];
@@ -524,7 +545,7 @@ class Admin extends Controller {
         $errors = [];
 
         $navKey = Home_content_model::navKeyForItems($section, $page);
-        $back = '/admin/section/' . $page . '/' . $navKey;
+        $back = self::URL_SECTION . $page . '/' . $navKey;
         $maxMessage = 'Maximum of ' . ($schema['maxItems'] ?? 0) . ' ' . strtolower($schema['label']) . ' reached. Remove one before adding another, or the layout will no longer line up.';
 
         if ($isNew && !empty($schema['maxItems']) && count($this->contentModel->getItems($section)) >= $schema['maxItems']) {
@@ -594,7 +615,7 @@ class Admin extends Controller {
     public function item_delete($page = '', $section = '', $id = '') {
         $this->requireLogin();
         if (!Home_content_model::pageExists($page)) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
         $this->contentModel->setPage($page);
 
@@ -618,14 +639,14 @@ class Admin extends Controller {
                 $this->setFlash('That entry no longer exists.', 'error');
             }
         }
-        $this->redirect('/admin/section/' . $page . '/' . Home_content_model::navKeyForItems($section, $page));
+        $this->redirect(self::URL_SECTION . $page . '/' . Home_content_model::navKeyForItems($section, $page));
     }
 
     // Moves one entry up/down within its list (POST only), e.g. /admin/item-move/svc3/faq/12/up
     public function item_move($page = '', $section = '', $id = '', $direction = '') {
         $this->requireLogin();
         if (!Home_content_model::pageExists($page)) {
-            $this->redirect('/admin');
+            $this->redirect(self::URL_ADMIN);
         }
         $this->contentModel->setPage($page);
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($direction, ['up', 'down'], true)) {
@@ -635,7 +656,7 @@ class Admin extends Controller {
                 $this->contentModel->moveItem((int)$id, $direction);
             }
         }
-        $this->redirect('/admin/section/' . $page . '/' . Home_content_model::navKeyForItems($section, $page));
+        $this->redirect(self::URL_SECTION . $page . '/' . Home_content_model::navKeyForItems($section, $page));
     }
 
     // ---- Media library -------------------------------------------------
@@ -653,7 +674,7 @@ class Admin extends Controller {
             } else {
                 $this->setFlash($errors ? reset($errors) : 'Please choose an image to upload.', 'error');
             }
-            $this->redirect('/admin/media');
+            $this->redirect(self::URL_MEDIA);
         }
 
         $all = $this->mediaModel->getAllDetailed();
@@ -668,7 +689,10 @@ class Admin extends Controller {
             'kind' => $this->queryParam('kind', ['upload', 'builtin', 'used', 'unused']),
         ];
         $sort = $this->queryParam('sort', ['name', 'date', 'size', 'used']) ?: 'date';
-        $dir = $this->queryParam('dir', ['asc', 'desc']) ?: ($sort === 'name' ? 'asc' : 'desc');
+        $dir = $this->queryParam('dir', ['asc', 'desc']);
+        if (!$dir) {
+            $dir = $sort === 'name' ? 'asc' : 'desc';
+        }
 
         $rows = array_values(array_filter($all, function ($a) use ($filters) {
             if ($filters['q'] !== '' && stripos($a['name'] . ' ' . $a['path'], $filters['q']) === false) { return false; }
@@ -712,7 +736,7 @@ class Admin extends Controller {
         $asset = ctype_digit((string)$id) ? $this->mediaModel->getById((int)$id) : null;
         if (!$asset) {
             $this->setFlash('That image is no longer in the library.', 'error');
-            $this->redirect('/admin/media');
+            $this->redirect(self::URL_MEDIA);
         }
         $asset = $this->mediaModel->details($asset);
         $errors = [];
@@ -739,21 +763,24 @@ class Admin extends Controller {
                     $ok = $this->mediaModel->replacePath($asset['id'], $asset['path'], $newPath);
                     if ($ok) {
                         if ($asset['isUpload']) {
-                            $oldFull = APPROOT . '/../public' . $asset['path'];
+                            $oldFull = APPROOT . self::PUBLIC_DIR . $asset['path'];
                             if (is_file($oldFull)) { unlink($oldFull); }
                         }
-                        $msg = 'Image replaced' . ($usedIn ? ' and updated on ' . $usedIn . ' place' . ($usedIn === 1 ? '' : 's') . ' across the website.' : '.');
+                        $msg = 'Image replaced.';
+                        if ($usedIn) {
+                            $msg = 'Image replaced and updated on ' . $usedIn . ' place' . ($usedIn === 1 ? '' : 's') . ' across the website.';
+                        }
                     } else {
-                        $full = APPROOT . '/../public' . $newPath;
+                        $full = APPROOT . self::PUBLIC_DIR . $newPath;
                         if (is_file($full)) { unlink($full); }
                         $this->mediaModel->delete((int)($this->mediaIdForPath($newPath) ?? 0));
                     }
                 }
                 if ($ok) {
                     $this->setFlash($msg, 'success');
-                    $this->redirect($this->listReturn('/admin/media'));
+                    $this->redirect($this->listReturn(self::URL_MEDIA));
                 }
-                $errors[] = 'Could not save (a database error occurred). Nothing was changed.';
+                $errors[] = self::MSG_DB_ERROR;
             }
         }
 
@@ -762,7 +789,7 @@ class Admin extends Controller {
             'asset' => $asset,
             'form' => $form,
             'errors' => $errors,
-            'returnTo' => $this->listReturn('/admin/media'),
+            'returnTo' => $this->listReturn(self::URL_MEDIA),
             'csrfToken' => $this->csrfToken(),
         ]);
     }
@@ -786,7 +813,7 @@ class Admin extends Controller {
             } elseif ($usage = $this->mediaModel->usage($asset['path'])) {
                 $this->setFlash('This image is still used in: ' . implode(', ', array_slice($usage, 0, 4)) . (count($usage) > 4 ? ' and more' : '') . '. Replace it there first, then remove it.', 'error');
             } else {
-                $full = APPROOT . '/../public' . $asset['path'];
+                $full = APPROOT . self::PUBLIC_DIR . $asset['path'];
                 if (is_file($full)) {
                     unlink($full);
                 }
@@ -794,7 +821,7 @@ class Admin extends Controller {
                 $this->setFlash('"' . ($asset['original_name'] ?: basename($asset['path'])) . '" was deleted.', 'success');
             }
         }
-        $this->redirect($this->listReturn('/admin/media'));
+        $this->redirect($this->listReturn(self::URL_MEDIA));
     }
 
     // ---- History -------------------------------------------------------
@@ -862,10 +889,10 @@ class Admin extends Controller {
     // Only ever redirects back into the services area.
     private function serviceReturnPath() {
         $r = $_POST['return'] ?? '';
-        if (is_string($r) && (strpos($r, '/admin/services') === 0 || strpos($r, '/admin/section/svc') === 0) && !preg_match('/[\r\n]/', $r)) {
+        if (is_string($r) && (strpos($r, self::URL_SERVICES) === 0 || strpos($r, '/admin/section/svc') === 0) && !preg_match('/[\r\n]/', $r)) {
             return $r;
         }
-        return '/admin/services';
+        return self::URL_SERVICES;
     }
 
     public function services() {
@@ -906,7 +933,7 @@ class Admin extends Controller {
                 try {
                     $id = $this->serviceModel->create($title, $slug, $category, $copy ? $copy['id'] : 0);
                     $this->setFlash('"' . $title . '" was created as a draft using the shared page template. Fill in its sections, then set it to Published in Service Settings.', 'success');
-                    $this->redirect('/admin/section/' . Service_model::pageKey($id) . '/banner');
+                    $this->redirect(self::URL_SECTION . Service_model::pageKey($id) . '/banner');
                 } catch (Throwable $e) {
                     error_log('Service create failed: ' . $e->getMessage());
                     $errors[] = 'Could not create the service (a database error occurred).';
@@ -931,7 +958,7 @@ class Admin extends Controller {
             $this->redirect($this->serviceReturnPath());
         };
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/admin/services');
+            $this->redirect(self::URL_SERVICES);
         }
         $this->checkCsrf();
 
@@ -1025,7 +1052,10 @@ class Admin extends Controller {
             'featured' => $this->queryParam('featured', ['0', '1']),
         ];
         $sort = $this->queryParam('sort', Testimonial::sortKeys()) ?: 'date';
-        $dir = $this->queryParam('dir', ['asc', 'desc']) ?: ($sort === 'date' ? 'desc' : 'asc');
+        $dir = $this->queryParam('dir', ['asc', 'desc']);
+        if (!$dir) {
+            $dir = $sort === 'date' ? 'desc' : 'asc';
+        }
 
         [, $total] = $this->testimonialModel->search($filters, $sort, $dir, 1, 1);
         $pg = $this->pagination($total);
@@ -1066,7 +1096,7 @@ class Admin extends Controller {
         $len = mb_strlen($d['feedback']);
         if ($len === 0) { $e['feedback'] = 'Feedback text is required.'; }
         elseif ($len < 20 || $len > 1000) { $e['feedback'] = 'Feedback must be between 20 and 1000 characters (currently ' . $len . ').'; }
-        if (!in_array($d['status'], Testimonial::statuses(), true)) { $e['status'] = 'Choose a valid status.'; }
+        if (!in_array($d['status'], Testimonial::statuses(), true)) { $e['status'] = self::MSG_BAD_STATUS; }
         return [$d, $e];
     }
 
@@ -1077,7 +1107,7 @@ class Admin extends Controller {
         if (!$file || $file['error'] === UPLOAD_ERR_NO_FILE) { return null; }
         if ($file['error'] !== UPLOAD_ERR_OK) { $errors['photo'] = 'The photo upload failed. Please try again.'; return null; }
         if ($file['size'] > self::MAX_UPLOAD_BYTES) { $errors['photo'] = 'The photo must be smaller than 5 MB.'; return null; }
-        $allowed = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
+        $allowed = ['jpg' => self::MIME_JPEG, 'jpeg' => self::MIME_JPEG, 'png' => 'image/png', 'webp' => 'image/webp'];
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $file['tmp_name']);
@@ -1107,7 +1137,7 @@ class Admin extends Controller {
             $testimonial = ctype_digit((string)$id) ? $this->testimonialModel->getTestimonialById((int)$id) : null;
             if (!$testimonial) {
                 $this->setFlash('That feedback entry was not found. It may have been deleted.', 'error');
-                $this->redirect('/admin/feedback');
+                $this->redirect(self::URL_FEEDBACK);
             }
         }
 
@@ -1138,10 +1168,10 @@ class Admin extends Controller {
                 if ($ok) {
                     if ($oldPhoto && $clean['photo'] !== $oldPhoto) { $this->removeFeedbackPhotoIfUnused($oldPhoto); }
                     $note = ($clean['show_on_home'] && $clean['status'] !== 'Approved') ? ' It is marked as featured, but only Approved feedback appears on the website.' : '';
-                    $this->setFlash(($isNew ? 'Testimonial from ' . $clean['full_name'] . ' added.' : 'Feedback from ' . $clean['full_name'] . ' updated.') . $note, 'success');
-                    $this->redirect($this->listReturn('/admin/feedback'));
+                    $this->setFlash(($isNew ? 'Testimonial from ' . $clean['full_name'] . ' added.' : self::LOG_FEEDBACK . $clean['full_name'] . ' updated.') . $note, 'success');
+                    $this->redirect($this->listReturn(self::URL_FEEDBACK));
                 }
-                $errors[] = 'Could not save (a database error occurred). Nothing was changed.';
+                $errors[] = self::MSG_DB_ERROR;
             }
             $form = array_merge($form, $clean);
             $form['photo'] = $oldPhoto;
@@ -1154,7 +1184,7 @@ class Admin extends Controller {
             'form' => $form,
             'meta' => $testimonial,
             'errors' => $errors,
-            'returnTo' => $this->listReturn('/admin/feedback'),
+            'returnTo' => $this->listReturn(self::URL_FEEDBACK),
             'csrfToken' => $this->csrfToken(),
         ]);
     }
@@ -1171,10 +1201,10 @@ class Admin extends Controller {
                 $this->setFlash('Unknown status.', 'error');
             } else {
                 $this->testimonialModel->setStatus($t->id, $status);
-                $this->setFlash('Feedback from ' . $t->full_name . ' marked as ' . $status . '.', 'success');
+                $this->setFlash(self::LOG_FEEDBACK . $t->full_name . ' marked as ' . $status . '.', 'success');
             }
         }
-        $this->redirect($this->listReturn('/admin/feedback'));
+        $this->redirect($this->listReturn(self::URL_FEEDBACK));
     }
 
     public function feedback_delete($id = '') {
@@ -1186,12 +1216,12 @@ class Admin extends Controller {
                 $this->setFlash('That feedback entry was already deleted.', 'error');
             } elseif ($this->testimonialModel->delete($t->id)) {
                 $this->removeFeedbackPhotoIfUnused($t->photo);
-                $this->setFlash('Feedback from ' . $t->full_name . ' was deleted.', 'success');
+                $this->setFlash(self::LOG_FEEDBACK . $t->full_name . ' was deleted.', 'success');
             } else {
                 $this->setFlash('Could not delete (a database error occurred).', 'error');
             }
         }
-        $this->redirect($this->listReturn('/admin/feedback'));
+        $this->redirect($this->listReturn(self::URL_FEEDBACK));
     }
 
     // ---- Enquiries Module --------------------------------------------
@@ -1207,7 +1237,10 @@ class Admin extends Controller {
             'to' => $this->dateParam('to'),
         ];
         $sort = $this->queryParam('sort', Enquiry::sortKeys()) ?: 'date';
-        $dir = $this->queryParam('dir', ['asc', 'desc']) ?: ($sort === 'date' ? 'desc' : 'asc');
+        $dir = $this->queryParam('dir', ['asc', 'desc']);
+        if (!$dir) {
+            $dir = $sort === 'date' ? 'desc' : 'asc';
+        }
 
         [, $total] = $this->enquiryModel->search($filters, $sort, $dir, 1, 1);
         $pg = $this->pagination($total);
@@ -1244,13 +1277,13 @@ class Admin extends Controller {
             $this->checkCsrf();
             $status = (string)($_POST['status'] ?? '');
             if (!in_array($status, Enquiry::statuses(), true)) {
-                $this->setFlash('Choose a valid status.', 'error');
+                $this->setFlash(self::MSG_BAD_STATUS, 'error');
             } elseif ($this->enquiryModel->updateStatus($enquiry->id, $status)) {
                 $this->setFlash('Status changed to ' . $status . '.', 'success');
             } else {
                 $this->setFlash('Something went wrong. The status was not changed.', 'error');
             }
-            $this->redirect('/admin/enquiry-view/' . $enquiry->id);
+            $this->redirect(self::URL_ENQUIRY_VIEW . $enquiry->id);
         }
 
         $this->view('admin/enquiry_view', [
@@ -1266,7 +1299,7 @@ class Admin extends Controller {
     // Returns [clean data, errors keyed by field].
     private function validateEnquiry(array $in) {
         $phone = preg_replace('/[\s\-()]/', '', (string)($in['contact_no'] ?? ''));
-        $phone = preg_replace('/^(\+91|0091|0)(?=[0-9]{10}$)/', '', $phone);
+        $phone = preg_replace('/^(\+91|0091|0)(?=\d{10}$)/', '', $phone);
         $d = [
             'company_name' => trim((string)($in['company_name'] ?? '')),
             'company_address' => trim((string)($in['company_address'] ?? '')),
@@ -1283,13 +1316,13 @@ class Admin extends Controller {
         elseif (mb_strlen($d['company_name']) > 150) { $e['company_name'] = 'Company name must be 150 characters or fewer.'; }
         if ($d['company_address'] === '') { $e['company_address'] = 'Company address is required.'; }
         elseif (mb_strlen($d['company_address']) > 250) { $e['company_address'] = 'Company address must be 250 characters or fewer.'; }
-        if (!preg_match('/^[6-9][0-9]{9}$/', $d['contact_no'])) { $e['contact_no'] = 'Enter a valid 10-digit mobile number (starting with 6-9).'; }
+        if (!preg_match('/^[6-9]\d{9}$/', $d['contact_no'])) { $e['contact_no'] = 'Enter a valid 10-digit mobile number (starting with 6-9).'; }
         if (!filter_var($d['email'], FILTER_VALIDATE_EMAIL) || mb_strlen($d['email']) > 150) { $e['email'] = 'Enter a valid email address.'; }
         if (!in_array($d['req_type'], ['space', 'seats'], true)) { $e['req_type'] = 'Choose a requirement type.'; }
         if (!ctype_digit($d['req_value']) || (int)$d['req_value'] < 1 || (int)$d['req_value'] > 1000000) { $e['req_value'] = 'Enter a whole number greater than 0.'; }
         if (mb_strlen($d['additional']) > 1000) { $e['additional'] = 'Additional requirements must be 1000 characters or fewer.'; }
         if (!array_key_exists($d['source'], Enquiry::sources())) { $e['source'] = 'Choose where this enquiry came from.'; }
-        if (!in_array($d['status'], Enquiry::statuses(), true)) { $e['status'] = 'Choose a valid status.'; }
+        if (!in_array($d['status'], Enquiry::statuses(), true)) { $e['status'] = self::MSG_BAD_STATUS; }
         return [$d, $e];
     }
 
@@ -1312,14 +1345,14 @@ class Admin extends Controller {
                 if ($isNew) {
                     $newId = $this->enquiryModel->create($clean);
                     if ($newId) {
-                        $this->setFlash('Enquiry from ' . $clean['company_name'] . ' added.', 'success');
-                        $this->redirect('/admin/enquiry-view/' . $newId);
+                        $this->setFlash(self::LOG_ENQUIRY . $clean['company_name'] . ' added.', 'success');
+                        $this->redirect(self::URL_ENQUIRY_VIEW . $newId);
                     }
                 } elseif ($this->enquiryModel->update($enquiry->id, $clean)) {
-                    $this->setFlash('Enquiry from ' . $clean['company_name'] . ' updated.', 'success');
-                    $this->redirect('/admin/enquiry-view/' . $enquiry->id);
+                    $this->setFlash(self::LOG_ENQUIRY . $clean['company_name'] . ' updated.', 'success');
+                    $this->redirect(self::URL_ENQUIRY_VIEW . $enquiry->id);
                 }
-                $errors[] = 'Could not save (a database error occurred). Nothing was changed.';
+                $errors[] = self::MSG_DB_ERROR;
             }
             $form = array_merge($form, $clean);
         }
@@ -1343,7 +1376,7 @@ class Admin extends Controller {
             if (!$enquiry) {
                 $this->setFlash('That enquiry was already deleted.', 'error');
             } elseif ($this->enquiryModel->delete($enquiry->id)) {
-                $this->setFlash('Enquiry from ' . $enquiry->company_name . ' was deleted.', 'success');
+                $this->setFlash(self::LOG_ENQUIRY . $enquiry->company_name . ' was deleted.', 'success');
             } else {
                 $this->setFlash('Could not delete (a database error occurred).', 'error');
             }

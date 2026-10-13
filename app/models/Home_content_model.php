@@ -5,6 +5,13 @@ require_once __DIR__ . '/Service_model.php';
 // every row in home_fields/home_items is scoped by a `page` column, and
 // fieldGroups()/itemSchemas()/navSections() all take a $page argument.
 class Home_content_model {
+    // Repeated values, defined once
+    private const LBL_BUTTON_TEXT = 'Button Text';
+    private const LBL_BUTTON_LINK = 'Button Link';
+    private const LBL_EYEBROW = 'Small Eyebrow Text';
+    private const LBL_PAGE_BANNER = 'Page Banner';
+    private const LBL_BG_IMAGE = 'Background Image';
+
     private $db;
     private $page = 'home';
 
@@ -56,13 +63,13 @@ class Home_content_model {
             case 'email':
                 return filter_var($value, FILTER_VALIDATE_EMAIL) ? null : 'enter a valid email address (e.g. info@workiify.com).';
             case 'phone':
-                return preg_match('/^\+?[0-9][0-9 \-]{6,18}$/', $value) ? null : 'enter a valid phone number (digits only, e.g. +919655500001).';
+                return preg_match('/^\+?\d[\d \-]{6,18}$/', $value) ? null : 'enter a valid phone number (digits only, e.g. +919655500001).';
             case 'link':
                 return preg_match('#^(/|\#|https?://|mailto:|tel:)\S*$#i', $value) ? null : 'enter a page path starting with "/" (e.g. /contact-us), a full https:// address, or a tel:/mailto: link, with no spaces.';
             case 'number':
-                return preg_match('/^[0-9]+(\.[0-9]+)?$/', $value) ? null : 'enter a number only (e.g. 120).';
+                return preg_match('/^\d+(\.\d+)?$/', $value) ? null : 'enter a number only (e.g. 120).';
             case 'rating':
-                return (preg_match('/^[0-5](\.[0-9])?$/', $value) && (float)$value <= 5) ? null : 'enter a rating from 0 to 5 (e.g. 4.8).';
+                return (preg_match('/^[0-5](\.\d)?$/', $value) && (float)$value <= 5) ? null : 'enter a rating from 0 to 5 (e.g. 4.8).';
             case 'icon':
                 return preg_match('/^fa-[a-z0-9-]+$/', $value) ? null : 'pick an icon, or type a Font Awesome name such as fa-wifi.';
             default:
@@ -88,8 +95,8 @@ class Home_content_model {
                     'fields' => [
                         ['key' => 'services_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'services_subtitle', 'label' => 'Subtitle', 'type' => 'textarea', 'maxlength' => 120],
-                        ['key' => 'services_cta_text', 'label' => 'Button Text', 'type' => 'text', 'maxlength' => 30],
-                        ['key' => 'services_cta_link', 'label' => 'Button Link', 'type' => 'text', 'maxlength' => 60],
+                        ['key' => 'services_cta_text', 'label' => self::LBL_BUTTON_TEXT, 'type' => 'text', 'maxlength' => 30],
+                        ['key' => 'services_cta_link', 'label' => self::LBL_BUTTON_LINK, 'type' => 'text', 'maxlength' => 60],
                     ],
                 ],
                 'amenities' => [
@@ -105,8 +112,8 @@ class Home_content_model {
                         ['key' => 'welcome_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'welcome_text', 'label' => 'Paragraph', 'type' => 'textarea', 'maxlength' => 420],
                         ['key' => 'welcome_image', 'label' => 'Image', 'type' => 'image'],
-                        ['key' => 'welcome_btn_text', 'label' => 'Button Text', 'type' => 'text', 'maxlength' => 30],
-                        ['key' => 'welcome_btn_link', 'label' => 'Button Link', 'type' => 'text', 'maxlength' => 80],
+                        ['key' => 'welcome_btn_text', 'label' => self::LBL_BUTTON_TEXT, 'type' => 'text', 'maxlength' => 30],
+                        ['key' => 'welcome_btn_link', 'label' => self::LBL_BUTTON_LINK, 'type' => 'text', 'maxlength' => 80],
                     ],
                 ],
                 'whychoose' => [
@@ -135,8 +142,8 @@ class Home_content_model {
                     'fields' => [
                         ['key' => 'gallery_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'gallery_subtitle', 'label' => 'Subtitle', 'type' => 'textarea', 'maxlength' => 90],
-                        ['key' => 'gallery_cta_text', 'label' => 'Button Text', 'type' => 'text', 'maxlength' => 30],
-                        ['key' => 'gallery_cta_link', 'label' => 'Button Link', 'type' => 'text', 'maxlength' => 60],
+                        ['key' => 'gallery_cta_text', 'label' => self::LBL_BUTTON_TEXT, 'type' => 'text', 'maxlength' => 30],
+                        ['key' => 'gallery_cta_link', 'label' => self::LBL_BUTTON_LINK, 'type' => 'text', 'maxlength' => 60],
                     ],
                 ],
                 'contact' => [
@@ -156,9 +163,9 @@ class Home_content_model {
             ],
             'about' => [
                 'about_banner' => [
-                    'label' => 'Page Banner',
+                    'label' => self::LBL_PAGE_BANNER,
                     'fields' => [
-                        ['key' => 'about_banner_image', 'label' => 'Background Image', 'type' => 'image'],
+                        ['key' => 'about_banner_image', 'label' => self::LBL_BG_IMAGE, 'type' => 'image'],
                         ['key' => 'about_banner_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'about_banner_tagline', 'label' => 'Tagline', 'type' => 'text', 'maxlength' => 40],
                     ],
@@ -166,7 +173,7 @@ class Home_content_model {
                 'about_story' => [
                     'label' => 'Introducing Workiify Section',
                     'fields' => [
-                        ['key' => 'about_story_eyebrow', 'label' => 'Small Eyebrow Text', 'type' => 'text', 'maxlength' => 50],
+                        ['key' => 'about_story_eyebrow', 'label' => self::LBL_EYEBROW, 'type' => 'text', 'maxlength' => 50],
                         ['key' => 'about_story_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'about_story_text', 'label' => 'Paragraph', 'type' => 'textarea', 'maxlength' => 420],
                         ['key' => 'about_story_image', 'label' => 'Image', 'type' => 'image'],
@@ -184,7 +191,7 @@ class Home_content_model {
                 'about_workspace_solution' => [
                     'label' => 'Workspace Solution Section',
                     'fields' => [
-                        ['key' => 'workspace_eyebrow', 'label' => 'Small Eyebrow Text', 'type' => 'text', 'maxlength' => 40],
+                        ['key' => 'workspace_eyebrow', 'label' => self::LBL_EYEBROW, 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'workspace_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 50],
                         ['key' => 'workspace_subtitle', 'label' => 'Subtitle', 'type' => 'textarea', 'maxlength' => 160],
                     ],
@@ -228,9 +235,9 @@ class Home_content_model {
             ],
             'contact' => [
                 'contact_banner' => [
-                    'label' => 'Page Banner',
+                    'label' => self::LBL_PAGE_BANNER,
                     'fields' => [
-                        ['key' => 'contact_banner_image', 'label' => 'Background Image', 'type' => 'image'],
+                        ['key' => 'contact_banner_image', 'label' => self::LBL_BG_IMAGE, 'type' => 'image'],
                         ['key' => 'contact_banner_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'contact_banner_tagline', 'label' => 'Tagline', 'type' => 'text', 'maxlength' => 100],
                     ],
@@ -257,10 +264,10 @@ class Home_content_model {
             ],
             'gallery' => [
                 'gallery_banner' => [
-                    'label' => 'Page Banner',
+                    'label' => self::LBL_PAGE_BANNER,
                     'fields' => [
-                        ['key' => 'gallery_banner_image', 'label' => 'Background Image', 'type' => 'image'],
-                        ['key' => 'gallery_banner_eyebrow', 'label' => 'Small Eyebrow Text', 'type' => 'text', 'maxlength' => 30],
+                        ['key' => 'gallery_banner_image', 'label' => self::LBL_BG_IMAGE, 'type' => 'image'],
+                        ['key' => 'gallery_banner_eyebrow', 'label' => self::LBL_EYEBROW, 'type' => 'text', 'maxlength' => 30],
                         ['key' => 'gallery_banner_heading', 'label' => 'Heading', 'type' => 'text', 'maxlength' => 40],
                         ['key' => 'gallery_banner_tagline', 'label' => 'Tagline', 'type' => 'textarea', 'maxlength' => 150],
                     ],
@@ -277,7 +284,7 @@ class Home_content_model {
                     'minItems' => 1,
                     'maxItems' => 5,
                     'fields' => [
-                        ['key' => 'bg_image', 'label' => 'Background Image', 'type' => 'image'],
+                        ['key' => 'bg_image', 'label' => self::LBL_BG_IMAGE, 'type' => 'image'],
                         ['key' => 'heading_line1', 'label' => 'Heading Line 1', 'type' => 'text', 'maxlength' => 45],
                         ['key' => 'heading_highlight', 'label' => 'Heading Highlight (green)', 'type' => 'text', 'maxlength' => 35],
                         ['key' => 'paragraph', 'label' => 'Paragraph', 'type' => 'textarea', 'maxlength' => 200],
@@ -444,7 +451,7 @@ class Home_content_model {
                 ['key' => 'get-in-touch', 'label' => 'Get In Touch', 'fields' => 'contact'],
             ],
             'about' => [
-                ['key' => 'banner', 'label' => 'Page Banner', 'fields' => 'about_banner'],
+                ['key' => 'banner', 'label' => self::LBL_PAGE_BANNER, 'fields' => 'about_banner'],
                 ['key' => 'our-story', 'label' => 'Introducing Workiify', 'fields' => 'about_story'],
                 ['key' => 'mission-vision', 'label' => 'Mission & Vision', 'fields' => 'about_purpose'],
                 ['key' => 'workspace-solution', 'label' => 'Workspace Solution', 'fields' => 'about_workspace_solution', 'items' => 'workspace_tiles'],
@@ -456,12 +463,12 @@ class Home_content_model {
                 ['key' => 'client-logos', 'label' => 'Client Logos', 'fields' => 'about_client_logos', 'items' => 'client_logos'],
             ],
             'contact' => [
-                ['key' => 'banner', 'label' => 'Page Banner', 'fields' => 'contact_banner'],
+                ['key' => 'banner', 'label' => self::LBL_PAGE_BANNER, 'fields' => 'contact_banner'],
                 ['key' => 'details', 'label' => 'Contact Details', 'fields' => 'contact_details'],
                 ['key' => 'form', 'label' => 'Enquiry Form Header', 'fields' => 'contact_form'],
             ],
             'gallery' => [
-                ['key' => 'banner', 'label' => 'Page Banner', 'fields' => 'gallery_banner'],
+                ['key' => 'banner', 'label' => self::LBL_PAGE_BANNER, 'fields' => 'gallery_banner'],
                 ['key' => 'photos', 'label' => 'Gallery Photos', 'items' => 'gallery_photos'],
             ],
         ];
@@ -471,7 +478,7 @@ class Home_content_model {
     // Every service is a CMS page too (page key "svc<id>"), built from one shared template
     // described by Service_schema, so it is edited with exactly the same admin screens.
     public static function isServicePage($page) {
-        return (bool)preg_match('/^svc[0-9]+$/', (string)$page);
+        return (bool)preg_match('/^svc\d+$/', (string)$page);
     }
 
     public static function servicePageId($page) {

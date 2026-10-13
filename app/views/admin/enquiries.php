@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $f = $data['filters'];
 $counts = $data['counts'];
 $sources = $data['sources'];
@@ -15,7 +15,7 @@ $hasFilters = $f['q'] !== '' || $f['source'] !== '' || $f['from'] !== '' || $f['
         <a href="<?php echo URLROOT; ?>/admin/enquiry-edit/new" class="admin-btn"><i class="fas fa-plus"></i> Add Enquiry</a>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-tabs" role="tablist" aria-label="Filter by status">
         <a href="<?php echo admin_query_url(['status' => null, 'page' => null]); ?>" class="admin-tab<?php echo $f['status'] === '' ? ' is-active' : ''; ?>">All <span class="admin-tab-count"><?php echo $counts['all']; ?></span></a>
@@ -91,7 +91,13 @@ $hasFilters = $f['q'] !== '' || $f['source'] !== '' || $f['from'] !== '' || $f['
                                     <a href="mailto:<?php echo htmlspecialchars($item->email); ?>" class="admin-link" title="<?php echo htmlspecialchars($item->email); ?>"><?php echo htmlspecialchars($item->email); ?></a><br>
                                     <a href="tel:<?php echo htmlspecialchars($item->contact_no); ?>" class="admin-link-muted"><?php echo htmlspecialchars($item->contact_no); ?></a>
                                 </td>
-                                <td data-label="Requirement"><?php echo $item->req_type === 'space' ? number_format((int)$item->req_value) . ' sq. ft.' : (int)$item->req_value . ' seat' . ((int)$item->req_value === 1 ? '' : 's'); ?></td>
+                                <td data-label="Requirement"><?php
+                                    if ($item->req_type === 'space') {
+                                        echo number_format((int)$item->req_value) . ' sq. ft.';
+                                    } else {
+                                        echo (int)$item->req_value . ' seat' . ((int)$item->req_value === 1 ? '' : 's');
+                                    }
+                                ?></td>
                                 <td data-label="Source">
                                     <span class="admin-chip"><?php echo htmlspecialchars($sources[$item->source] ?? ucfirst($item->source)); ?></span>
                                     <?php if ($isWeb && !$item->email_sent): ?>
@@ -120,8 +126,8 @@ $hasFilters = $f['q'] !== '' || $f['source'] !== '' || $f['from'] !== '' || $f['
                 </tbody>
             </table>
         </div>
-        <?php require APPROOT . '/views/admin/inc/pagination.php'; ?>
+        <?php require_once APPROOT . '/views/admin/inc/pagination.php'; ?>
     </div>
 </div>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

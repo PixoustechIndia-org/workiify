@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $form = $data['form'];
 $meta = $data['meta'];
 $e = function ($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
@@ -39,7 +39,7 @@ $photoUrl = !empty($form['photo']) ? URLROOT . '/uploads/testimonials/' . rawurl
         <?php endif; ?>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <form method="POST" enctype="multipart/form-data" class="admin-form" data-validate data-dirty-guard>
         <input type="hidden" name="csrf_token" value="<?php echo $e($data['csrfToken']); ?>">
@@ -148,4 +148,4 @@ $photoUrl = !empty($form['photo']) ? URLROOT . '/uploads/testimonials/' . rawurl
 })();
 </script>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

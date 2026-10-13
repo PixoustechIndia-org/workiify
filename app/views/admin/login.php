@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<?php require APPROOT . '/views/admin/inc/head.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/head.php'; ?>
 <body class="admin-body">
     <div class="admin-login-wrap">
         <div class="admin-card admin-login-card">

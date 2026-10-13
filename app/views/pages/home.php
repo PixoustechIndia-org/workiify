@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require_once APPROOT . '/views/inc/header.php'; ?>
 <?php
 function premiumHighlight($text) {
     $text = htmlspecialchars($text);
@@ -208,7 +208,7 @@ function premiumHighlight($text) {
             <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100"><?php echo htmlspecialchars($data['f']['audience_subtitle']); ?></p>
         </div>
         <div class="teams-grid">
-            <?php 
+            <?php
                 $tileColors = [
                     '#0ea5e9', // Blue
                     '#8b5cf6', // Purple
@@ -216,8 +216,8 @@ function premiumHighlight($text) {
                     '#6366f1', // Indigo
                 ];
             ?>
-            <?php foreach ($data['audience'] as $i => $tile): 
-                $t = $tile['data']; 
+            <?php foreach ($data['audience'] as $i => $tile):
+                $t = $tile['data'];
                 $accentColor = $tileColors[$i % 4];
             ?>
             <div class="team-tile" data-aos="fade-up" data-aos-delay="<?php echo $i * 100; ?>" style="--accent: <?php echo $accentColor; ?>;">
@@ -236,7 +236,7 @@ function premiumHighlight($text) {
     $testimonialsHeading = premiumHighlight($data['f']['testimonials_heading']);
     $testimonialsGoogleRating = htmlspecialchars($data['f']['google_rating']);
     $testimonialsSectionExtraClass = 'home-testimonials';
-    require APPROOT . '/views/inc/testimonials_stack.php';
+    require_once APPROOT . '/views/inc/testimonials_stack.php';
 ?>
 
 <!-- 9. Workspace Gallery -->
@@ -304,7 +304,7 @@ function premiumHighlight($text) {
                         <div>
                             <h4 style="font-size:0.85rem; margin:0 0 5px 0; color: var(--text-main); font-weight: 700;">Email</h4>
                             <p style="margin:0; font-size:0.9rem; color: var(--text-muted);">
-                                <?php 
+                                <?php
                                     $email1 = !empty($data['f']['contact_email_1']) ? $data['f']['contact_email_1'] : ($data['f']['contact_email'] ?? '');
                                     $email2 = $data['f']['contact_email_2'] ?? '';
                                 ?>
@@ -513,7 +513,7 @@ function premiumHighlight($text) {
     });
 </script>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/inc/footer.php'; ?>
 
 
 

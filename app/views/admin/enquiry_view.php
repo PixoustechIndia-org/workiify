@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/admin/inc/header.php';
+<?php require_once APPROOT . '/views/admin/inc/header.php';
 $q = $data['enquiry'];
 $isWeb = in_array($q->source, Enquiry::webSources(), true);
 ?>
@@ -26,7 +26,7 @@ $isWeb = in_array($q->source, Enquiry::webSources(), true);
         </div>
     </div>
 
-    <?php require APPROOT . '/views/admin/inc/flash.php'; ?>
+    <?php require_once APPROOT . '/views/admin/inc/flash.php'; ?>
 
     <div class="admin-detail-layout">
         <div class="admin-card">
@@ -75,4 +75,4 @@ $isWeb = in_array($q->source, Enquiry::webSources(), true);
     </div>
 </div>
 
-<?php require APPROOT . '/views/admin/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/admin/inc/footer.php'; ?>

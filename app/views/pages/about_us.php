@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require_once APPROOT . '/views/inc/header.php'; ?>
 
 <!-- 1. Page Banner -->
 <section class="page-banner" style="--banner-img: url('<?php echo URLROOT . htmlspecialchars($data['f']['about_banner_image']); ?>'); color: #fff;">
@@ -16,7 +16,7 @@
 <section class="our-story-section section-padding">
     <div class="container split-layout max-w-1100" style="align-items: center; gap: 4rem; padding-bottom: 2rem;">
         <div class="split-img premium-img-wrapper" style="flex: 1; max-width: 500px; margin: 0 auto;" data-aos="fade-right" data-aos-duration="900">
-            <?php 
+            <?php
             $db_img = isset($data['f']['about_story_image']) ? $data['f']['about_story_image'] : '';
             $about_img = '/images/gallery-open-workstation-area.png';
             if (!empty($db_img)) {
@@ -154,7 +154,7 @@
     $testimonialsHeading = htmlspecialchars($data['f']['about_testimonials_heading']);
     $testimonialsGoogleRating = htmlspecialchars($data['f']['about_google_rating']);
     $testimonialsSectionExtraClass = '';
-    require APPROOT . '/views/inc/testimonials_stack.php';
+    require_once APPROOT . '/views/inc/testimonials_stack.php';
 ?>
 
 <!-- 10. Client Logos -->
@@ -233,4 +233,4 @@
     });
 </script>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require_once APPROOT . '/views/inc/footer.php'; ?>
