@@ -1,27 +1,72 @@
-name: Build
+name: SonarQube Scan + PDF Report
 
 on:
   push:
     branches:
       - main
-
+  # Adds a "Run workflow" button in the Actions tab for manual runs
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: Build and analyze
-    runs-on: windows-latest
-    
+  sonarqube:
+    name: Analyze and generate PDF report
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      # 1. Get the code
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - uses: SonarSource/sonarqube-scan-action@v6
+          fetch-depth: 0  # full history gives better analysis
+
+      # 2. Run the SonarQube scan (reads sonar-project.properties)
+      - name: SonarQube scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: SonarSource/sonarqube-quality-gate-action@v1
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # 3. Check the Quality Gate. continue-on-error lets the PDF still be
+      #    made when the gate fails; the job is marked failed at the end.
+      - name: Quality Gate check
+        id: qualitygate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # 4. Build the PDF from the SonarQube results
+      - name: Set up Python
+        if: always()
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate PDF report
+        if: always()
+        run: |
+          pip install --quiet reportlab
+          python .github/scripts/sonar_pdf_report.py
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          REPORT_FILE: Workiify-SonarQube-Report.pdf
+
+      # 5. Attach the PDF to this run (download from the run page > Artifacts)
+      - name: Upload PDF report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonarqube-report
+          path: Workiify-SonarQube-Report.pdf
+          retention-days: 30
+          if-no-files-found: warn
+
+      # 6. Mark the run red if the Quality Gate failed
+      - name: Fail if Quality Gate failed
+        if: steps.qualitygate.outcome == 'failure'
+        run: |
+          echo "Quality Gate FAILED - see the PDF report for details."
+          exit 1
