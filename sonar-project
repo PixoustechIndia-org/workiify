@@ -1,0 +1,30 @@
+# SonarQube Project Configuration for TOD Application (Angular 21 + .NET 10 + MySQL 8.4)
+sonar.projectKey=TOD_Bb3
+sonar.projectName=TOD Application
+sonar.projectVersion=2.0.0
+
+# Encoding
+sonar.sourceEncoding=UTF-8
+
+# Source directories for analysis
+sonar.sources=API,UI/src
+
+# Test directories
+sonar.tests=API/API.Tests
+
+# Inclusions & Exclusions
+# Exclude third-party libraries, compiled bundles, and build outputs
+sonar.exclusions=**/node_modules/**,**/bin/**,**/obj/**,**/.angular/**,**/dist/**,**/publish/**,**/publish_selfcontained/**,**/*.spec.ts,**/*.designer.cs,**/assets/docs/**,**/wwwroot/**,**/*.zip,**/*.mp4,**/*.pdf,**/*.xlsx
+
+# Quality Profile Language specific settings
+# C# (.NET 10)
+sonar.cs.analyzer.useRoslyn=true
+
+# TypeScript / JavaScript (Angular 21)
+sonar.typescript.tsconfigPath=UI/tsconfig.json
+
+# Quality Gate Criteria Alignment:
+# - Zero Blocker & Critical Issues
+# - Zero Security Vulnerabilities (OWASP Top 10 & CWE)
+# - Code Duplication < 3%
+# - Maintainability Rating A
